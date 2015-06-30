@@ -1,5 +1,8 @@
-# Functions cache
-func_cache/
+# GP/PARI history
+gp_history.txt
+
+# Computations
+*.data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
