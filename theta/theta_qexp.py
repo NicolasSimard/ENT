@@ -72,7 +72,7 @@ def coeff_ideal(I,k,N):
             coeff[n] += quadratic.QuadraticOrder(D, a*p[0] - b*p[1], c*p[1])**(2*k)
     return coeff
 
-def theta_expansions(D, k, N):
+def theta_expansions(D, k, N, output_list = False):
     """Compute the theta series q-expansions attached to the field of disc D.
 
     Given the discriminant of an order, one can compute the q-expansion of all
@@ -87,26 +87,28 @@ def theta_expansions(D, k, N):
         formhD: [b0, b1, ... bN-1]
     '
     """
-
-    res = ("Theta series (k = {k!s}) attached to the order of disc {D!s}\n"
-           .format(k = k, D = D))
-    for f in quadratic.QuadraticForm.Gaussian_forms(D):
-        coeff = coeff_form(f, k, N)
-        res += "    {:<15}: {coeff!s}\n".format(f.__str__(), coeff = coeff)
-    return res
+    if output_list:
+        L = []
+        for f in quadratic.QuadraticForm.Gaussian_classes_reps(D):
+            L.append(coeff_form(f, k, N))
+        return L
+    else:
+        res = ("Theta series (k = {k!s}) attached to the order of disc {D!s}\n"
+               .format(k = k, D = D))
+        for f in quadratic.QuadraticForm.Gaussian_classes_reps(D):
+            coeff = coeff_form(f, k, N)
+            res += "    {:<15}: {coeff!s}\n".format(f.__str__(), coeff = coeff)
+        return res
 
 
 
 if __name__ == "__main__":
     import sys, doctest
-    if len(sys.argv) >= 3 + 1: # M k N [name_of_file]
-        M, k, N = list(map(int,sys.argv[1:4]))
-        if len(sys.argv) == 5: # a file name is passed
-            out = open(sys.argv[-1],'w')
+    if len(sys.argv) >= 3 + 1: # D k N [name_of_file]
+        D, k, N = list(map(int,sys.argv[1:4]))
+        if len(sys.argv) == 5 and sys.argv[-1] == 'pari':
+            print("qExps = ",theta_expansions(D, k, N, output_list = True).__str__())
         else:
-            out = sys.stdout
-        print("Printing results to",out.name)
-        for D in [-p for p in primes.prime_list(M+1) if p % 4 == 3]:
-            out.write(theta_expansions(D, k, N))
-        out.close()
-    doctest.testmod()
+            print(theta_expansions(D, k, N))
+    else:
+        doctest.testmod()
