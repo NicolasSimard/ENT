@@ -10,11 +10,12 @@ oo = [1];                            \\We define infinity
 \\ then summing.
 
 k = 4
+p = 5
 
 sub(i) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],norm(delta5((x+y*I)/(i*(x+y*I)+1))*(i*(x+I*y)+1)^-k)*y^(k-2)));
 
 sub0 = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],norm(delta5(-1/(x+y*I))*(x+I*y)^-k)*y^(k-2)));
 
 print("Computing the norm using the definition.");
-N = (sub0 + sum(i = 0, 4, sub(i)))/(5+1);
+N = (sub0 + sum(i = 0, p-1, sub(i)))/(p+1);
 print("The norm is: ", N)
