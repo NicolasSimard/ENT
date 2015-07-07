@@ -4,9 +4,6 @@
 
 k = 12
 
-\\ Deffine the precision
-\p 50;
-
 \\ Defines tau(n)
 read("delta_coeff.gp");
 
