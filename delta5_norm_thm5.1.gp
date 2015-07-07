@@ -50,4 +50,4 @@ Peter_norm = {
 };
 
 print("Computing..");
-print("The answer is :",Peter_norm);
+print("The answer is :",precision(Peter_norm,50));
