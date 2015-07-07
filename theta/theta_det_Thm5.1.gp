@@ -7,9 +7,6 @@ p = 23;
 Darmonk = 1;
 nbr_coeff = 50;
 
-\\ Deffine the precision
-\p 50;
-
 print("Computing q-expansion");
 \\ Compute the q-expansion and store it in a file as a list called qexps
 output = concat("qexps/",concat(Str(p),concat("_",concat(Str(Darmonk),concat("_",concat(Str(nbr_coeff),".gp"))))));
@@ -41,7 +38,7 @@ V(z) = {
 \\ We compute the integrals that go into the formula
 
 R1(i,m) = {
-    if(m > p,
+    if(m <= p,
         I*intnum(t=1,[oo,2*Pi],V(I*t)*(m*I*t+1)^-k*f(i,I*t/(m*I*t+1))),
         I*intnum(t=1,[oo,2*Pi],V(I*t)*(I*t)^-k*f(i,-1/(I*t)))
     )
@@ -49,7 +46,7 @@ R1(i,m) = {
 
 
 R2(i,m) = {
-    if(m > p,
+    if(m <= p,
         intnum(t=0,1,V(t+rho)*(m*(t+rho)+1)^(-k)*f(i,(t+rho)/(m*(t+rho)+1))),
         intnum(t=0,1,V(t+rho)*(t+rho)^(-k)*f(i,-1/(t+rho)))
     );
@@ -69,13 +66,12 @@ Peter_inner(i,j) = {
 M = matrix(h,h);
 
 print("Computing the matrix...");
-/*{for(i=1,h,
+{for(i=1,h,
     for(j=1,i,
         M[i,j] = Peter_inner(i,j);
         M[j,i] = conj(M[i,j]);
-        print((i*(i-1)/2+j)/(h*(h+1)/2)*100.,"%");
+        print(round((i*(i-1)/2+j)/(h*(h+1)/2)*100.),"%");
     );
-);}*/
+);}
 
-print(Peter_inner(2,2));
-print("The answer is :",matdet(M));
+print("(D=",-p,", k=",Darmonk,"): ",precision(matdet(M),50));
