@@ -3,11 +3,8 @@
 
 \\ Define the parameters
 p = 3;
-Darmonk = 2;
+Darmonk = 3;
 nbr_coeff = 50;
-
-\\ Deffine the precision
-\p 50;
 
 print("Computing q-expansion");
 \\ Compute the q-expansion and store it in a file as a list called qexps
@@ -37,14 +34,22 @@ sub0(i, j) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],\
              f(i, -1/(x+y*I))*conj(f(j, -1/(x+y*I)))*\
              norm((x+I*y)^-k)*y^(k-2)));
 
-Petersson_inner(i, j) = {
+Peter_inner(i, j) = {
     if(i > j,
         conj(Petersson_inner(j,i)),
         (sub0(i, j) + sum(r = 0, p-1, sub(r, i, j)))/(p+1)
     );
 };
 
-print("Computing...");
-N = matdet(matrix(h, h, i, j, Petersson_inner(i,j)))
-\\ N = (sub0(1,1) + sum(r = 0, p-1, sub(r, 1,1)))/(p+1)
-print("The answer is: ", N);
+M = matrix(h,h);
+
+print("Computing the matrix...");
+{for(i=1,h,
+    for(j=1,i,
+        M[i,j] = Peter_inner(i,j);
+        M[j,i] = conj(M[i,j]);
+        print(round((i*(i-1)/2+j)/(h*(h+1)/2)*100.),"%");
+    );
+);}
+
+print("(D=",-p,", k=",Darmonk,"): ",matdet(M));
