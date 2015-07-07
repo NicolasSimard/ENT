@@ -3,19 +3,23 @@
 
 \\ Define the parameters
 p = 3;
-k = 1;
+Darmonk = 2;
+nbr_coeff = 50;
 
 \\ Deffine the precision
 \p 50;
 
+print("Computing q-expansion");
 \\ Compute the q-expansion and store it in a file as a list called qexps
-system("python theta_qexp.py -3 1 50 pari > qexps/3_1_50.gp");
+output = concat("qexps/",concat(Str(p),concat("_",concat(Str(Darmonk),concat("_",concat(Str(nbr_coeff),".gp"))))));
+commande = concat("python theta_qexp.py ",concat(Str(-p),concat(" ",concat(Str(Darmonk),concat(" ",concat(Str(nbr_coeff)," pari"))))));
+system(concat(commande,concat(" > ",output)));
 
 \\ Read the q-expansion. This defines qExps
-read("qexps/3_1_50.gp");
+read(output);
 
-\\ The weight of the theta series
-w = 2*k + 1;
+\\ The keight of the theta series
+k = 2*Darmonk + 1;
 
 \\ The class number of the quadratic field of discriminant -p
 h = length(qExps);
@@ -27,11 +31,11 @@ f(i, z) = suminf(n=1, qExps[i][n]*exp(2*Pi*I*n*z));
 
 sub(r, i, j) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],\
                f(i,(x+y*I)/(r*(x+y*I)+1))*conj(f(j,(x+y*I)/(r*(x+y*I)+1)))*\
-               norm((r*(x+I*y)+1)^-w)*y^(w-2)));
+               norm((r*(x+I*y)+1)^-k)*y^(k-2)));
 
 sub0(i, j) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],\
              f(i, -1/(x+y*I))*conj(f(j, -1/(x+y*I)))*\
-             norm((x+I*y)^-w)*y^(w-2)));
+             norm((x+I*y)^-k)*y^(k-2)));
 
 Petersson_inner(i, j) = {
     if(i > j,
