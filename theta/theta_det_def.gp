@@ -2,8 +2,8 @@
 /*** theta series attached to the field of discriminant -3                ***/
 
 \\ Define the parameters
-p = 3;
-Darmonk = 3;
+p = 7;
+Darmonk = 1;
 nbr_coeff = 50;
 
 print("Computing q-expansion");
@@ -43,7 +43,7 @@ Peter_inner(i, j) = {
 
 M = matrix(h,h);
 
-print("Computing the matrix...");
+print("Computing the matrix for (D=",-p,", k=",Darmonk,"): ");
 {for(i=1,h,
     for(j=1,i,
         M[i,j] = Peter_inner(i,j);
