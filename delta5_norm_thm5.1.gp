@@ -41,13 +41,14 @@ R2(m) = {
 \\ Index of Gamma_0(p) in SL_2(Z)
 r = p + 1;
 
-Peter_norm = {
-    sum(m = 1, r,
-        sum(n = 0, k-2,
-            (-1)^n*binomial(k-2,n)*R1(m)[k-2-n+1]*conj(R2(m)[n+1])
-        )
-    )/(2*I)^(k-1)/r
-};
-
 print("Computing..");
-print("The answer is :",precision(Peter_norm,50));
+
+a(m) = {
+    R1m = R1(m);
+    R2m = R2(m);
+    sum(n = 0, k-2,(-1)^n*binomial(k-2,n)*R1m[k-2-n+1]*conj(R2m[n+1]))
+}
+
+Peter_inner = sum(m = 1, r, a(m))/(2*I)^(k-1)/r;
+
+print("The answer is :",precision(Peter_inner,50));
