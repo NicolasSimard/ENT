@@ -56,11 +56,14 @@ R2(i,m) = {
 r = p + 1;
 
 Peter_inner(i,j) = {
-    sum(m = 1, r,
-        sum(n = 0, k-2,
-            (-1)^n*binomial(k-2,n)*R1(i,m)[k-2-n+1]*conj(R2(j,m)[n+1])
-        )
-    )/(2*I)^(k-1)/r
+    local(Lim,Ljm,S);
+    S = 0;
+    for(m = 1, r,
+        Lim = R1(i,m);
+        Ljm = R2(j,m);
+        S += sum(n = 0, k-2, (-1)^n*binomial(k-2,n)*Lim[k-2-n+1]*conj(Ljm[n+1]))
+    );
+    S/(2*I)^(k-1)/r
 };
 
 M = matrix(h,h);
