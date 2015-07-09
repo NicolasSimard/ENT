@@ -69,7 +69,7 @@ def coeff_ideal(I,k,N):
     for p in [(x,y) for x in range(-Bound,Bound + 1) for y in range(-Bound, Bound + 1)]:
         n = f(*p)
         if n < N:
-            coeff[n] += quadratic.QuadraticOrder(D, a*p[0] - b*p[1], c*p[1])**(2*k)
+            coeff[n] += quadratic.QuadraticOrder(D, a*p[0] - b*p[1], -c*p[1])**(2*k)
     return coeff
 
 def theta_expansions(D, k, N, output_list = False):
