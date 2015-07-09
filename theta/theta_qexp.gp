@@ -1,3 +1,14 @@
+/*This script is meant to compute the q-expansions of the theta series
+attached to a quadratic field, up to a precision. It implements two functions:
+
+1) reduced_forms(D): return a list of triples representing the reduced forms
+of discriminant D.
+
+2) theta_qexps(D, k, N): return a list of the coefficients of the theta series
+attached to the quadratic field of discriminant D and with parameter k. Note
+that the weight of these theta series is not k.
+*/
+
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv);
 
