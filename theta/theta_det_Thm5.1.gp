@@ -1,32 +1,27 @@
-/*Computation of the theta determinant attached to a quadratic field.       */
-/*The script theta_det_def.gp is too slow, so we use theorem 5.1 of Cohen's */
-/*paper.                                                                    */
+/*Computation of the theta determinant attached to a quadratic field. The
+script theta_det_def.gp is too slow, so we use theorem 5.1 of Cohen's paper.
+*/
 
-\\ Define the parameters
-p = 23;
+\\ Define the parameters. Can be owerwritten.
+p = 3;
 Darmonk = 1;
 nbr_coeff = 50;
 
-print("Computing q-expansion");
-\\ Compute the q-expansion and store it in a file as a list called qexps
-output = concat("qexps/",concat(Str(p),concat("_",concat(Str(Darmonk),concat("_",concat(Str(nbr_coeff),".gp"))))));
-commande = concat("python theta_qexp.py ",concat(Str(-p),concat(" ",concat(Str(Darmonk),concat(" ",concat(Str(nbr_coeff)," pari"))))));
-system(concat(commande,concat(" > ",output)));
-
-\\ Read the q-expansion. This defines qExps
-read(output);
+print("Computing q-expansion.");
+read("theta_qexp.gp");
+qexps = theta_qexps(-p, Darmonk, nbr_coeff);
 
 \\ The weight of the theta series
 k = 2*Darmonk + 1;
 
 \\ The class number of the quadratic field of discriminant -p
-h = length(qExps);
+h = length(qexps);
 
 \\ Define infinity and rho
 oo = [1];
 rho = exp(2*Pi*I/3);
 
-f(i, z) = suminf(n=1, qExps[i][n]*exp(2*Pi*I*n*z));
+f(i, z) = suminf(n=1, qexps[i][n]*exp(2*Pi*I*n*z));
 
 V(z) = {
     local(v);
