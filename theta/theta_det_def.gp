@@ -6,8 +6,9 @@ definition of the Petersson inner product.
 p = 3;
 Darmonk = 1;
 nbr_coeff = 50;
+verbose = 1;
 
-print("Computing q-expansion.");
+if(verbose, print("Computing q-expansion."));
 read("theta_qexp.gp");
 qexps = theta_qexps(-p, Darmonk, nbr_coeff);
 
@@ -32,14 +33,14 @@ sub0(i, j) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[oo,4*Pi],\
 
 Petersson_inner(i, j) = (sub0(i, j) + sum(r = 0, p-1, sub(r, i, j)))/(p+1);
 
-print("Computing the matrix for (D=",-p,", k=",Darmonk,"): ");
+if(verbose, print("Computing the matrix for (D=",-p,", k=",Darmonk,"): "));
 
 M = matrix(h,h);
 {for(i=1,h,
     for(j=1,i,
         M[i,j] = Petersson_inner(i,j);
         M[j,i] = conj(M[i,j]);
-        print(round((i*(i-1)/2+j)/(h*(h+1)/2)*100.),"%");
+        if(verbose, print(round((i*(i-1)/2+j)/(h*(h+1)/2)*100.),"%"));
     );
 );}
 
