@@ -1,11 +1,9 @@
-/*** Computing the Petersson norm of the delta function using the special ***/
-/*** values of the symetric L-function attached to Delta. See Cohen p.4.  ***/
+/* Computing the Petersson norm of the delta function using the special values
+of the symetric L-function attached to Delta. See Cohen p.4. Works. */
 
+/* DOESN'T WORK
 \\ This script defines the function tau(n).
 read("delta_coeff.gp");
-
-\\The weight, to simplify
-k = 12;
 
 \\The fourrier coefficients of L(sym2f,s)
 A(n) = sumdiv(n, d, (-1)^bigomega(d)*d^(k-1)*tau(n/d)^2);
@@ -33,4 +31,8 @@ F(s,x) = g(s)-x^s*(2*F1(s,x)+Pi^(1/2)*F2(s,x)+F3(s,x));
 
 print("The computed inner product is: ");
 Norm = 2^(1-k)*Pi^(k/2-1)*suminf(n=1, A(n)/n^k*(F(k,n)-n*F(k-1,n)));
-print(Norm);
+print(Norm);*/
+
+read("delta_LSym2f");
+
+print("Using the special value L(Sym^2f,k): ",L(12)*factorial(11)*2/Pi/(4*Pi)^12);
