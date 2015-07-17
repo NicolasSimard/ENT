@@ -1,3 +1,5 @@
+/*Define the L-function of the theta series attached to the quadratic fields.*/
+
 read("../computel");                 \\ read the ComputeL package
 
 \\ Define the parameters. Can be owerwritten.
