@@ -41,6 +41,13 @@ reduced_roots(D) = {
     taus
 }
 
+a(D,k,i,j) = {
+    local(exps,taus);
+    exps = theta_qexps(D,k,nbr_coeff);
+    taus = reduced_roots(D);
+    suminf(n=1,exps[i][n]*exp(2*Pi*I*n*taus[j]))
+}
+
 eval_mat(D,k) = {
     local(exps,taus);
     exps = theta_qexps(D,k,nbr_coeff);
