@@ -9,6 +9,8 @@ attached to the quadratic field of discriminant D and with parameter k. Note
 that the weight of these theta series is not k.
 */
 
+nbr_coeff = 100;
+
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv);
 
@@ -27,6 +29,23 @@ reduced_forms(D) = {
         );
     );
     fv
+}
+
+reduced_roots(D) = {
+    local(forms,taus);
+    taus = [];
+    forms = reduced_forms(D);
+    for(i=1, length(forms),
+        taus = concat(taus,[(-forms[i][2]+sqrt(D))/2/forms[i][1]]);
+    );
+    taus
+}
+
+eval_mat(D,k) = {
+    local(exps,taus);
+    exps = theta_qexps(D,k,nbr_coeff);
+    taus = reduced_roots(D);
+    matrix(length(taus),length(taus),i,j,suminf(n=1,exps[i][n]*exp(2*Pi*I*n*taus[j])))
 }
 
 theta_qexps(D, k, N)  = {
