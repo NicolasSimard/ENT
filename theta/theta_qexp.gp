@@ -41,6 +41,10 @@ reduced_roots(D) = {
     taus
 }
 
+class_nbr(D) = {
+    length(reduced_forms(D))
+}
+
 a(D,k,i,j) = {
     local(exps,taus);
     exps = theta_qexps(D,k,nbr_coeff);
