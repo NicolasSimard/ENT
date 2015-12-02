@@ -45,6 +45,18 @@ class_nbr(D) = {
     length(reduced_forms(D))
 }
 
+genus_nbr(D) = {
+    local(r,n,mu);
+    if(D>=0 || D%4 > 1, return(-1));
+    if(D%2 == 0, r=omega(-D)-1,r=omega(-D));
+    if(D%4 == 1, return(2^(r-1)));
+    n = floor(-D/4);
+    if(n%4 == 3,mu=r);
+    if(n%4 == 1 || n%4 == 2 || n%8 == 4,mu=r+1);
+    if(n%8 == 0,mu=r+2);
+    2^(mu-1)
+}
+
 a(D,k,i,j) = {
     local(exps,taus);
     exps = theta_qexps(D,k,nbr_coeff);
