@@ -57,6 +57,18 @@ genus_nbr(D) = {
     2^(mu-1)
 }
 
+two_torsion(D) = {
+    local(forms);
+    forms = reduced_forms(D);
+    fv = [forms[1]];
+    for(i=2, length(forms),
+        if(forms[i][2] == 0 || forms[i][1] == forms[i][3] || abs(forms[i][2]) == forms[i][1],
+        fv = concat(fv,[forms[i]]);
+        );
+    );
+    fv
+}
+
 a(D,k,i,j) = {
     local(exps,taus);
     exps = theta_qexps(D,k,nbr_coeff);
