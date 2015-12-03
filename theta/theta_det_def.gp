@@ -17,7 +17,7 @@ sub0(f1, f2, k) = intnum(x = -1/2, 1/2,intnum(y = (1-x^2)^(1/2),[[1],4*Pi],\
 
 Petersson_inner(f1, f2, k, p) = (sub0(f1, f2, k) + sum(r = 0, p-1, sub(r, f1, f2, k)))/(p+1);
 
-theta_det(p, Darmonk, verbose = 0) = {
+theta_mat(p, Darmonk, verbose = 0) = {
     if(verbose, print("Computing q-expansion."));
     nbr_coeff = 100;
     qexps = theta_qexps(-p, Darmonk, nbr_coeff);
@@ -36,6 +36,6 @@ theta_det(p, Darmonk, verbose = 0) = {
             if(verbose, print(round((i*(i-1)/2+j)/(h*(h+1)/2)*100.),"%"));
         );
     );
-    matdet(M)
+    M
 };
 
