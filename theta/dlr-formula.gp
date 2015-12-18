@@ -4,9 +4,13 @@ field for various Hecke characters.
 
 We first do it for Hecke characters of infinity type [0,0], since these are
 also Hilbert characters and so they were already implemented earlier.
+
+Not sure this will work, since L(psi^2,s) has a pole at 1 when psi^2 = 1...
 */
 
-disc = -7;
+P = 7;
+disc = -P;               \\ Has to be of the form -p for the moment
+k = 0;
 if(disc%4 > 1, error("Not a discriminant!"));
 
 K = bnfinit(x^2-disc);
@@ -55,6 +59,9 @@ initLdata("a[k]",,"conj(a[k])");
 \\determine the sign
 sgneq = Vec(checkfeq());       \\ checkfeq() returns c1+X*c2, should be 0
 sgn   = if(sum(i=1,#components,components[i]),-sgneq[2]/sgneq[1],1);
+
+peterNorm = 6*(2*k)!*K.clgp.no/(Pi*(4*Pi)^(2*k+1)*sqrt(abs(disc)))*\
+            P/(P+1)*L(2*k+1);
 
 print(L(2));
 print(L(2,1.1));
