@@ -1,8 +1,7 @@
 #L-function experiments
 
-This directory contains computations related to L-functions in genral. So far,
-it contains all the examples of the computel PARI/GP package (of T.
-Dockchister), more examples of Dirichlet L-functions (of quadratic characters,
+This directory contains computations related to L-functions in genral. So far, it contains a scripts that defines the Dedekind zeta fuction of a number field.
+Soon, it will contain examples of Dirichlet L-functions (of quadratic characters,
 for example) and of Hilbert L-functions (L-funcitons of characters of class
 groups of number fields). Examples of Weber L-functions (L-fucntions of
 characters of ray class groups of number fields) are in progress. All this
