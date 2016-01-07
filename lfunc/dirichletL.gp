@@ -14,23 +14,23 @@ initDirichletL(chi = triv, modulus = 1, verbose = 1) = {
 
     read("../computel");
 
-    conductor   = modulus;     \\The exponential factor is sqrt(modulus/Pi)^s
+    conductor   = modulus;
     gammaV      = if(chi(-1) == 1,[0],[1]);  \\[0] if chi is even, [1] otherwise.
     weight      = 1;
     gausssum    = sum(k=0,modulus-1,chi(k)*exp(2*Pi*I*k/modulus));
     sgn         = gausssum/I^gammaV[1]/sqrt(modulus);
 
     Lpoles      = if(modulus == 1, [1],[]);
-    Lresidues   = if(modulus == 1, [-1], []);
+    Lresidues   = if(modulus == 1, [-1],[]);
 
-    a = direuler(p=2,100,1/(1-chi(p)*X)); \\Find the coefficients
-
+    a = vector(cflength(),k,chi(k));
     initLdata("a[k]",,"conj(a[k])");
 
     \\Verify the functional equation. If verbose = 1, also print a message.
     if(verbose,\
         print("Defining the Dirichlet L-function of a character of modulus ",modulus);\
-        print("Error in func. eq.  = ",errprint(checkfeq()));,\
+        print("Error in func. eq.  = ",errprint(checkfeq()));\
+        print("The sign is         = ",sgn),\
         checkfeq(););
     [L,fullgamma]
 }
