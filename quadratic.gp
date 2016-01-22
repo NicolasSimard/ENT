@@ -18,12 +18,23 @@ reduced_forms(D) = {
         forstep(j=(n+1)\2, 2, -1,
             a=zv[j]; if (a < b, break);
             c=zv[n-j+1];
-            if(gcd(gcd(a,b),c) != 1, next);
             fv = concat(fv,[[a,b,c]]);
             if(b && a != b && a != c, fv = concat(fv,[[a,-b,c]]));
         );
     );
     fv
+}
+
+primitive_reduced_forms(D) = {
+    local(forms, prim);
+    prim = [];
+    forms = reduced_forms(D);
+    for(i=1, length(forms),
+        if(gcd(gcd(forms[i][1],forms[i][2]),forms[i][3]) == 1,
+           prim = concat(prim,[forms[i]])
+        );
+    );
+    prim
 }
 
 reduced_roots(D) = {
@@ -36,8 +47,36 @@ reduced_roots(D) = {
     taus
 }
 
-class_nbr(D) = {
-    length(reduced_forms(D))
+primitive_reduced_roots(D) = {
+    local(forms,taus);
+    taus = [];
+    forms = primitive_reduced_forms(D);
+    for(i=1, length(forms),
+        taus = concat(taus,[(-forms[i][2]+sqrt(D))/2/forms[i][1]]);
+    );
+    taus
+}
+
+class_nbr(D) = length(primitive_reduced_forms(D));
+
+wD(D) = {
+    if(D%4 > 2, error("Not a discriminant."));
+    if(issquare(-D/3), 6,
+    if(issquare(-D/4), 4,
+                        2))
+}
+
+wQ(f) = {
+    if(f[1] == f[2] && f[2] == f[3], 6,
+    if(f[1] == f[3] && f[2] == 0,    4,
+                                     2))
+
+}
+
+norm_class_nbr(D) = 2*class_nbr(D)/wD(D);
+
+Hurwitz_class_nbr(D) = {
+    error("Not implemented yet.")
 }
 
 genus_nbr(D) = {
@@ -54,7 +93,7 @@ genus_nbr(D) = {
 
 two_torsion(D) = {
     local(forms);
-    forms = reduced_forms(D);
+    forms = primitive_reduced_forms(D);
     fv = [forms[1]];
     for(i=2, length(forms),
         if(forms[i][2] == 0 || forms[i][1] == forms[i][3] || abs(forms[i][2]) == forms[i][1],
@@ -64,3 +103,10 @@ two_torsion(D) = {
     fv
 }
 
+\\ Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
+\\ modular forms by Zagier. Tested for D = -4.
+CSperiod(D) = {
+    if(D%4 > 2, error("Not a discriminant."));
+    prod(j=1,abs(D),gamma(j/abs(D))^kronecker(D,j))^(1/2/norm_class_nbr(D))\
+    /sqrt(2*Pi*abs(D));
+}
