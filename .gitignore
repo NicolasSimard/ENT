@@ -1,3 +1,6 @@
+# Sage .py files
+*.sage.py
+
 # GP/PARI history
 gp_history.txt
 
