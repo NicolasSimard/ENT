@@ -1,16 +1,16 @@
 /*This script is meant to compute the q-expansions of all the theta series
-attached to a quadratic field, up to a precision, with parameter k.
+attached to a quadratic field, up to a precision, with parameter dk.
 */
 
 read("../quadratic.gp");
 
 \\ Returns the q-expansion of the theta function attached to the quadratic
-\\ form with parameter k up to O(q^nbr_coeff).
+\\ form with parameter dk up to O(q^nbr_coeff).
 
-theta_qexp(f,k,nbr_coeff) = {
+theta_qexp(f,dk,nbr_coeff) = {
     local(D, Bound, qexp, n, alpha, beta);
 
-    if(k < 0, error("k has to be >= 0."));
+    if(dk < 0, error("k has to be >= 0."));
 
     D = f[2]^2-4*f[1]*f[3];
 
@@ -26,7 +26,7 @@ theta_qexp(f,k,nbr_coeff) = {
         for(y = -Bound, Bound,
             n = f[1]*x^2 + f[2]*x*y + f[3]*y^2;
             if(n < nbr_coeff && n != 0,
-                qexp[n] += (alpha*x - beta*y)^(2*k);
+                qexp[n] += (alpha*x - beta*y)^(2*dk);
             );
         );
     );
@@ -35,13 +35,13 @@ theta_qexp(f,k,nbr_coeff) = {
 }
 
 \\ Returns the q-expansion of all the theta function attached to the quadratic
-\\ field of discriminant D with parameter k up to O(q^nbr_coeff).
+\\ field of discriminant D with parameter dk up to O(q^nbr_coeff).
 
-theta_qexps(D, k, nbr_coeff) = {
+theta_qexps(D, dk, nbr_coeff) = {
     local(forms);
 
     forms = reduced_forms(D);
-    vector(length(forms),i,theta_qexp(forms[i],k,nbr_coeff))
+    vector(length(forms),i,theta_qexp(forms[i],dk,nbr_coeff))
 }
 
 eval_qexp(qexp,tau) = suminf(n=1,qexp[n]*exp(2*Pi*I*n*tau));
@@ -52,9 +52,9 @@ eval_qexp(qexp,tau) = suminf(n=1,qexp[n]*exp(2*Pi*I*n*tau));
 \\ eval_qexp... With 100 coefficients, one is usially able to evaluate up to
 \\ 500 decimals at least.
 
-theta_function(f,k,tau) = {
+theta_function(f,dk,tau) = {
     local(qexp);
-    eval_qexp(theta_qexp(f,k,100),tau)
+    eval_qexp(theta_qexp(f,dk,100),tau)
 }
 
 
