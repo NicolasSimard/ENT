@@ -7,7 +7,7 @@ that the weight of these theta series is not k.
 */
 
 reduced_forms(D) = {
-    local(b0 = D%2, fv,a,c,zv);
+    local(b0 = D%2, fv,a,c,zv,n);
 
     if(D >= 0 || D%4 > 1, return([]));
 
@@ -22,7 +22,7 @@ reduced_forms(D) = {
             if(b && a != b && a != c, fv = concat(fv,[[a,-b,c]]));
         );
     );
-    fv
+    return(fv);
 }
 
 primitive_reduced_forms(D) = {
@@ -34,42 +34,40 @@ primitive_reduced_forms(D) = {
            prim = concat(prim,[forms[i]])
         );
     );
-    prim
+    return(prim);
 }
+
+tau(f) = return((-f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2/f[1]);
 
 reduced_roots(D) = {
     local(forms,taus);
     taus = [];
     forms = reduced_forms(D);
-    for(i=1, length(forms),
-        taus = concat(taus,[(-forms[i][2]+sqrt(D))/2/forms[i][1]]);
-    );
-    taus
+    for(i=1, length(forms),taus = concat(taus,[tau(forms[i])]));
+    return(taus);
 }
 
 primitive_reduced_roots(D) = {
     local(forms,taus);
     taus = [];
     forms = primitive_reduced_forms(D);
-    for(i=1, length(forms),
-        taus = concat(taus,[(-forms[i][2]+sqrt(D))/2/forms[i][1]]);
-    );
-    taus
+    for(i=1, length(forms),taus = concat(taus,[tau(forms[i])]));
+    return(taus);
 }
 
 class_nbr(D) = length(primitive_reduced_forms(D));
 
 wD(D) = {
     if(D%4 > 2, error("Not a discriminant."));
-    if(issquare(-D/3), 6,
-    if(issquare(-D/4), 4,
-                        2))
+    if(issquare(-D/3), return(6),
+    if(issquare(-D/4), return(4),
+                       return(2)))
 }
 
 wQ(f) = {
-    if(f[1] == f[2] && f[2] == f[3], 6,
-    if(f[1] == f[3] && f[2] == 0,    4,
-                                     2))
+    if(f[1] == f[2] && f[2] == f[3], return(6),
+    if(f[1] == f[3] && f[2] == 0,    return(4),
+                                     return(2)))
 
 }
 
@@ -88,7 +86,7 @@ genus_nbr(D) = {
     if(n%4 == 3,mu=r);
     if(n%4 == 1 || n%4 == 2 || n%8 == 4,mu=r+1);
     if(n%8 == 0,mu=r+2);
-    2^(mu-1)
+    return(2^(mu-1));
 }
 
 two_torsion(D) = {
@@ -100,13 +98,13 @@ two_torsion(D) = {
         fv = concat(fv,[forms[i]]);
         );
     );
-    fv
+    return(fv);
 }
 
 \\ Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
 \\ modular forms by Zagier. Tested for D = -4.
 CSperiod(D) = {
     if(D%4 > 2, error("Not a discriminant."));
-    prod(j=1,abs(D),gamma(j/abs(D))^kronecker(D,j))^(1/2/norm_class_nbr(D))\
-    /sqrt(2*Pi*abs(D));
+    return(prod(j=1,abs(D),gamma(j/abs(D))^kronecker(D,j))^(1/2/norm_class_nbr(D))\
+    /sqrt(2*Pi*abs(D)));
 }
