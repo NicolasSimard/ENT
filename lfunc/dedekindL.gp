@@ -27,7 +27,8 @@ initDedekindL(fpol = 1, verbose = 1) = {
     weight    = 1;                           \\ L(s)=sgn*L(weight-s)
     sgn       = 1;                           \\ sign in the functional equation
     gammaV    =concat(vector(r1+r2,X,0),vector(r2,X,1));
-    Lpoles    = [1];                         \\ pole at s=1, Lresidues=automatic
+    Lpoles    = [1];                         \\ pole at s=1
+    Lresidues = automatic;
     \\This is the residue given by the class number formula (but times -1...)
     \\Lresidues = [-fullgamma(1)*2^bnf.r1*(2*Pi)^bnf.r2*bnf.reg*bnf.clgp.no/bnf.tu[1]/sqrt(abs(bnf.disc))];
     dzk       = dirzetak(nf,cflength());     \\ coefficients a(k) in L(s)

@@ -1,3 +1,9 @@
+/*Computing the Petersson norm using the special values of the symmetric
+L-function of Delta.
+
+Tested up to the number of decimals in Cohen's paper.
+*/
+
 read("../computel");           \\ read the ComputeL package
 
 w = 12; \\ Weight of delta
@@ -16,4 +22,4 @@ A(k) = sumdiv(k, d, (-1)^bigomega(d)*d^(w-1)*tau(k/d)^2);
 initLdata("A(k)");        \\ L-series coefficients A(k)
 
 print("Verifying functional equation. Error: ",errprint(checkfeq()));
-
+print("The Petersson norm is: ",2/Pi*factorial(w-1)/(4*Pi)^w*L(w));
