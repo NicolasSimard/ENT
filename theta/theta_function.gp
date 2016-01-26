@@ -50,7 +50,7 @@ eval_qexp(qexp,tau) = suminf(n=1,qexp[n]*exp(2*Pi*I*n*tau));
 \\ inneficient if the function has to be evaluated many times (e.g. if it is
 \\ integrated). Instead, one should compute the q-expansion once and then use
 \\ eval_qexp... With 100 coefficients, one is usially able to evaluate up to
-\\ 500 decimals at least.
+\\ 2000 decimals at least.
 
 theta_function(f,dk,tau) = {
     local(qexp);
