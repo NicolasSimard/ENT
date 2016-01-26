@@ -59,9 +59,9 @@ class_nbr(D) = length(primitive_reduced_forms(D));
 
 wD(D) = {
     if(D%4 > 2, error("Not a discriminant."));
-    if(issquare(-D/3), return(6),
-    if(issquare(-D/4), return(4),
-                       return(2)))
+    if(D == -3, return(6),
+    if(D == -4, return(4),
+                return(2)))
 }
 
 wQ(f) = {
@@ -105,6 +105,5 @@ two_torsion(D) = {
 \\ modular forms by Zagier. Tested for D = -4.
 CSperiod(D) = {
     if(D%4 > 2, error("Not a discriminant."));
-    return(prod(j=1,abs(D),gamma(j/abs(D))^kronecker(D,j))^(1/2/norm_class_nbr(D))\
-    /sqrt(2*Pi*abs(D)));
+    return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/class_nbr(D))/sqrt(2*Pi*abs(D)));
 }
