@@ -3,7 +3,7 @@ read("modforms.gp");
 j_gamma(a,b,d,prec) = {
     local(j,p);
     j = j_qexp(prec);
-    p = lift(Mod(sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n)),polcyclo(d,zd)));
+    p = lift(Mod(sum(n=-1,prec,polcoeff(j,n,q)*zd^((b*n)%d)*qd^(a*n)),polcyclo(d,zd)));
     return(p + O(qd^(a*prec+1)));
 }
 
