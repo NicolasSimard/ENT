@@ -1,14 +1,18 @@
 read("modforms.gp");
 
 j_gamma(a,b,d,prec) = {
-    local(j);
+    local(j,p,v,coeff_mod);
     j = j_qexp(prec);
-    return(sum(n=-1,prec,polcoeff(j,n,q)*exp(2*Pi*I*b*n/d)*qd^(a*n))+O(qd^(a*prec+1)));
+    \\p=sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n));
+    \\v=valuation(p,qd);
+    \\coeff_mod = vector(a*prec+1-v,n,lift(Mod(polcoeff(p,a*prec+1+v-n,qd),polcyclo(d,zd))));
+    return(sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n))+O(qd^(a*prec+1)));
 }
 
 inner_pol(a,d,prec) = {
-    local(p,p_norm);
-    p = round(real(prod(b=0,d-1,X-j_gamma(a,b,d,prec))));
+    local(p,p_norm,v,coeff_mod);
+    p=prod(b=0,d-1,X-j_gamma(a,b,d,prec));
+    p = lift(Mod(p,polcyclo(d,zd)));
     p_norm=substpol(p,qd^d,q); \\ Replaces qd^d by q in p.
     return(p_norm);
 }
