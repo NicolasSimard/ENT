@@ -1,18 +1,16 @@
 read("modforms.gp");
 
 j_gamma(a,b,d,prec) = {
-    local(j,p,v,coeff_mod);
+    local(j,p);
     j = j_qexp(prec);
-    \\p=sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n));
-    \\v=valuation(p,qd);
-    \\coeff_mod = vector(a*prec+1-v,n,lift(Mod(polcoeff(p,a*prec+1+v-n,qd),polcyclo(d,zd))));
-    return(sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n))+O(qd^(a*prec+1)));
+    p = lift(Mod(sum(n=-1,prec,polcoeff(j,n,q)*zd^(b*n)*qd^(a*n)),polcyclo(d,zd)));
+    return(p + O(qd^(a*prec+1)));
 }
 
 inner_pol(a,d,prec) = {
     local(p,p_norm,v,coeff_mod);
-    p=prod(b=0,d-1,X-j_gamma(a,b,d,prec));
-    p = lift(Mod(p,polcyclo(d,zd)));
+    p = prod(b=0,d-1,X-j_gamma(a,b,d,prec));
+    p = lift(Mod(p,polcyclo(d,zd))); \\ polcyclo is fast (0 ms for d=2000)
     p_norm=substpol(p,qd^d,q); \\ Replaces qd^d by q in p.
     return(p_norm);
 }
@@ -25,6 +23,7 @@ since we are rounding.*/
 psi_m(m,prec) = {
     local(p=1,d);
     fordiv(m,d,p*=inner_pol(m/d,d,prec));
+    \\return(p);
     d=poldegree(p,X);
     return(Pol(vector(d+1,n,j_pol(polcoeff(p,d+1-n,X))),X));
 }
