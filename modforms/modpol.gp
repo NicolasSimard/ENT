@@ -9,12 +9,6 @@ j_gamma(a,b,d,prec) = {
 inner_pol(a,d,prec) = {
     local(p,p_norm);
     p = round(real(prod(b=0,d-1,X-j_gamma(a,b,d,prec))));
-    /*lowest =valuation(p,qd); \\ Is a multiple of d
-    highest=a*prec;
-    print("lowest:",lowest,"    highest:",highest);
-    p_norm = sum(n=lowest/d,floor(highest/d),polcoeff(p,n*d,qd)*q^n)+O(q^(highest+1));
-    print(p);
-    print(p_norm);*/
     p_norm=substpol(p,qd^d,q); \\ Replaces qd^d by q in p.
     return(p_norm);
 }
