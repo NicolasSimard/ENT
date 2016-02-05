@@ -1,10 +1,19 @@
-/*1) reduced_forms(D): return a list of triples representing the reduced forms
-of discriminant D.
+isdisc(D) = return(D%4 <= 1);
 
-2) theta_qexps(D, k, N): return a list of the coefficients of the theta series
-attached to the quadratic field of discriminant D and with parameter k. Note
-that the weight of these theta series is not k.
+control(D) = if(D%4 > 1 || D>=0,error(D," is not a negative discriminant."));
+
+/*Every discriminant uniquely determines an order in a quadratc field. This
+function returns its conductor (the index of this order in the maximal order).
 */
+conductor(D) = {
+    local(L,p);
+    control(D);
+    L=factor(D);
+    p=prod(n=1,length(L~),L[,1][n]^floor(L[,2][n]/2)); \\ D=p^2m, m sq-free
+    if(isdisc(D/p^2),return(p),return(p/2));
+}
+
+isprimitive(D) = return(conductor(D) == 1);
 
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv,n);
