@@ -15,6 +15,37 @@ conductor(D) = {
 
 isprimitive(D) = return(conductor(D) == 1);
 
+right_act(f,M) = {
+    return([f[1]*M[1,1]^2+f[2]*M[1,1]*M[2,1]+f[3]*M[2,1]^2,
+            2*f[1]*M[1,1]*M[1,2]+f[2]*(M[1,1]*M[2,2]+M[1,2]*M[2,1])+f[3]*M[2,1]*M[2,2],
+            f[1]*M[1,2]^2+f[2]*M[1,2]*M[2,2]+f[3]*M[2,2]^2]
+    );
+}
+
+/* Lift a matrix M in SL2(Z/NZ) to a matrix in SL2(Z).*/
+liftSL2Z(M,N) = {
+    local(MZ = lift(M));
+    if(gcd(gcd(MZ[2,1],MZ[2,2]),N) != 1,error(M," does not belong to SL2(Z/"),N,"Z).");
+    if(N<=1,return(MZ));
+    local(mya,myb,myc=MZ[2,1],myd=MZ[2,2],myu=1,myv=1,myt,myg,myp);
+    myg=gcd(myc,myd);
+    if(myg != 1,
+        myp = factor(myg)[,1];
+        if(myc != 0,
+            for(n=1,length(myp~),if(myc%myp[n] == 0 && myp[n] != -1,myu*=myp[n],myv*=myp[n]));
+            myt=lift(chinese(Mod(1,myu),Mod(0,myv)));
+            myd+=myt*N;,
+            for(n=1,length(myp~),if(myd%myp[n] == 0 && myp[n] != -1,myu*=myp[n],myv*=myp[n]));
+            myt=lift(chinese(Mod(1,myu),Mod(0,myv)));
+            myc+=myt*N;
+        );
+    );
+    \\ We now have a matrix mod N with coprime c and d (in Z).
+    [myc,myd]=lift([myc,myd]);
+    [mya,myb]=matsolvemod([myd,-myc;1,0;0,1],[0,N,N]~,[1,MZ[1,1],MZ[1,2]]~)~;
+    return([mya,myb;myc,myd]);
+}
+
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv,n);
 
