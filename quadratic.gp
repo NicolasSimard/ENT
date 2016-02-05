@@ -46,6 +46,21 @@ liftSL2Z(M,N) = {
     return([mya,myb;myc,myd]);
 }
 
+ Heegner_form(f,beta,N,m1=1,m2=1) = {
+    local(m,a,b,c,D,M,r,s,t,u,T);
+    [a,b,c]=f;
+    D=b^2-4*a*c;
+    m=gcd(gcd(N,beta),(beta^2-D)/4/N);
+    if(m != 1, error("Function not implemented for m>1."));
+    M=[a,(b-beta)/2;(b+beta)/2,c];
+    sol=matsolvemod(M,N,0,1)[2];
+    if(sol[,1] != [0,0]~, [r,t]=sol[,1]~, [r,t]=sol[,2]~);
+    [u,s]=matsolvemod(Mat(lift([r,-t])),N,1)~;
+    T=liftSL2Z([r,s;t,u],N);
+    print(T);
+    return(right_act(f,T));
+ }
+
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv,n);
 
