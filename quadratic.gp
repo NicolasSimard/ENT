@@ -75,6 +75,27 @@ Heegner_form(f,beta,N,m1=1,m2=1) = {
     return(right_act(f,T));
 }
 
+sqrt_mod(D,M) = {
+    local(n=1,betas=[]);
+    while(n <= floor(M/2),if((n^2-D)%M == 0,betas=concat(betas,[n])); n+=1;);
+    return(betas);
+}
+
+Heegner_forms(D,N) = {
+    control(D);
+    local(beta);
+    beta = sqrt_mod(D,4*N);
+    if(length(beta) == 0, error("The pair (",D,",",N,") does not satisfy the Heegner hypothesis."));
+    local(forms);
+    forms = primitive_reduced_forms(D);
+    return(vector(length(forms),n,Heegner_form(forms[n],beta[1],N)));
+}
+
+Heegner_points(D,N) = {
+    local(Hforms=Heegner_forms(D,N));
+    return(vector(length(Hforms),n,tau(Hforms[n])));
+}
+
 reduced_forms(D) = {
     local(b0 = D%2, fv,a,c,zv,n);
 
