@@ -81,18 +81,18 @@ sqrt_mod(D,M) = {
     return(betas);
 }
 
-Heegner_forms(D,N) = {
+Heegner_forms(D,N,beta=[]) = {
     control(D);
-    local(beta);
-    beta = sqrt_mod(D,4*N);
+    if(type(beta) != "t_INT", beta = sqrt_mod(D,4*N), beta=[beta]);
     if(length(beta) == 0, error("The pair (",D,",",N,") does not satisfy the Heegner hypothesis."));
+    if((beta[1]^2-D)%(4*N) != 0, error("The integer ",beta[1]," is not a root of ",D," mod 4*",N));
     local(forms);
     forms = primitive_reduced_forms(D);
     return(vector(length(forms),n,Heegner_form(forms[n],beta[1],N)));
 }
 
-Heegner_points(D,N) = {
-    local(Hforms=Heegner_forms(D,N));
+Heegner_points(D,N,beta=[]) = {
+    local(Hforms=Heegner_forms(D,N,beta));
     return(vector(length(Hforms),n,tau(Hforms[n])));
 }
 
