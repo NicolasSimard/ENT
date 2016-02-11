@@ -16,7 +16,7 @@ def GG(k,prec):
 def Eisen_coeff(k,prec):
     """ Returns the coefficients of the q-expansion of the Eisentein series
     of weight k up to a given precision, where the series is now normalized
-    to have constant term = 1 (then all the coefficients are inetgral).
+    to have constant term = 1.
 
     INPUT:
     - k     : the weight
