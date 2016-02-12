@@ -51,7 +51,7 @@ liftSL2Z(M,N) = {
     [a,b,c]=f;
     D=b^2-4*a*c;
     m=gcd(gcd(N,beta),(beta^2-D)/4/N);
-    if(m != 1, error("Function not implemented for m>1."));
+    if(m != 1, error("Function not implemented for m>1. (D,beta,N)=(",D,",",beta,",",N,")"));
     M=[a,(b-beta)/2;(b+beta)/2,c];
     sol=matsolvemod(M,N,0,1)[2];
     if(sol[,1] != [0,0]~, [r,t]=sol[,1]~, [r,t]=sol[,2]~);
