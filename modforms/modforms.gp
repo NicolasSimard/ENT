@@ -17,6 +17,9 @@ E(k,s) = -2*k/bernfrac(k)*GG(k,s);
 
 E_qexp(k,prec) = -2*k/bernfrac(k)*GG_qexp(k,prec);
 
+/* Auxilary function to compute the q-expansion of Delta.*/
+theta1(prec) = sum(n=0,floor((-1+sqrt(1+8*prec))/2),(-1)^n*(2*n+1)*q^(n*(n+1)/2))+O(q^(prec+1));
+
 /* Note: recall that the coefficients of delta are given by tau(n), where
 ? tau(n) = tau(n) = (5*sigma(n,3)+7*sigma(n,5))*n/12-35*sum(k=1,n-1,(6*k-4*(n-k))*sigma(k,3)*sigma(n-k,5));
 
@@ -29,7 +32,10 @@ than to do
 
 ? L = vector(1000,n,tau(n));
 */
-delta_qexp(prec) = (E_qexp(4,prec)^3-E_qexp(6,prec)^2)/1728;
+delta_qexp(prec) = q*theta1(prec-1)^8;
+
+/* The traditionnal definition of Delta. Much slower.*/
+delta_qexp2(prec) = (E_qexp(4,prec)^3-E_qexp(6,prec)^2)/1728;
 
 /* Takes 355 ms to compute 1000 coefficients.*/
 j_qexp(prec) = E_qexp(4,prec+2)^3/delta_qexp(prec+2);

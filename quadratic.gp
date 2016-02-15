@@ -65,7 +65,7 @@ Heegner_form(f,beta,N,m1=1,m2=1) = {
     a=f[1]; b=f[2]; c=f[3];
     D=b^2-4*a*c;
     m=gcd(gcd(N,beta),(beta^2-D)/4/N);
-    if(m != 1, error("Function not implemented for m>1."));
+    if(m != 1, error("Function not implemented for m>1. (D,beta,N)=(",D,",",beta,",",N,")"));
     M=[a,(b-beta)/2;(b+beta)/2,c];
     sol=matsolvemod(M,N,0,1)[2];
     if(sol[,1] != [0,0]~, r=sol[1,1]; t=sol[2,1];, r=sol[1,2]; t=sol[2,2];);
