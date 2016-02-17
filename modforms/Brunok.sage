@@ -28,7 +28,6 @@ def Eisen_coeff(k,prec):
     c0 = GG(k,prec)[0]
     return [c/c0 for c in GG(k,prec)]
 
-
 def find_min_k(coeff,N,k=4,max_k=200,force = False,output_lift=False):
     """This function returns a modular form congruent mod N to
     a given modular form (or q-expansion, more generally).
@@ -54,26 +53,28 @@ def find_min_k(coeff,N,k=4,max_k=200,force = False,output_lift=False):
     True
     """
 
+    coeffs_modN = [Mod(c,N) for c in coeff]
     while k <= max_k or force:
         if k%2 != 0: continue
         # Precision of the given q-expansion
         prec = len(coeff)
-        # Find the basis up to O(q^prec). This gives prec coefficients
-        basis = victor_miller_basis(k,prec)
         # Dimension of the space of modular forms of level 1, weight k
-        d = len(basis)
+        d = k//12 + (1 if k%12 != 2 else 0)
         # If the dimension is larger than the number of coefficients, we are
         # certain to find an answer (due to the nature of the Victor Miller
         # basis), but this might not be the right answer!
         if d >= prec:
-            print "***Warning: precision of the series is low; Answer might be meaningless.***"
-        # Extract the coefficients of the basis elements
-        basis_coeffs = [f*Mod(1,N) for f in basis]
-        coeffs_modN = [Mod(c,N) for c in coeff]
-        # Check if the coefficients match mod N up to the precision
-        for n in range(d,prec):
-            # If they don't, we stop the loop
-            if sum(coeffs_modN[i]*basis_coeffs[i][n] for i in xrange(d)) != coeffs_modN[n]:
+            print "***Precision of the series is too low.***"
+            break
+        coeff_part = [(d,d+5),(d+5,min(d+25,prec)),(min(d+25,prec),prec)]
+        # coeff_part = [(d,d+5),(d+5,prec)] # Seems slower (empirically)
+        n = d - 1
+        for part in coeff_part:
+            basis = victor_miller_basis(k,part[1])
+            basis_modN = [f*Mod(1,N) for f in basis]
+            while n < part[1] and sum(coeffs_modN[i]*basis_modN[i][n] for i in xrange(d)) == coeffs_modN[n]:
+                n = n + 1
+            if n < part[1]:
                 break
         else:
             # If they match up to the precision, we return k and the modular form
@@ -109,13 +110,13 @@ def find_seq(coeff,p,M,max_k=200,known_seq=[],force=False):
     [6, 42, 202, 1002, 2014, 2286, 2350]
     """
     if len(known_seq) == 0:
-        seq = [find_min_k(coeff,p,max_k=max_k,force=force)[0]]
+        seq = [find_min_k(coeff,p,max_k=max_k,force=force)]
     else:
         seq = known_seq
     for n in range(len(seq)+1,M+1):
         min_k=find_min_k(coeff,p^n,k=seq[-1],max_k=max_k,force=force)
         if min_k is not None:
-            seq.append(min_k[0])
+            seq.append(min_k)
         else:
             print "***Error: the sequence could not be computed up to " + str(p) + "^" + str(M) + ","
             print "but only up to " + str(p) + "^" + str(n-1) + ". Consider increasing max_k.***"
