@@ -48,14 +48,12 @@ qexp_coeff(f) = {
 }
 
 victor_miller_basis(k,prec=10) = {
-    local(d,deltaOverE6,Hk,basis);
+    local(d,e,deltaOverE6,Hk,basis);
     if(k%2 == 1,error("The weight ",k," must be even."));
-    d=floor(k/12) + (k%12 != 2);
-    \\ the vector ab is such that (4*ab[n%12+1][1]+6*ab[n%12+1][2])%12 == n%12
-    \\ and ab[12] = ab[12] = 0.
-    ab=[[0,0],[],[2,1],[],[1,0],[],[0,1],[],[2,0],[],[1,1],[]];
+    e=k%12 + 12*(k%12 == 2);
+    d=(k-e)/12+1;
     deltaOverE6 = delta_qexp(prec)/E_qexp(6,prec);
-    Hk = E_qexp(4,prec)^ab[k%12+1][1]*E_qexp(6,prec)^ab[k%12+1][2];
+    Hk = if(e==0,1,E_qexp(e,prec));
     basis=[E_qexp(6,prec)^(d-1)*Hk];
     for(n=1,d-1,basis=concat(basis,[deltaOverE6*basis[n]]));
     \\ At this point, the basis is upper triangular
