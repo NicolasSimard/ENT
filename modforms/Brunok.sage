@@ -29,7 +29,7 @@ def Eisen_coeff(k,prec):
     return [c/c0 for c in GG(k,prec)]
 
 
-def find_min_k(coeff,N,k=4,max_k=200,force = False):
+def find_min_k(coeff,N,k=4,max_k=200,force = False,output_lift=False):
     """This function returns a modular form congruent mod N to
     a given modular form (or q-expansion, more generally).
 
@@ -39,6 +39,7 @@ def find_min_k(coeff,N,k=4,max_k=200,force = False):
     - k (opt.)     : starting weight (default =4)
     - max_k (opt.) : maximum weight that we want (default = 200)
     - force (opt.) : If set to True, will force the algorithm to find k.
+    - output_lift (opt.): return the form that reduces to the input form mod N.
 
     OUTPUT:
     - (k,f) : a genuine modular form f of weight k congruent to coeff mod N
@@ -67,16 +68,20 @@ def find_min_k(coeff,N,k=4,max_k=200,force = False):
         if d >= prec:
             print "***Warning: precision of the series is low; Answer might be meaningless.***"
         # Extract the coefficients of the basis elements
-        basis_coeffs = map(lambda f: f.list(),basis)
+        basis_coeffs = [f*Mod(1,N) for f in basis]
+        coeffs_modN = [Mod(c,N) for c in coeff]
         # Check if the coefficients match mod N up to the precision
         for n in range(d,prec):
             # If they don't, we stop the loop
-            if sum(coeff[i]*basis_coeffs[i][n] for i in range(d))%N != coeff[n]%N:
+            if sum(coeffs_modN[i]*basis_coeffs[i][n] for i in xrange(d)) != coeffs_modN[n]:
                 break
         else:
             # If they match up to the precision, we return k and the modular form
             # which reduces to the given form mod N
-            return (k, sum(coeff[i]*basis[i] for i in range(d)))
+            if output_lift:
+                return (k, sum(coeff[i]*basis[i] for i in range(d)))
+            else:
+                return k
         # At this point in the while loop, we know that k is even
         k = k+2
     # At this point, k reached the mak_k bound without finding anything...
