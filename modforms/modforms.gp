@@ -47,16 +47,38 @@ qexp_coeff(f) = {
     return(vector(poldegree(p),n,polcoeff(p,n,q)));
 }
 
-victor_miller_basis(k,prec=10,N=0) = {
-    local(d,e,deltaOverE6,Hk,basis);
+victor_miller_basis(k,prec=10,N=0,notred=0) = {
+    local(n,e,ls,A,E6,E6_squared,D,Eprod,Dprod);
     if(k%2 == 1,error("The weight ",k," must be even."));
+
     e=k%12 + 12*(k%12 == 2);
-    d=(k-e)/12+1;
-    deltaOverE6 = delta_qexp(prec)/E_qexp(6,prec);
-    Hk = if(e==0,1,E_qexp(e,prec));
-    if(N>0,deltaOverE6 = Mod(deltaOverE6,N); Hk=Mod(Hk,N));
-    basis=if(N>0,[Mod(E_qexp(6,prec),N)^(d-1)*Hk],[E_qexp(6,prec)^(d-1)*Hk]);
-    for(n=1,d-1,basis=concat(basis,[deltaOverE6*basis[n]]));
+    n=(k-e)/12;
+
+    E6 = E_qexp(6,prec);
+    A = if(e==0,1,E_qexp(e,prec)); \\ Slight difference with e=6
+    if(polcoeff(A,0,q) == -1, A=-A);
+    D = delta_qexp(prec);
+
+    if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
+
+    E6_squared = E6^2;
+    Eprod = E6_squared;
+    Dprod = D;
+
+    ls = vector(n+1,i,A);
+    for(i=1,n,
+        ls[n-i+1] *= Eprod;
+        ls[i+1] *= Dprod;
+        Eprod *= E6_squared;
+        Dprod *= D;
+    );
     \\ At this point, the basis is upper triangular
-    return(basis);
+    if(notred,return(ls));
+    for(i=1,n,
+        for(j=1,i,
+            ls[j] = ls[j] - polcoeff(ls[j],i,q)*ls[i+1];
+        );
+    );
+    return(ls);
 }
+
