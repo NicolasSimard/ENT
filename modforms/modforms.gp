@@ -11,14 +11,14 @@ GG_k(s) = (k-1)!/(2*Pi*I)^kG_k(s) (all non-constant Fourrier coeff are int)
 */
 GG(k,s) = -bernfrac(k)/2/k+suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*s));
 
-GG_qexp(k,prec) = -bernfrac(k)/2/k+sum(n=1,prec,sigma(n,k-1)*q^n)+O(q^(prec+1));
+GG_qexp(k,prec) = -bernfrac(k)/2/k+sum(n=1,prec,sigma(n,k-1)*q^n)+O(q^prec);
 
 E(k,s) = -2*k/bernfrac(k)*GG(k,s);
 
 E_qexp(k,prec) = -2*k/bernfrac(k)*GG_qexp(k,prec);
 
 /* Auxilary function to compute the q-expansion of Delta.*/
-theta1(prec) = sum(n=0,floor((-1+sqrt(1+8*prec))/2),(-1)^n*(2*n+1)*q^(n*(n+1)/2))+O(q^(prec+1));
+theta1(prec) = sum(n=0,floor((-1+sqrt(1+8*prec))/2),(-1)^n*(2*n+1)*q^(n*(n+1)/2))+O(q^prec);
 
 /* Note: recall that the coefficients of delta are given by tau(n), where
 ? tau(n) = tau(n) = (5*sigma(n,3)+7*sigma(n,5))*n/12-35*sum(k=1,n-1,(6*k-4*(n-k))*sigma(k,3)*sigma(n-k,5));
