@@ -54,6 +54,14 @@ victor_miller_basis(k,prec=10,N=0,notred=0) = {
     e=k%12 + 12*(k%12 == 2);
     n=(k-e)/12;
 
+    if(prec <= n,
+        ls = vector(n+1);
+        ls[1] = 1+ O(q^prec);
+        for(i=2,prec,ls[i] = q^i + O(q^prec));
+        for(i=prec+1,n+1,ls[i] = O(q^prec));
+        return(ls);
+    );
+
     E6 = E_qexp(6,prec);
     A = if(e==0,1,E_qexp(e,prec)); \\ Slight difference with e=6
     if(polcoeff(A,0,q) == -1, A=-A);
@@ -61,16 +69,16 @@ victor_miller_basis(k,prec=10,N=0,notred=0) = {
 
     if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
 
-    E6_squared = E6^2;
+    E6_squared = E6^2 + O(q^prec);
     Eprod = E6_squared;
     Dprod = D;
 
     ls = vector(n+1,i,A);
     for(i=1,n,
-        ls[n-i+1] *= Eprod;
-        ls[i+1] *= Dprod;
-        Eprod *= E6_squared;
-        Dprod *= D;
+        ls[n-i+1] = ls[n-i+1]*Eprod + O(q^prec);
+        ls[i+1] = ls[i+1]*Dprod + O(q^prec);
+        Eprod = Eprod*E6_squared + O(q^prec);
+        Dprod = Dprod*D + O(q^prec);
     );
     \\ At this point, the basis is upper triangular
     if(notred,return(ls));
