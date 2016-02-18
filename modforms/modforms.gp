@@ -47,14 +47,15 @@ qexp_coeff(f) = {
     return(vector(poldegree(p),n,polcoeff(p,n,q)));
 }
 
-victor_miller_basis(k,prec=10) = {
+victor_miller_basis(k,prec=10,N=0) = {
     local(d,e,deltaOverE6,Hk,basis);
     if(k%2 == 1,error("The weight ",k," must be even."));
     e=k%12 + 12*(k%12 == 2);
     d=(k-e)/12+1;
     deltaOverE6 = delta_qexp(prec)/E_qexp(6,prec);
     Hk = if(e==0,1,E_qexp(e,prec));
-    basis=[E_qexp(6,prec)^(d-1)*Hk];
+    if(N>0,deltaOverE6 = Mod(deltaOverE6,N); Hk=Mod(Hk,N));
+    basis=if(N>0,[Mod(E_qexp(6,prec),N)^(d-1)*Hk],[E_qexp(6,prec)^(d-1)*Hk]);
     for(n=1,d-1,basis=concat(basis,[deltaOverE6*basis[n]]));
     \\ At this point, the basis is upper triangular
     return(basis);
