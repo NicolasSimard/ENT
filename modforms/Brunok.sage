@@ -61,7 +61,7 @@ def find_min_k(coeff,N,min_k=4,max_k=None,output_lift=False):
 
     TEST:
     sage: delta=CuspForms(1,12).basis()[0].qexp(10).list()
-    sage: find_min_k(delta,100)
+    sage: find_min_k(delta,100,output_lift=True)
     (12,
      q - 24*q^2 + 252*q^3 - 1472*q^4 + 4830*q^5 - 6048*q^6 - 16744*q^7 + 84480*q^8 - 113643*q^9 + O(q^10))
     sage: f = find_min_k([1,2,3,4,5],3,output_lift=True)[1].list();
