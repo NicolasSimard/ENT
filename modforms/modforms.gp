@@ -67,8 +67,8 @@ victor_miller_basis(k,prec=10,N=0,reduce=1) = {
     if(polcoeff(A,0,q) == -1, A=-A);
     D = delta_qexp(prec);
 
-    \\if(N>0,E6 = E6*Mod(1,N); A = A*Mod(1,N); D = D*Mod(1,N));
-    if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
+    if(N>0,E6 = E6*Mod(1,N); A = A*Mod(1,N); D = D*Mod(1,N));
+    \\if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
 
     E6_squared = E6^2 + O(q^prec);
     Eprod = E6_squared;

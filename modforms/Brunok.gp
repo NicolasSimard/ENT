@@ -13,7 +13,8 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
     );
 
     prec = poldegree(truncate(qexp),q)+1;
-    qexp = Mod(qexp,N);
+    \\qexp = Mod(qexp,N);
+    qexp = qexp*Mod(1,N);
     k = min_k + (min_k%2); \\ Make sure k is even
 
     if(profile[length(profile)] < 0, profile[length(profile)] = prec);
@@ -24,7 +25,7 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
 
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
 
-        if(d>=prec,print("***Precision of the series is too low.***"); return(-1));
+        if(d>=prec,print("***No weight <",k,". Precision of the series is too low.***"); return(-1));
 
         n = d;
         m = 1;
