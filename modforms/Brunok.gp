@@ -2,7 +2,7 @@ read("modforms.gp");
 
 E2(prec) = E_qexp(2,prec);
 
-find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
+find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
     local(X,m,n,d,force,k,prec,bound);
 
     if(min_k < 4,error("***min_k has to be >= 4.***"));
@@ -16,7 +16,7 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
     qexp = Mod(qexp,N);
     k = min_k + (min_k%2); \\ Make sure k is even
 
-    profile = concat(profile,[prec]);
+    if(profile[length(profile)] < 0, profile[length(profile)] = prec);
     profile = vecsort(profile);
 
     while(k <= max_k || force,
@@ -35,17 +35,19 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
             while(n < bound && sum(i=0,d-1,X[i+1]*polcoeff(basis[i+1],n,q)) == polcoeff(qexp,n,q),
                 n += 1;
             );
-            if(n < bound, break(), if(n == prec, return(k)));
+            \\ At this point, n <= bound.
+            if(n < bound,break(),
+                if(n == prec || (m == length(profile) && n == bound), return(k))
+            );
             m += 1;
         );
-        if(n == prec, return(k));
         k += 2;
     );
     print("***No weight between ",min_k," and ",max_k," was found mod ",N,".***");
     return(-1);
 }
 
-find_seq(qexp,p,M,known_seq=[],max_k=-1,profile=[5,25]) = {
+find_seq(qexp,p,M,known_seq=[],max_k=-1,profile=[5,25,-1]) = {
     local(seq,n,k);
     if(M<=0,error("***M must be strictly positive. Recieved ",M,".***"));
     if(length(known_seq) == 0,
