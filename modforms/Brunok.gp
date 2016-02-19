@@ -45,3 +45,23 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
     return(-1);
 }
 
+find_seq(qexp,p,M,known_seq=[],max_k=-1,profile=[5,25]) = {
+    local(seq,n,k);
+    if(M<=0,error("***M must be strictly positive. Recieved ",M,".***"));
+    if(length(known_seq) == 0,
+        seq = [find_min_k(qexp,p,4,max_k,profile)];
+        print("k_{",p,"^",1,"}=",seq[1]);,
+        seq = known_seq;
+    );
+    for(n=length(seq)+1,M,
+        k = find_min_k(qexp,p^n,seq[n-1],max_k,profile);
+        if(k >= 4,
+            seq = concat(seq,[k]);
+            print("k_{",p,"^",n,"}=",seq[n]);,
+            print("***The sequence could not be computed up to ",p,"^",M,". ***");
+            print("   but only up to ",p,"^",n-1,". ***");
+            return(seq);
+        );
+    );
+    return(seq);
+}
