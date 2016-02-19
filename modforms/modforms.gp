@@ -47,7 +47,7 @@ qexp_coeff(f) = {
     return(vector(poldegree(p),n,polcoeff(p,n,q)));
 }
 
-victor_miller_basis(k,prec=10,N=0,notred=0) = {
+victor_miller_basis(k,prec=10,N=0,reduce=1) = {
     local(n,e,ls,A,E6,E6_squared,D,Eprod,Dprod);
     if(k%2 == 1,error("The weight ",k," must be even."));
 
@@ -82,7 +82,7 @@ victor_miller_basis(k,prec=10,N=0,notred=0) = {
         Dprod = Dprod*D + O(q^prec);
     );
     \\ At this point, the basis is upper triangular
-    if(notred,return(ls));
+    if(reduce == 0,return(ls));
     for(i=1,n,
         for(j=1,i,
             ls[j] = ls[j] - polcoeff(ls[j],i,q)*ls[i+1];
