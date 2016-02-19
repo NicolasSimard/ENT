@@ -3,7 +3,7 @@ read("modforms.gp");
 E2(prec) = E_qexp(2,prec);
 
 find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
-    local(M,m,n,d,force,k,prec,coeffs_modN,qexp_modN);
+    local(M,m,n,d,force,k,prec,bound);
 
     if(min_k < 4,error("***min_k has to be >= 4.***"));
 
@@ -13,8 +13,7 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
     );
 
     prec = poldegree(truncate(qexp),q)+1;
-    qexp_modN = qexp*Mod(1,N);
-    \\print(min_k,":",max_k,":");
+    qexp = Mod(qexp,N);
     k = min_k + (min_k%2); \\ Make sure k is even
 
     profile = concat(profile,[prec]);
@@ -22,18 +21,18 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25]) = {
 
     while(k <= max_k || force,
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
-        \\print(k,":",d);
+
         if(d>=prec,error("***Precision of the series is too low.***"));
 
         n = d;
         m = 1;
         while(m <= length(profile),
-            M = min(d + profile[m],prec);
-            basis_modN = victor_miller_basis(k,M,N,1);
-            while(n < M && sum(i=0,d-1,polcoeff(qexp_modN,i,q)*polcoeff(basis_modN[i+1],n,q)) == polcoeff(qexp_modN,n,q),
+            bound = min(d + profile[m],prec);
+            basis = victor_miller_basis(k,bound,N);
+            while(n < bound && sum(i=0,d-1,polcoeff(qexp,i,q)*polcoeff(basis[i+1],n,q)) == polcoeff(qexp,n,q),
                 n += 1;
             );
-            if(n < M, break(),if(n == prec, return(k)));
+            if(n < bound, break(), if(n == prec, return(k)));
             m += 1;
         );
         if(n == prec, return(k));
