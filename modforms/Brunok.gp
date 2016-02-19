@@ -37,7 +37,7 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
             );
             \\ At this point, n <= bound.
             if(n < bound,break(),
-                if(n == prec || (m == length(profile) && n == bound), return(k))
+                if(n == prec || (m == length(profile) && n == bound), return([k,n-d]))
             );
             m += 1;
         );
@@ -56,8 +56,8 @@ find_seq(qexp,p,M,known_seq=[],max_k=-1,profile=[5,25,-1]) = {
         seq = known_seq;
     );
     for(n=length(seq)+1,M,
-        k = find_min_k(qexp,p^n,seq[n-1],max_k,profile);
-        if(k >= 4,
+        k = find_min_k(qexp,p^n,seq[n-1][1],max_k,profile);
+        if(k[1] >= 4,
             seq = concat(seq,[k]);
             print("k_{",p,"^",n,"}=",seq[n]);,
             print("***The sequence could not be computed up to ",p,"^",M,". ***");
