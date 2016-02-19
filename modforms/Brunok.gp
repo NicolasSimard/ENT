@@ -47,16 +47,16 @@ find_min_k(qexp,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
     return(-1);
 }
 
-find_seq(qexp,p,M,known_seq=[],max_k=-1,profile=[5,25,-1]) = {
+find_seq(qexp,p,M,known_seq=[],profile=[5,25,-1]) = {
     local(seq,n,k);
     if(M<=0,error("***M must be strictly positive. Recieved ",M,".***"));
     if(length(known_seq) == 0,
-        seq = [find_min_k(qexp,p,4,max_k,profile)];
+        seq = [find_min_k(qexp,p,4,max_k=-1,profile)];
         print("k_{",p,"^",1,"}=",seq[1]);,
         seq = known_seq;
     );
     for(n=length(seq)+1,M,
-        k = find_min_k(qexp,p^n,seq[n-1][1],max_k,profile);
+        k = find_min_k(qexp,p^n,seq[n-1][1],max_k=-1,profile);
         if(k[1] >= 4,
             seq = concat(seq,[k]);
             print("k_{",p,"^",n,"}=",seq[n]);,
