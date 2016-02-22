@@ -1,5 +1,16 @@
 read("modforms.gp");
 
+
+/*Given a prime p and a q-expansion f, return U_p(f). Note that this will
+reduce the precision of the q-expansion.*/
+U(p,f) = {
+    local(prec);
+    prec = poldegree(truncate(f),q)+1;
+    return(Ser(vector(floor((prec-1)/p),n,polcoeff(f,(n-1)*p,q)),q));
+}
+
+V(p,f) = substpol(f,q,q^p);
+
 E2(prec) = E_qexp(2,prec);
 
 find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
@@ -23,7 +34,7 @@ find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
     k = ceil((min_k-w)/phiN)*phiN + w; \\ smallest number >= k_min and cong to
                                        \\ w mod phiN
     while(k <= max_k || force,
-        \\print((k-w)/phiN);
+        print((k-w)/phiN);
 
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
 
