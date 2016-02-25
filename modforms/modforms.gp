@@ -5,20 +5,29 @@
 
 G_k(s) = 1/2*sum_{(m,n)\neq(0,0)}(mz+n)^-k
 
-E_k(s)=G_k(s)/zeta(k)
+E_k(s)=G_k(s)/zeta(k) (leading coefficient is 1)
 
 GG_k(s) = (k-1)!/(2*Pi*I)^kG_k(s) (all non-constant Fourrier coeff are int)
 */
 GG(k,s) = -bernfrac(k)/2/k+suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*s));
 
-GG_qexp(k,prec) = -bernfrac(k)/2/k+sum(n=1,prec,sigma(n,k-1)*q^n)+O(q^prec);
+GG_qexp(k,prec) = -bernfrac(k)/2/k+Ser(concat([0],vector(prec-1,n,sigma(n,k-1))),q);
 
 E(k,s) = -2*k/bernfrac(k)*GG(k,s);
 
 E_qexp(k,prec) = -2*k/bernfrac(k)*GG_qexp(k,prec);
 
 /* Auxilary function to compute the q-expansion of Delta.*/
-theta1(prec) = sum(n=0,floor((-1+sqrt(1+8*prec))/2),(-1)^n*(2*n+1)*q^(n*(n+1)/2))+O(q^prec);
+eta3_qexp(prec) = {
+    local(k,d);
+    Ser(vector(prec,n,if(issquare(1+8*(n-1),&d),(-1)^((-1+d)/2)*d,0)),q);
+}
+
+/* This function is much faster than this one
+theta_qexp2(prec) = 1+sum(n=1,floor(sqrt(prec)),2*q^(n^2)) + O(q^prec); 
+and uses much less memory! Avoid it!
+*/
+theta_qexp(prec) = Ser(vector(prec,n,2*issquare(n-1)),q)-1;
 
 /* Note: recall that the coefficients of delta are given by tau(n), where
 ? tau(n) = tau(n) = (5*sigma(n,3)+7*sigma(n,5))*n/12-35*sum(k=1,n-1,(6*k-4*(n-k))*sigma(k,3)*sigma(n-k,5));
@@ -32,20 +41,10 @@ than to do
 
 ? L = vector(1000,n,tau(n));
 */
-delta_qexp(prec) = q*theta1(prec-1)^8;
+delta_qexp(prec) = q*sqr(sqr(sqr(eta3_qexp(prec-1))));
 
-/* The traditionnal definition of Delta. Much slower.*/
-delta_qexp2(prec) = (E_qexp(4,prec)^3-E_qexp(6,prec)^2)/1728;
-
-/* Takes 355 ms to compute 1000 coefficients.*/
+/* Takes 213 ms to compute 1000 coefficients.*/
 j_qexp(prec) = E_qexp(4,prec+2)^3/delta_qexp(prec+2);
-
-qexp_coeff(f) = {
-    local(v,p);
-    v = valuation(f,q);
-    p = truncate(q^(1-v)*f);
-    return(vector(poldegree(p),n,polcoeff(p,n,q)));
-}
 
 victor_miller_basis(k,prec=10,N=0,reduce=1) = {
     local(n,e,ls,A,E6,E6_squared,D,Eprod,Dprod);
