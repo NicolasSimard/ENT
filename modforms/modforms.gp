@@ -1,5 +1,4 @@
-/*Just a small script containing the function that I use very often.
-*/
+/*Just a small script to compute a few q-expansions.*/
 
 /* To define the Eisenstein series, we follow Zagier's convention:
 
@@ -69,7 +68,7 @@ victor_miller_basis(k,prec=10,N=0,reduce=1) = {
     if(N>0,E6 = E6*Mod(1,N); A = A*Mod(1,N); D = D*Mod(1,N));
     \\if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
 
-    E6_squared = E6^2 + O(q^prec);
+    E6_squared = sqr(E6) + O(q^prec);
     Eprod = E6_squared;
     Dprod = D;
 
