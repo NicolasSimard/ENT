@@ -4,17 +4,17 @@ read("modforms.gp");
 /*Given a prime p and a q-expansion f, return U_p(f). Note that this will
 reduce the precision of the q-expansion.*/
 U(p,f) = {
-    local(prec);
-    prec = poldegree(truncate(f),q)+1;
-    return(Ser(vector(floor((prec-1)/p),n,polcoeff(f,(n-1)*p,q)),q));
+    my(pr);
+    pr = poldegree(truncate(f),'q)+1;
+    return(Ser(vector(floor((pr-1)/p),n,polcoeff(f,(n-1)*p,'q)),'q));
 }
 
-V(p,f) = substpol(f,q,q^p);
+V(p,f) = substpol(f,'q,'q^p);
 
-E2(prec) = E_qexp(2,prec);
+E2(pr) = E_qexp(2,pr);
 
-find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
-    local(phiN,X,m,n,d,force,k,prec,bound);
+find_min_k(qexp,w,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
+    my(phiN,X,m,n,d,force,k,pr,bound);
 
     if(min_k < 4,error("***min_k has to be >= 4.***"));
 
@@ -23,11 +23,11 @@ find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
         force=1;
     );
 
-    prec = poldegree(truncate(qexp),q)+1;
+    pr = poldegree(truncate(qexp),q)+1;
 
     qexp = qexp*Mod(1,N);
 
-    if(profile[length(profile)] < 0, profile[length(profile)] = prec);
+    if(profile[length(profile)] < 0, profile[length(profile)] = pr);
     profile = vecsort(profile);
 
     phiN = eulerphi(N);
@@ -38,12 +38,12 @@ find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
 
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
 
-        if(d>=prec,print("***No weight <",k,". Precision of the series is too low.***"); return(-1));
+        if(d>=pr,print("***No weight <",k,". Precision of the series is too low.***"); return(-1));
 
         n = d;
         m = 1;
         while(m <= length(profile),
-            bound = min(d + profile[m],prec);
+            bound = min(d + profile[m],pr);
             basis = victor_miller_basis(k,bound,N,0); \\ The basis is not reduced
             if(m == 1, X=matsolve(matrix(d,d,i,j,polcoeff(basis[j],i-1,q)),vector(d,i,polcoeff(qexp,i-1,q))~));
             while(n < bound && sum(i=0,d-1,X[i+1]*polcoeff(basis[i+1],n,q)) == polcoeff(qexp,n,q),
@@ -51,7 +51,7 @@ find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
             );
             \\ At this point, n <= bound.
             if(n < bound,break(),
-                if(n == prec || (m == length(profile) && n == bound), return([k,n-d]))
+                if(n == pr || (m == length(profile) && n == bound), return([k,n-d]))
             );
             m += 1;
         );
@@ -62,7 +62,7 @@ find_min_k(qexp,w=2,N,min_k=4,max_k=-1,profile=[5,25,-1]) = {
 }
 
 find_seq(qexp,w,p,M,known_seq=[],profile=[5,25,-1]) = {
-    local(seq,n,k);
+    my(seq,n,k);
     if(M<=0,error("***M must be strictly positive. Recieved ",M,".***"));
     if(length(known_seq) == 0,
         seq = [find_min_k(qexp,w,p,4,max_k=-1,profile)];
