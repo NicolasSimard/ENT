@@ -1,8 +1,8 @@
 \r modforms.gp
 
-victor_miller_basis(k,pr=10,N=0,reduce=1) = 
+victor_miller_basis(k:small,pr:small=10,N:small=0,reduce:small=1) = 
 {
-    my(n,e,ls,A,E6,E6_squared,D,Eprod,Dprod);
+    my(n:small,e:small,ls,A,E6,E6_squared,D,Eprod,Dprod);
     if(k%2 == 1,error("The weight ",k," must be even."));
 
     e=k%12 + 12*(k%12 == 2);
@@ -22,7 +22,6 @@ victor_miller_basis(k,pr=10,N=0,reduce=1) =
     D = delta_qexp(pr);
 
     if(N>0,E6 = E6*Mod(1,N); A = A*Mod(1,N); D = D*Mod(1,N));
-    \\if(N>0,E6 = Mod(E6,N); A = Mod(A,N); D = Mod(D,N));
 
     E6_squared = sqr(E6) + O(q^pr);
     Eprod = E6_squared;
