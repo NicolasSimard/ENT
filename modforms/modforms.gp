@@ -1,4 +1,9 @@
-/*Just a small script to compute a few q-expansions.*/
+/* This script defines a few modular forms. These modular forms are represented
+as functions sending integers n to a_n(f), the nth Fourier  coefficient of f.
+
+Some modular forms can also be represented as Fourrier series directly. This is
+often faster than computing every Fourrier coefficient one after the other. For
+example, delta_qexp(1000) is much faster than Ser(vector(1000,n,delta(n))).*/
 
 /* To define the Eisenstein series, we follow Zagier's convention:
 
@@ -8,13 +13,34 @@ E_k(s)=G_k(s)/zeta(k) (leading coefficient is 1)
 
 GG_k(s) = (k-1)!/(2*Pi*I)^kG_k(s) (all non-constant Fourrier coeff are int)
 */
-GG(k:small,s) = -bernfrac(k)/2/k+suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*s));
 
-GG_qexp(k:small,pr:small) = -bernfrac(k)/2/k+Ser(concat([0],vector(pr-1,n,sigma(n,k-1))),'q);
+\\GG(k:small,s) = -bernfrac(k)/2/k+suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*s));
 
-E(k:small,s) = -2*k/bernfrac(k)*GG(k,s);
+GG(k:small) = 
+{
+    n -> if(n == 0, -bernfrac(k)/2/k, sigma(n,k-1));
+}
+addhelp(GG,"GG(k): Returns Eisenstein series GG of weight k. Modular forms are\nrepresented as closures, sending n to the nth Fourrier coefficient.");
 
-E_qexp(k:small,pr:small) = -2*k/bernfrac(k)*GG_qexp(k,pr);
+GG_qexp(k:small,pr:small) = 
+{
+    -bernfrac(k)/2/k+Ser(concat([0],vector(pr-1,n,sigma(n,k-1))),'q);
+}
+addhelp(GG_qexp,"GG_qexp(k,pr): Returns the q-expansion of the Eisenstein series\nGG of weight k.");
+
+\\E(k:small,s) = -2*k/bernfrac(k)*GG(k,s);
+
+E(k:small) =
+{
+    n -> if(n == 0, 1, -2*k/bernfrac(k)*sigma(n,k-1));
+}
+addhelp(E,"E(k): Returns Eisenstein series E of weight k. Modular forms are\nrepresented as closures, sending n to their nth Fourrier coefficient.");
+
+E_qexp(k:small,pr:small) =
+{
+    -2*k/bernfrac(k)*GG_qexp(k,pr);
+}
+addhelp(E_qexp,"E_qexp(k,pr): Returns the q-expansion of the Eisenstein series\nE of weight k.");
 
 /* Auxilary function to compute the q-expansion of Delta.*/
 eta3_qexp(pr:small) = 
@@ -27,21 +53,28 @@ eta3_qexp(pr:small) =
 theta_qexp2(pr) = 1+sum(n=1,floor(sqrt(pr)),2*q^(n^2)) + O(q^pr); 
 and uses much less memory!
 */
-theta_qexp(pr:small) = Ser(vector(pr,n,2*issquare(n-1)),'q)-1;
+theta_qexp(pr:small) =
+{
+    Ser(vector(pr,n,2*issquare(n-1)),'q)-1;
+}
+addhelp(theta_qexp,"theta_qexp(k): Returns the q-expansion of the theta series of weight 1/2\n up to precision pr.");
 
-/* Note: recall that the coefficients of delta are given by tau(n), where
-? tau(n) = tau(n) = (5*sigma(n,3)+7*sigma(n,5))*n/12-35*sum(k=1,n-1,(6*k-4*(n-k))*sigma(k,3)*sigma(n-k,5));
+delta =
+{
+    n -> ramanujantau(n);
+}
+addhelp(delta,"delta: Returns the modular form delta. Modular forms are represented\nas functions sending n to their nth Fourrier coefficient.");
 
-However, it is much faster to do
 
-? D = delta_qexp(1000);
-? L = vector(1000,n,polcoeff(truncate(D),n,q));
-
-than to do
-
-? L = vector(1000,n,tau(n));
-*/
-delta_qexp(pr:small) = 'q*sqr(sqr(sqr(eta3_qexp(pr-1))));
+delta_qexp(pr:small) =
+{
+    'q*sqr(sqr(sqr(eta3_qexp(pr-1))));
+}
+addhelp(delta_qexp,"delta_qexp(k): Returns the q-expansion of the delta series up to precision pr.");
 
 /* Takes 213 ms to compute 1000 coefficients.*/
-j_qexp(pr:small) = E_qexp(4,pr+2)^3/delta_qexp(pr+2);
+j_qexp(pr:small) =
+{
+    E_qexp(4,pr+2)^3/delta_qexp(pr+2);
+}
+addhelp(j_qexp,"j_qexp(pr): Returns the q-expansion of the j-invariant up to precision pr.");
