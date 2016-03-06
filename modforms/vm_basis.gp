@@ -43,4 +43,4 @@ victor_miller_basis(k:small,pr:small=10,N:small=0,reduce:small=1) =
     );
     return(ls);
 }
-
+addhelp(victor_miller_basis,"victor_miller_basis(k,pr,{N=0},{reduce=1}): Returns the Victor Miller basis of weight k up to precision pr. If N > 0, returns this basis modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
