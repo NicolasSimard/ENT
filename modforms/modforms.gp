@@ -78,3 +78,15 @@ j_qexp(pr:small) =
     E_qexp(4,pr+2)^3/delta_qexp(pr+2);
 }
 addhelp(j_qexp,"j_qexp(pr): Returns the q-expansion of the j-invariant up to precision pr.");
+
+clos2qexp(f,pr:small) = 
+{
+    return(Ser(vector(pr,n,f(n-1)),'q));
+}
+addhelp(clos2qexp,"cols2qexp(f,pr): Return the q-expansion attached to the closure representation of f up to precision pr.");
+
+qexp2clos(f) =
+{
+    n -> polcoeff(f,n,'q);
+}
+addhelp(qexp2clos,"qexp2clos(f): Returns the closure attached to the q-expansion of f.");
