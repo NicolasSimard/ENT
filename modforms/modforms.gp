@@ -59,10 +59,7 @@ theta_qexp(pr:small) =
 }
 addhelp(theta_qexp,"theta_qexp(k): Returns the q-expansion of the theta series of weight 1/2\n up to precision pr.");
 
-delta =
-{
-    n -> ramanujantau(n);
-}
+delta(n) = polcoeff(delta_qexp(n+1),n,'q);
 addhelp(delta,"delta: Returns the modular form delta. Modular forms are represented\nas functions sending n to their nth Fourrier coefficient.");
 
 
