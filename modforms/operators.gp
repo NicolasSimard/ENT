@@ -23,9 +23,9 @@ V(p:small) =
 }
 addhelp(V,"V(p): Returns the operator V_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
 
-d =
+d(f) =
 {
-    f -> if(type(f) == "t_SER",
+    if(type(f) == "t_SER",
         return('q*f');,
         if(type(f) == "t_CLOSURE",
             return(n -> n*f(n));,
@@ -33,7 +33,7 @@ d =
         );
     );
 }
-addhelp(d,"d: Returns the operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
+addhelp(d,"d(f): Operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
 
 mfadd(f,g) = 
 {
