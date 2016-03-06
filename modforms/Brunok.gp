@@ -24,8 +24,6 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
     
     \\ Start of the main routine
     while(type(k_range[2]) != "t_INT" || k <= k_range[2],
-        \\print((k-w)/phiN);
-
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
 
         if(type(f) == "t_SER" && type(match) == "t_INT" && d + match > pr,
