@@ -5,17 +5,18 @@ control(D) = if(D%4 > 1 || D>=0,error(D," is not a negative discriminant."));
 /*Every discriminant uniquely determines an order in a quadratc field. This
 function returns its conductor (the index of this order in the maximal order).
 */
-conductor(D) = {
-    local(L,p);
+conductor(D) =
+{
+    my(L = factor(D),p);
     control(D);
-    L=factor(D);
     p=prod(n=1,length(L~),L[,1][n]^floor(L[,2][n]/2)); \\ D=p^2m, m sq-free
     if(isdisc(D/p^2),return(p),return(p/2));
 }
 
-isprimitive(D) = return(conductor(D) == 1);
+isprimitive(D) = (conductor(D) == 1);
 
-right_act(f,M) = {
+right_act(f,M) =
+{
     return([f[1]*M[1,1]^2+f[2]*M[1,1]*M[2,1]+f[3]*M[2,1]^2,
             2*f[1]*M[1,1]*M[1,2]+f[2]*(M[1,1]*M[2,2]+M[1,2]*M[2,1])+2*f[3]*M[2,1]*M[2,2],
             f[1]*M[1,2]^2+f[2]*M[1,2]*M[2,2]+f[3]*M[2,2]^2]
@@ -23,11 +24,12 @@ right_act(f,M) = {
 }
 
 /* Lift a matrix M in SL2(Z/NZ) to a matrix in SL2(Z).*/
-liftSL2Z(M,N) = {
-    local(MZ = lift(M));
+liftSL2Z(M,N) =
+{
+    my(MZ = lift(M));
     if(gcd(gcd(MZ[2,1],MZ[2,2]),N) != 1,error(M," does not belong to SL2(Z/",N,"Z)."));
     if(N<=1,return(MZ));
-    local(mysol,mya,myb,myc=MZ[2,1],myd=MZ[2,2],myu=1,myv=1,myt,myg,myp);
+    my(mysol,mya,myb,myc=MZ[2,1],myd=MZ[2,2],myu=1,myv=1,myt,myg,myp);
     myg=gcd(myc,myd);
     if(myg != 1,
         myp = factor(myg)[,1];
@@ -60,8 +62,9 @@ an integer N and a beta as above and returns a form in Q^0_{D,N,beta} maping to 
 the bijection. For the moment, the function assumes m1=m2=1, otherwise returns an error.
 */
 
-Heegner_form(f,beta,N,m1=1,m2=1) = {
-    local(sol,m,a,b,c,D,M,r,s,t,u,T);
+Heegner_form(f,beta,N,m1=1,m2=1) =
+{
+    my(sol,m,a,b,c,D,M,r,s,t,u,T);
     a=f[1]; b=f[2]; c=f[3];
     D=b^2-4*a*c;
     m=gcd(gcd(N,beta),(beta^2-D)/4/N);
@@ -75,31 +78,34 @@ Heegner_form(f,beta,N,m1=1,m2=1) = {
     return(right_act(f,T));
 }
 
-sqrt_mod(D,M) = {
-    local(n=1,betas=[]);
+sqrt_mod(D,M) =
+{
+    my(n=1,betas=[]);
     while(n <= floor(M/2),if((n^2-D)%M == 0,betas=concat(betas,[n])); n+=1;);
     return(betas);
 }
 
-Heegner_forms(D,N,beta=[]) = {
+Heegner_forms(D,N,beta=[]) =
+{
     control(D);
     if(type(beta) != "t_INT", beta = sqrt_mod(D,4*N), beta=[beta]);
     if(length(beta) == 0, error("The pair (",D,",",N,") does not satisfy the Heegner hypothesis."));
     if((beta[1]^2-D)%(4*N) != 0, error("The integer ",beta[1]," is not a root of ",D," mod 4*",N));
-    local(forms);
-    forms = primitive_reduced_forms(D);
+    my(forms = primitive_reduced_forms(D));
     return(vector(length(forms),n,Heegner_form(forms[n],beta[1],N)));
 }
 
-Heegner_points(D,N,beta=[]) = {
-    local(Hforms=Heegner_forms(D,N,beta));
+Heegner_points(D,N,beta=[]) =
+{
+    my(Hforms = Heegner_forms(D,N,beta));
     return(vector(length(Hforms),n,tau(Hforms[n])));
 }
 
-reduced_forms(D) = {
-    local(b0 = D%2, fv,a,c,zv,n);
+reduced_forms(D) =
+{
+    my(b0 = D%2, fv,a,c,zv,n);
 
-    if(D >= 0 || D%4 > 1, return([]));
+    control(D);
 
     fv = [[1,b0,(b0^2-D)/4]];
     forstep(b = b0, floor(sqrt(-D/3)), 2,
@@ -115,10 +121,9 @@ reduced_forms(D) = {
     return(fv);
 }
 
-primitive_reduced_forms(D) = {
-    local(forms, prim);
-    prim = [];
-    forms = reduced_forms(D);
+primitive_reduced_forms(D) = 
+{
+    my(forms = reduced_forms(D), prim = []);
     for(i=1, length(forms),
         if(gcd(gcd(forms[i][1],forms[i][2]),forms[i][3]) == 1,
            prim = concat(prim,[forms[i]])
@@ -127,34 +132,34 @@ primitive_reduced_forms(D) = {
     return(prim);
 }
 
-tau(f) = return((-f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2/f[1]);
+tau(f) = (-f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2/f[1];
 
-reduced_roots(D) = {
-    local(forms,taus);
-    taus = [];
-    forms = reduced_forms(D);
+reduced_roots(D) =
+{
+    my(forms = reduced_forms(D),taus = []);
     for(i=1, length(forms),taus = concat(taus,[tau(forms[i])]));
     return(taus);
 }
 
-primitive_reduced_roots(D) = {
-    local(forms,taus);
-    taus = [];
-    forms = primitive_reduced_forms(D);
-    for(i=1, length(forms),taus = concat(taus,[tau(forms[i])]));
+primitive_reduced_roots(D) =
+{
+    my(forms=primitive_reduced_forms(D),taus=[]);
+    for(i=1, #forms,taus = concat(taus,[tau(forms[i])]));
     return(taus);
 }
 
-class_nbr(D) = length(primitive_reduced_forms(D));
+class_nbr(D) = #primitive_reduced_forms(D);
 
-wD(D) = {
+wD(D) =
+{
     if(D%4 > 2, error("Not a discriminant."));
     if(D == -3, return(6),
     if(D == -4, return(4),
                 return(2)))
 }
 
-wQ(f) = {
+wQ(f) =
+{
     if(f[1] == f[2] && f[2] == f[3], return(6),
     if(f[1] == f[3] && f[2] == 0,    return(4),
                                      return(2)))
@@ -163,14 +168,16 @@ wQ(f) = {
 
 norm_class_nbr(D) = 2*class_nbr(D)/wD(D);
 
-Hurwitz_class_nbr(D) = {
+Hurwitz_class_nbr(D) =
+{
     error("Not implemented yet.")
 }
 
-genus_nbr(D) = {
-    local(r,n,mu);
+genus_nbr(D) =
+{
+    my(r,n,mu);
     if(D>=0 || D%4 > 1, return(-1));
-    if(D%2 == 0, r=omega(-D)-1,r=omega(-D));
+    r = omega(-D) - (D%2 == 0);
     if(D%4 == 1, return(2^(r-1)));
     n = floor(-D/4);
     if(n%4 == 3,mu=r);
@@ -179,8 +186,9 @@ genus_nbr(D) = {
     return(2^(mu-1));
 }
 
-two_torsion(D) = {
-    local(forms);
+two_torsion(D) =
+{
+    my(forms, fv);
     forms = primitive_reduced_forms(D);
     fv = [forms[1]];
     for(i=2, length(forms),
@@ -193,7 +201,8 @@ two_torsion(D) = {
 
 \\ Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
 \\ modular forms by Zagier. Tested for D = -4.
-CSperiod(D) = {
-    if(D%4 > 2, error("Not a discriminant."));
+CSperiod(D) =
+{
+    control(D);
     return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/class_nbr(D))/sqrt(2*Pi*abs(D)));
 }
