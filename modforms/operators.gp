@@ -64,8 +64,5 @@ bracket(p:small) =
 }
 addhelp(bracket,"bracket(p): Returns the bracket operator *^[p]=1-U_pV_p on modular forms.");
 
-cohen(f,k:small,g,l:small) =
-{
-    return(mfadd(mfmul(k,mfmul(f,d(g))),mfmul(-l,mfmul(d(f),g))));
-}
-addhelp(cohen,"cohen(f,k,g,l): Return the Cohen brancket of thw two modular forms f and g of weigh k and l, respectively.");
+rankincohen(f,k:small,g,l:small) = mfadd(mfmul(k,mfmul(f,d(g))),mfmul(-l,mfmul(d(f),g)));
+addhelp(rankincohen,"rankincohen(f,k,g,l): Return the Rankin-Cohen brancket of the two modular forms f and g of weigh k and l, respectively.");
