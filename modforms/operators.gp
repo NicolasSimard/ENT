@@ -23,17 +23,18 @@ V(p:small) =
 }
 addhelp(V,"V(p): Returns the operator V_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
 
-d(f) =
+d(f,t=0) =
 {
     if(type(f) == "t_SER",
-        return('q*f');,
+        error("Not implemented yet!");,
         if(type(f) == "t_CLOSURE",
-            return(n -> n*f(n));,
+            if(t < 0 && f(0) != 0, error("Has to be a cusp form"));
+            return(n -> if(n == 0, 0, f(n)*n^t));,
             error("Wrong type for operator d: ",type(f));
         );
     );
 }
-addhelp(d,"d(f): Operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
+addhelp(d,"d(f,{t=0}): Operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way. If the optionnal parameter t is >0, applies the d operator t times. If t < 0, applies the inverse operator (formal integration), which makes sense for p-adic cusp forms.");
 
 mfadd(f,g) = 
 {
@@ -58,10 +59,7 @@ mfmul(f,g) =
 }
 addhelp(mfmul,"mfmul(f,g): Returns the product of two modular forms or the product of a scalar and a modular form. Returns the same type as the input (either a power series or a closure).");
 
-bracket(p:small) =
-{
-    f -> mfadd(f,mfmul(-1,V(p)(U(p)(f))));
-}
+bracket(p:small) = f -> mfadd(f,mfmul(-1,V(p)(U(p)(f))));
 addhelp(bracket,"bracket(p): Returns the bracket operator *^[p]=1-U_pV_p on modular forms.");
 
 rankincohen(f,k:small,g,l:small) = mfadd(mfmul(k,mfmul(f,d(g))),mfmul(-l,mfmul(d(f),g)));
