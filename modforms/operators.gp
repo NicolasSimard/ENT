@@ -26,7 +26,8 @@ addhelp(V,"V(p): Returns the operator V_p on modular forms of level 1. Takes mod
 d(f,t=0) =
 {
     if(type(f) == "t_SER",
-        error("Not implemented yet!");,
+        if(t < 0 || type(t) != "t_INT", error("Not implemented yet!"));
+        if(t == 0, return('q*f'), return(d(f,t-1))),
         if(type(f) == "t_CLOSURE",
             if(t < 0 && f(0) != 0, error("Has to be a cusp form"));
             return(n -> if(n == 0, 0, f(n)*n^t));,
