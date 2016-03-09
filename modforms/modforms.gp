@@ -46,7 +46,7 @@ addhelp(theta1_qexp,"theta1_qexp(k): Returns the q-expansion of the theta series
 mftheta1(n) = my(d); if(n==0, 1, if(issquare(n,&d),2*(-1)^d,0));
 addhelp(mftheta1,"mftheta1(n): nth Fourrier coefficient of the theta1 series (=sum_{n\in\Z} (-1)^n*q^(n^2)) of weight 1/2");
 
-delta(n) = polcoeff(delta_qexp(n+1),n,'q);
+delta(n) = if(version[2] >= 8, print("ram"); ramanujantau(n), polcoeff(delta_qexp(n+1),n,'q));
 addhelp(delta,"delta: Returns the modular form delta. Modular forms are represented\nas functions sending n to their nth Fourrier coefficient.");
 
 delta_qexp(pr:small) = 'q*sqr(sqr(sqr(eta3_qexp(pr-1))));
@@ -61,14 +61,25 @@ addhelp(clos2qexp,"cols2qexp(f,pr): Return the q-expansion attached to the closu
 qexp2clos(f) = n -> polcoeff(f,n,'q);
 addhelp(qexp2clos,"qexp2clos(f): Returns the closure attached to the q-expansion of f.");
 
-fi(i:small, pr:small = 10) =
+fi(i:small, pr:small = 15) =
 {
     if(i%4 != 0 && i%4 != 3, error("Wrong value for i: has to be cong to 0 or 3 mod 4."));
-    my(fis = [], f0, f3);
-    f0 = theta_qexp(pr);
-    if(i == 0, return(f0));
-    f3 = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))-5*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
-    f3 = (f3+1096*f0)/-10;
-    if(i == 3, return(f3));
+    my(fis = vector(i+1), tmp); \\ fis[i] = f_{i-1}, so f_i = fis[i+1]
+    if(i == 0, return(theta_qexp(pr)), fis[1] = theta_qexp(pr));
+    tmp = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))/2-10*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
+    tmp = (tmp+608*fis[1])/-20;
+    if(i == 3, return(tmp), fis[4] = tmp);
     j4 = V(4)(j_qexp(pr));
+    for(j = 4, i,
+        if(j%4 == 0 || j%4 == 3,
+            tmp = j4*fis[j-4+1];
+            for(n = -j + 1, 0,
+                if((-n)%4 == 0 || (-n)%4 == 3, 
+                    tmp -= polcoeff(tmp,n,'q)*fis[-n+1]
+                );
+            );
+            fis[j+1] = tmp;
+        );
+    );
+    fis[i+1];
 }
