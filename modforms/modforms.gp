@@ -55,6 +55,18 @@ addhelp(delta_qexp,"delta_qexp(k): Returns the q-expansion of the delta series u
 j_qexp(pr:small) = E_qexp(4,pr+2)^3/delta_qexp(pr+2);
 addhelp(j_qexp,"j_qexp(pr): Returns the q-expansion of the j-invariant up to precision pr.");
 
+jpol(f) =
+{
+    my(k=-valuation(f,'q));
+    if(k <=  0, return(f));
+    j=j_qexp(k);
+    js=vector(k+1,n,j^(k+1-n));
+    M=matrix(k+1,k+1,n,m,polcoeff(js[m],n-k-1,'q));
+    B=vector(k+1,n,polcoeff(f,n-k-1,'q));
+    return(Pol(matsolve(M,B~),'X));
+}
+addhelp(jpol,"jpol(f): Given a q-expansion f(q) with enough coefficients, returns a polynomial g(Y) such that g(j)=f, where j is the j-function.");
+
 clos2qexp(f,pr:small) = Ser(vector(pr,n,f(n-1)),'q);
 addhelp(clos2qexp,"cols2qexp(f,pr): Return the q-expansion attached to the closure representation of f up to precision pr.");
 
@@ -64,7 +76,7 @@ addhelp(qexp2clos,"qexp2clos(f): Returns the closure attached to the q-expansion
 fi(i:small, pr:small = 15) =
 {
     if(i%4 != 0 && i%4 != 3, error("Wrong value for i: has to be cong to 0 or 3 mod 4."));
-    my(fis = vector(i+1), tmp); \\ fis[i] = f_{i-1}, so f_i = fis[i+1]
+    my(fis = vector(i+1), tmp, j4); \\ fis[i] = f_{i-1}, so f_i = fis[i+1]
     if(i == 0, return(theta_qexp(pr)), fis[1] = theta_qexp(pr));
     tmp = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))/2-10*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
     tmp = (tmp+608*fis[1])/-20;
@@ -82,4 +94,41 @@ fi(i:small, pr:small = 15) =
         );
     );
     fis[i+1];
+}
+
+fi2(i:small, pr:small = 20) =
+{
+    if(i%4 != 0 && i%4 != 3, error("Wrong value for i: has to be cong to 0 or 3 mod 4."));
+    my(g1, g1quot, g4, g4quot, j4, j4pow, f0, f3, fi = 0);
+    if(i == 0, return(theta_qexp(pr)), f0 = theta_qexp(pr));
+    f3 = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))/2-10*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
+    f3 = (f3+608*f0)/-20;
+    if(i == 3, return(f3));
+    
+    j4 = V(4)(j_qexp(pr));
+    g1 = theta1_qexp(pr)*V(4)(E_qexp(4,pr))/V(4)(eta3_qexp(pr))^2/'q;
+    g4 = (10*d(g1)*V(4)(E_qexp(10,pr))-3/2*g1*d(V(4)(E_qexp(10,pr))))/V(4)(delta_qexp(pr));
+    g4 = (g4 + (10*j4-21344)*g1)/-20;
+
+    j4pow = 1;
+    g1quot = g1/j4;
+    g4quot = g4/j4;
+
+    for(n =0, i\4 - (i%4 == 0),
+        fi += polcoeff(g4quot,i,'q)*j4pow*f0 + polcoeff(g1quot,i,'q)*j4pow*f3;
+        j4pow *= j4;
+        g1quot /= j4;
+        g4quot /= j4;
+    );
+    fi += polcoeff(g4quot,i,'q)*j4pow*f0;
+}
+
+H_D(D) =
+{
+    if(default(echo),print("Computing fd."));
+    my(HD = HKclass_nbr(D), fd = fi(-D,ceil(HD)^2+abs(D)+2));
+    if(default(echo),print("Computing Borcherds product."));
+    p = 'q^-HD*prod(n=1,HD,(1-'q^n+O('q^(HD+1)))^polcoeff(fd,n^2,'q));
+    if(default(echo),print("Computing jpol."));
+    jpol(p);
 }
