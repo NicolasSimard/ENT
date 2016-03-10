@@ -11,17 +11,17 @@ U(p:small) =
 }
 addhelp(U,"U(p): Returns the operator U_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
 
-V(p:small) =
+V(p:small,j:small=1) =
 {
     f -> if(type(f) == "t_SER",
-        return(substpol(f,'q,'q^p));,
+        return(substpol(f,'q,'q^(p^j)));,
         if(type(f) == "t_CLOSURE",
-            return(n -> if(n%p != 0,0,f(n/p)));,
-            error("Wrong type for operator V_",p,":",type(f));
+            return(n -> if(n%p^j != 0,0,f(n/(p^j))));,
+            error("Wrong type for operator V_",p,"^(",j,"):",type(f));
         );
     );
 }
-addhelp(V,"V(p): Returns the operator V_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way.");
+addhelp(V,"V(p,{j=1}): Returns the operator V_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way. If the optionnal parameter j is not 1, returns the jth itterate of the V operator.");
 
 d(f,t=0) =
 {
