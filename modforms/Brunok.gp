@@ -20,7 +20,7 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
 
     pr = if(type(f) == "t_SER", poldegree(truncate(f),'q)+1, [1]);
 
-    profile = [5,25,match];
+    profile = [match];
 
     phiN = eulerphi(N);
     
@@ -40,12 +40,15 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
         while(m <= #profile,
             \\ If profile[m] is not an integer, f is a series, so pr is defined 
             bound = if(type(profile[m]) == "t_INT", d + profile[m], pr);
+            kill(basis);
             basis = victor_miller_basis(k,bound,N,0); \\ The basis is not reduced
             if(m == 1,
-                my(M,B);
-                M = matrix(d,d,i,j,polcoeff(basis[j],i-1,'q));
-                B = if(type(f) == "t_SER", vector(d,i,polcoeff(f,i-1,'q)), vector(d,i,f(i-1)));
-                X = matsolve(M,B~);
+                X = if(type(f) == "t_SER", vector(d,i,polcoeff(f,i-1,'q)), vector(d,i,f(i-1)));
+                for(i=1,d-1,
+                    for(j=i+1,d,
+                        X[j] -= polcoeff(basis[i],j-1,'q)*X[i];
+                    );
+                );
             );
             while(n < bound && sum(i=1,d,X[i]*polcoeff(basis[i],n,'q)) == Mod(if(type(f) == "t_SER", polcoeff(f,n,'q), f(n)),N),
                 n += 1;
