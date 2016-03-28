@@ -23,11 +23,11 @@ V(p:small,j:small=1) =
 }
 addhelp(V,"V(p,{j=1}): Returns the operator V_p on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way. If the optionnal parameter j is not 1, returns the jth itterate of the V operator.");
 
-d(f,t=0) =
+d(f,t=1) =
 {
     if(type(f) == "t_SER",
-        if(t < 0 || type(t) != "t_INT", error("Not implemented yet!"));
-        if(t == 0, return('q*f'), return(d(f,t-1))),
+        my(v = valuation(f,'q), coeff = Vec(f));
+        return(Ser(concat(vector(v),vector(#coeff,n,coeff[n]*(n+v-1)^t)),'q));,
         if(type(f) == "t_CLOSURE",
             if(t < 0 && f(0) != 0, error("Has to be a cusp form"));
             return(n -> if(n == 0, 0, f(n)*n^t));,
@@ -35,7 +35,7 @@ d(f,t=0) =
         );
     );
 }
-addhelp(d,"d(f,{t=0}): Operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way. If the optionnal parameter t is >0, applies the d operator t times. If t < 0, applies the inverse operator (formal integration), which makes sense for p-adic cusp forms.");
+addhelp(d,"d(f,{t=1}): Operator d=q*d/dq on modular forms of level 1. Takes modular forms as input\n(represented as a power series or a closure) and returns a modular form represented in the same way. If the optionnal parameter t is >0, applies the d operator t times. If t < 0, applies the inverse operator (formal integration), which makes sense for p-adic cusp forms.");
 
 mfadd(f,g) = 
 {
