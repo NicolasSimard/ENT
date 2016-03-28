@@ -56,7 +56,7 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
             \\ At this point, n <= bound.
             if(n < bound,
                 break();, \\ Break the inner while
-                if(m == #profile, return([k,n-d]));
+                if(m == #profile, return([(k-w)/phiN,k,n-d]));
             );
             m += 1;
         );
@@ -77,8 +77,8 @@ find_seq(f,w,p,M,match='auto,known_seq=[]) =
         seq = known_seq;
     );
     for(n=#seq+1,M,
-        k = find_min_k(f,w,p^n,match,[seq[n-1][1],[1]]);
-        if(k[1] != -1,
+        k = find_min_k(f,w,p^n,match,[seq[n-1][2],[1]]);
+        if(k != -1,
             seq = concat(seq,[k]);
             print("k_{",p,"^",n,"}=",seq[n]);,
             print("***The sequence could not be computed up to ",p,"^",M,". ***");
