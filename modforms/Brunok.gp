@@ -6,7 +6,7 @@ pjVjE2star(p,j) = mfmul(p^j,V(p,j)(E2star(p)));
 
 find_min_k(f,w,N,match='auto,k_range=[0,[1]]) =
 {
-    my(phiN,X,m,n,d,pr,k,bound,profile);
+    my(phiN,X,m,n,d,pr,k,vf,p,bound,profile);
 
     \\ Checking parameters
     if(type(f) != "t_SER" && type(f) != "t_CLOSURE",error("*** Invalid type for f: ",type(f),". Has to be a modular form.***"));
@@ -15,20 +15,23 @@ find_min_k(f,w,N,match='auto,k_range=[0,[1]]) =
 
     if(type(k_range[2]) == "t_INT" && k_range[1] > k_range[2],error("*** Invalid range for k: ",k_range,".***"));
 
-    \\ Check weight 0
-    if(k_range[1] == 0,
-        if(type(f) == "t_SER" && Mod(1,N)*truncate(f) == Mod(0,N), return([0,0,poldegree(truncate(f),'q)]));
-        if(type(f) == "t_CLOSURE" && Mod(1,N)*clos2qexp(f,1000) == Mod(0,N)+O('q^1000), return([0,0,1000]));
-    );
+    if(!isprimepower(N,&p),error("***N has to be a prime power.***"));
     
     \\ Initializing algorithm
     if(type(match) != "t_INT", match = if(type(f) == "t_SER", [1], 250));
 
-    pr = if(type(f) == "t_SER", poldegree(truncate(f),'q)+1, [1]);
+    pr = if(type(f) == "t_SER", poldegree(truncate(f),'q)+1, [1]); \\Improve
 
     profile = [match];
+    
+    \\compute p-adic valuation of f
+    vf = if(type(f) == "t_SER",valuation(f,p),valuation(clos2qexp(f,2000),p));
+    
+    \\ Check weight 0
+    if(k_range[1] == 0 && valuation(N,p) <= vf, return([0,0,match]));
 
-    phiN = eulerphi(N);
+    \\ Check other weights
+    phiN = eulerphi(N/p^vf);
     
     k = ceil((k_range[1]-w)/phiN)*phiN + w; \\ smallest number >= k_min and cong to w mod phiN
     \\ Start of the main routine    
