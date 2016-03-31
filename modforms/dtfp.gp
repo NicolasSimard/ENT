@@ -1,23 +1,17 @@
-dtfp(p,N,f) =
+seq_matrix(out,F,w,p,N,range) =
 {
-    my(M=[]);
-    for(t=0,10,
-        my(dfp);
-        dfp=d(bracket(p)(f),-1-t);
-        M=concat(M,find_seq(dfp,10-2*t,p,N,250));
+    my(L=[],M);
+    for(t=range[1],range[2],
+        L=concat(L,find_seq(F(t),w(t),p,N,250));
     );
-    matrix(N,11,n,t,M[N*(t-1)+n])
+    M=matrix(N,range[2]-range[1]+1,n,t,L[N*(t-1)+n]);
+    if(out == "pari", return(M));
+    write("out.tmp",M);
+    system(Str("python mat_to_md.py ","out.tmp ",p," ",range[1]," ",range[2]," ",out));
+    system("del out.tmp")
 }
-
-seq_matrix(out,p,i,j,F,w) =
-{
-    my(M=[],cmd);
-    for(t=1,j,
-        M=concat(M,find_seq(F(i,j),w(i,j),p,i,250));
-    );
-    M=matrix(i,j,x,y,M[i*y+x]);
-    write("tmp",M);
-    cmd = concat("python mat_to_md.py ",p);
-    cmd = concat(cmd," tmp");
-    system(cmd);
-}
+addhelp(seq_matrix,"seq_matrix(out,F,w,p,N,range): Unless out=pari, this "\
+"function does not return anything. What it does is compute a matrix M where "\
+"M[i,j]=find_min_k(F[j],w[j],p^i) for 1<=i<=N and range[1]<=j<=range[2]. Then "\
+"it either prints this matrix to the screen, or calls the python script "\
+"mat_to_md.py to convert this matrix to a markdown table and then prints it to out.");
