@@ -69,7 +69,7 @@ E_2^2  |(2:40) |(2:688)|(2:13000)
 E_2^3  |(3:60) |(2:690)|(2:13002)
 
 
-### Data for the values of K_{p^n}(V^j(E_2^*)) for varying primes and values of j
+### Data for the filtration of V^j(E_2^*) for varying primes and values of j
 
 p^n\j  |0      |1      |2      |3      |4      |5      |6      |7
 -------|-------|-------|-------|-------|-------|-------|-------|-------
@@ -112,7 +112,7 @@ p^n\j  |0      |1      |2
 13^4    |(1:26366)|(1:26366)|(1:26366)
 
 
-### Data for the values of K_{p^n}(p^jV^j(E_2^*)) for varying primes and values of j
+### Data for the filtration of p^jV^j(E_2^*) for varying primes and values of j
 
 p^n\j   |    0    |    1    |    2    |    3    |    4    |    5    |    6    |    7    |    8
 --------|---------|---------|---------|---------|---------|---------|---------|---------|---------
@@ -157,7 +157,7 @@ p^n\j   |    0    |    1    |    2
 13^2    |(1:  158)|(2:  314)|(1:  158)
 13^3    |(1: 2030)|(1: 2030)|(2: 4058)
 
-### Data for the values of K_{p^n}(d^(-1-t)(delta^[p])) for 0 <= t<= 10
+### Data for the filtrations of d^(-1-t)(delta^[p]) for 0 <= t <= 10 and for varying primes
 
 p^n\t    |        0|        1|        2|        3|        4|        5|        6|        7|        8|        9|       10
 ---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------
