@@ -2,7 +2,7 @@
 
 ### Links to the tables
 1. [Filtration of E_2^j](https://github.com/NicolasSimard/ENT/blob/master/modforms/Normalized_sequence_data.md#data-for-the-filtration-sequence-attached-to-e_2j-for-different-primes-and-different-values-of-j)
-2. [Filtration of V^j(E_2^\*)](https://github.com/NicolasSimard/ENT/blob/master/modforms/Normalized_sequence_data.md#data-for-the-filtration-of-vje_2-for-varying-primes-and-values-of-j-not-updated-yet)
+2. [Filtration of V^j(E_2^\*)](https://github.com/NicolasSimard/ENT/blob/master/modforms/Normalized_sequence_data.md#data-for-the-filtration-of-vje_2-for-varying-primes-and-values-of-j)
 3. [Filtration of (pV)^j(E_2^\*)](https://github.com/NicolasSimard/ENT/blob/master/modforms/Normalized_sequence_data.md#data-for-the-filtration-of-pvje_2-for-varying-primes-and-values-of-j)
 4. [Filtration of d^(-1-t)(delta^[p])](https://github.com/NicolasSimard/ENT/blob/master/modforms/Normalized_sequence_data.md#data-for-the-filtrations-of-d-1-tdeltap-for-0--t--10-and-for-varying-primes)
 5. [Filtration of d^(-1-t)(delta^[p])\*delta]()
