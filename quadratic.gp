@@ -155,15 +155,14 @@ wD(D) =
     if(D%4 > 2, error("Not a discriminant."));
     if(D == -3, return(6),
     if(D == -4, return(4),
-                return(2)))
+                return(2)));
 }
 
 wQ(f) =
 {
     if(f[1] == f[2] && f[2] == f[3], return(6),
     if(f[1] == f[3] && f[2] == 0,    return(4),
-                                     return(2)))
-
+                                     return(2)));
 }
 
 norm_class_nbr(D) = 2*class_nbr(D)/wD(D);
