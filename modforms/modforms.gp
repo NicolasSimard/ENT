@@ -5,6 +5,8 @@ Some modular forms can also be represented as Fourrier series directly. This is
 often faster than computing every Fourrier coefficient one after the other. For
 example, delta_qexp(1000) is much faster than Ser(vector(1000,n,delta(n))).*/
 
+\r operators.gp
+
 clos2qexp(f,pr:small) = Ser(vector(pr,n,f(n-1)),'q);
 addhelp(clos2qexp,"cols2qexp(f,pr): Return the q-expansion attached to the closure representation of f up to precision pr.");
 
@@ -57,7 +59,7 @@ addhelp(j_qexp,"j_qexp(pr): Returns the q-expansion of the j-invariant up to pre
 
 jpol(f) =
 {
-    my(k=-valuation(f,'q));
+    my(j,js,M,B,k=-valuation(f,'q));
     if(k <=  0, return(f));
     j=j_qexp(k);
     js=vector(k+1,n,j^(k+1-n));
@@ -121,14 +123,4 @@ fi2(i:small, pr:small = 20) =
         g4quot /= j4;
     );
     fi += polcoeff(g4quot,i,'q)*j4pow*f0;
-}
-
-H_D(D) =
-{
-    if(default(echo),print("Computing fd."));
-    my(HD = HKclass_nbr(D), fd = fi(-D,ceil(HD)^2+abs(D)+2));
-    if(default(echo),print("Computing Borcherds product."));
-    p = 'q^-HD*prod(n=1,HD,(1-'q^n+O('q^(HD+1)))^polcoeff(fd,n^2,'q));
-    if(default(echo),print("Computing jpol."));
-    jpol(p);
 }
