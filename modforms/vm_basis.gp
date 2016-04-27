@@ -4,6 +4,7 @@ victor_miller_basis(k:small,pr:small=10,N:small=0,reduce:small=1) =
 {
     my(n:small,e:small,ls,A,E6,E6_squared,D,Eprod,Dprod);
     if(k%2 == 1,error("The weight ",k," must be even."));
+    if(k==0, return([1+O('q^pr)]));
 
     e=k%12 + 12*(k%12 == 2);
     n=(k-e)/12;

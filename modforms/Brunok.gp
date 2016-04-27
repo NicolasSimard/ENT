@@ -4,29 +4,37 @@
 E2star(p) = mfadd(E(2),mfmul(-p,V(p)(E(2))));
 pjVjE2star(p,j) = mfmul(p^j,V(p,j)(E2star(p)));
 
-find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
+find_min_k(f,w,N,match='auto,k_range=[0,[1]]) =
 {
-    my(phiN,X,m,n,d,pr,k,bound,profile);
+    my(phiN,X,m,n,d,pr,k,vf,p,bound,profile);
 
     \\ Checking parameters
     if(type(f) != "t_SER" && type(f) != "t_CLOSURE",error("*** Invalid type for f: ",type(f),". Has to be a modular form.***"));
 
-    if(k_range[1] < 4,error("*** k_range[1] has to be >= 4.***"));
+    if(k_range[1] < 0,error("*** k_range[1] has to be >= 0.***"));
 
     if(type(k_range[2]) == "t_INT" && k_range[1] > k_range[2],error("*** Invalid range for k: ",k_range,".***"));
 
+    if(!isprimepower(N,&p),error("***N has to be a prime power.***"));
+    
     \\ Initializing algorithm
     if(type(match) != "t_INT", match = if(type(f) == "t_SER", [1], 250));
 
-    pr = if(type(f) == "t_SER", poldegree(truncate(f),'q)+1, [1]);
+    pr = if(type(f) == "t_SER", poldegree(truncate(f),'q)+1, [1]); \\Improve
 
     profile = [match];
+    
+    \\compute p-adic valuation of f
+    vf = if(type(f) == "t_SER",valuation(f,p),valuation(clos2qexp(f,2000),p));
+    
+    \\ Check weight 0
+    if(k_range[1] == 0 && valuation(N,p) <= vf, return([0,0,match]));
 
-    phiN = eulerphi(N);
+    \\ Check other weights
+    phiN = eulerphi(N/p^vf);
     
     k = ceil((k_range[1]-w)/phiN)*phiN + w; \\ smallest number >= k_min and cong to w mod phiN
-    
-    \\ Start of the main routine
+    \\ Start of the main routine    
     while(type(k_range[2]) != "t_INT" || k <= k_range[2],
         d = floor(k/12) + (k%12 != 2); \\ = dim M_k
 
@@ -56,7 +64,7 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
             \\ At this point, n <= bound.
             if(n < bound,
                 break();, \\ Break the inner while
-                if(m == #profile, return([k,n-d]));
+                if(m == #profile, return([(k-w)/phiN,k,n-d]));
             );
             m += 1;
         );
@@ -65,7 +73,7 @@ find_min_k(f,w,N,match='auto,k_range=[4,[1]]) =
     print("Impossible to match series with ",match," coefficients for a weight between ",min_k," and ",max_k," modulo ",N,".");
     return(-1);
 }
-addhelp(find_min_k,"find_min_k(f,w,N,{match='auto},{k_range=[4,[1]]}): Returns the minimal weight k such that the modular form f of weight w is congruent to a modular form of weight k modulo N. If the optional parameter match is set to 'auto (default), the algorithm will match all the available coefficients if f is represented by a power series and will match 200 coefficients if f is represented by a closure. Setting match to an integer forces the algorithm to stop after match coefficients match. The optional parameter k_range forces the algorithm to look for k in k_range only. The value [1] in k_range represents infinity (i.e. don't stop until a weight is found).");
+addhelp(find_min_k,"find_min_k(f,w,N,{match='auto},{k_range=[0,[1]]}): Returns the minimal weight k such that the modular form f of weight w is congruent to a modular form of weight k modulo N. If the optional parameter match is set to 'auto (default), the algorithm will match all the available coefficients if f is represented by a power series and will match 200 coefficients if f is represented by a closure. Setting match to an integer forces the algorithm to stop after match coefficients match. The optional parameter k_range forces the algorithm to look for k in k_range only. The value [1] in k_range represents infinity (i.e. don't stop until a weight is found).");
 
 find_seq(f,w,p,M,match='auto,known_seq=[]) =
 {
@@ -77,8 +85,8 @@ find_seq(f,w,p,M,match='auto,known_seq=[]) =
         seq = known_seq;
     );
     for(n=#seq+1,M,
-        k = find_min_k(f,w,p^n,match,[seq[n-1][1],[1]]);
-        if(k[1] != -1,
+        k = find_min_k(f,w,p^n,match,[seq[n-1][2],[1]]);
+        if(k != -1,
             seq = concat(seq,[k]);
             print("k_{",p,"^",n,"}=",seq[n]);,
             print("***The sequence could not be computed up to ",p,"^",M,". ***");
