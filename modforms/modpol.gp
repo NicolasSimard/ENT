@@ -32,15 +32,13 @@ psi_m(m,pr=200,verbose=0) = {
 sigma^+(m)=sum_{d|m} max(d,m/d). */
 psi_mX(m,pr=200,verbose=0) = subst(psi_m(m,pr,verbose),'Y,'X);
 
-/* Given a q-expansion f(q) with enough coefficients, returns a polynomial
-g(Y) such that g(j)=f, where j is the j-function.
-*/
-j_pol(f) = {
-    my(k=-valuation(f,'q));
-    if(k <=  0, return(f));
-    j=j_qexp(k);
-    js=vector(k+1,n,j^(k+1-n));
-    M=matrix(k+1,k+1,n,m,polcoeff(js[m],n-k-1,'q));
-    B=vector(k+1,n,polcoeff(f,n-k-1,'q));
-    return(Pol(matsolve(M,B~),'Y));
+H_D(D) =
+{
+    if(issquare(abs(D)) || issquare(abs(D)/3), error("Not implemented yet!"));
+    \\print("Computing fd.");
+    my(HD = class_nbr(D), fd = fi(-D,ceil(HD)^2+abs(D)+2), p);
+    \\print("Computing Borcherds product.");
+    p = 'q^-HD*prod(n=1,HD,(1-'q^n+O('q^(HD+1)))^polcoeff(fd,n^2,'q));
+    \\print("Computing jpol.");
+    jpol(p);
 }
