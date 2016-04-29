@@ -1,38 +1,4 @@
-/*Terms of the Fourier expansion of the non-holomorphic Eisenstein series
-G_2l(z,s-2l).*/
-
-term1(l,z,s) = 2*imag(z)^(s-2*l)*zeta(2*s-2*l);
-
-zetastar(s) = Pi^(-s)*gamma(s/2)*zeta(s);
-
-term2(l,z,s) = 
-{
-    if(s <= 0, return(0));
-    2*(-1)^l*imag(z)^(s-2*l)*Pi^(s-l)/gamma(s)*prod(k=1,l,s-l-k)*zetastar(2*s-2*l-1);
-}
-
-term3(l,z,s) =
-{
-    my(S);
-    if(s <= 0, return(0));
-    S = suminf(n=1,sigma(n,2*s-2*l-1)*exp(2*Pi*I*n*z)*hyperu(s-2*l,2*s-2*l,4*Pi*imag(z)*n));
-    2*(-1)^l*(2*Pi)^(2*s-2*l)*imag(z)^(s-2*l)/gamma(s)*S;
-}
-
-term4(l,z,s) =
-{
-    my(S);
-    if(s <= 2*l, return(0));
-    S = suminf(n=1,sigma(n,2*s-2*l-1)*exp(-2*Pi*I*n*conj(z))*hyperu(s,2*s-2*l,4*Pi*imag(z)*n));
-    2*(-1)^l*(2*Pi)^(2*s-2*l)*imag(z)^(s-2*l)/gamma(s-2*l)*S;
-}
-
-\\Note: Eisen(l,z,s)=G_2l(z,s-2l)
-Eisen(l,z,s) = term1(l,z,s)+term2(l,z,s)+term3(l,z,s)+term4(l,z,s);
-
-/*
-ida=[a,(b+sqrt(D))/2], where a=N(ida), b is determined mod 2a and b^2=D mod 4a.
-*/
+/*ida=[a,(b+sqrt(D))/2], where a=N(ida), b is determined mod 2a and b^2=D mod 4a.*/
 partial_Hecke(ida,l,s) = ida[1]^(-s)*imag(ida[2])^(2*l-s)*Eisen(l,ida[2]/ida[1],s)/2;
 
 \r non-holo-Eisenstein.gp
@@ -41,7 +7,32 @@ myzetaK(D,s) =
 {
     my(S=0,forms=reduced_forms(D));
     for(n=1,#forms,
-        S += nonholoG(0,tau(forms[n]),s);
+        S += nonholoG(0,(forms[n][2]+sqrt(D))/2/forms[n][1],s);
     );
-    (2/sqrt(abs(D)))^s*S/2;
+    (2/sqrt(abs(D)))^s*S/wD(D);
+}
+
+/* Hecke L-function of a Hecke character char of conductor 1 and infinity type t, i.e.
+char:I_K--->C^\times is a group homomorphism from the group of fractional ideals
+to C^\times such that psi((x))=x^t for all x in K. Note that when disc(K) < -4,
+such a character is well-defined if and only if t=2l is even.
+
+char is given as a list of pairs [ida,psi(ida)], one for each representative ida of ClK.
+Note that ida has to be given as a Z-basis [a,(b+sqrt(D))/2], where a=N(ida), b is
+determined mod 2a and b62=D mod 4a.
+*/
+quadHeckeL(char,t,s) =
+{
+    my(S,sqrtD);
+    \\char[n] = [ida,psi(ida)]
+    S = sum(n=1,#char,char[n][2]/char[n][1][1]^t*nonholoG(t,char[n][1][2]/char[n][1][1],s-t));
+    sqrtD = 2*imag(char[1][1][2]);
+    (2/sqrtD)^(s-t)*S/wD(-round(sqrtD^2));
+}
+addhelp(quadHeckeL,"quadHeckeL(char,t,s): char=[[ida1,chi(ida1)],...,[idah,psi(idah)]],t=type.")
+
+trivHecke(D) =
+{
+    my(forms=reduced_forms(D));
+    vector(#forms,n,[ida(forms[n]),1]);
 }
