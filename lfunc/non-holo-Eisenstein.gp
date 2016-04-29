@@ -14,9 +14,9 @@ GProd(k,s) =
     return(gamma(s+k/2)/gamma(s+k)/gamma(s));
 }
 
-zetastar(s) = Pi^(-s)*gamma(s/2)*zeta(s);
+zetastar(s) = Pi^(-s/2)*gamma(s/2)*zeta(s);
 
-MiyakeD(k,s) = 2*Pi^(s+k/2)*I^-k*GProd(k,s)*zetastar(2*s+k-1);
+MiyakeD(k,s) = 2*Pi^(s+k/2)*I^-k*if(s == 1-k/2,4*sqrt(Pi)*(-1)^(k/2-1)/k,GProd(k,s)*zetastar(2*s+k-1));
 
 Miyakean(n,k,s) = sigma(n,k+2*s-1);
 
@@ -30,5 +30,11 @@ MiyakeE(k,z,s) =
     + MiyakeA(k,s)*imag(z)^-s*MiyakeSum1(k,z,s)
     + MiyakeB(k,s)*imag(z)^(-s-k)*MiyakeSum2(k,z,s);
 }
+addhelp(MiyakeE,"MiyakeE(k,z,s): Non-holomorphic Eisenstein series defined as in Miyake's book"\
+" book on modular forms for the trivial characters, i.e."\
+" Miyake(k,z,s) = sum_{m,n}(mz+n)^(-k)|mz+n|^(-2s).")
 
 nonholoG(k,z,s) = imag(z)^s*MiyakeE(k,z,s);
+addhelp(nonholoG,"nonholoG(k,z,s): Non-holomorphic Eisenstein series defined as in Miyake's book"\
+" book on modular forms for the trivial characters, BUT multiplied by y^s, i.e."\
+" nonholoG(k,z,s) = Im(z)^s*sum_{m,n}(mz+n)^(-k)|mz+n|^(-2s).")
