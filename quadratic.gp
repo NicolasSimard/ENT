@@ -121,7 +121,7 @@ reduced_forms(D) =
     return(fv);
 }
 
-primitive_reduced_forms(D) = 
+primitive_reduced_forms(D) =
 {
     my(forms = reduced_forms(D), prim = []);
     for(i=1, length(forms),
@@ -186,6 +186,10 @@ genus_nbr(D) =
     if(n%8 == 0,mu=r+2);
     return(2^(mu-1));
 }
+
+ida(f) = [f[1],(f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2];
+addhelp(ida,"ida(f): Return the ideal attached to the quadratic form f=[a,b,c], i.e."\
+"ida(f)=[a,(b+sqrt(D))/2].");
 
 two_torsion(D) =
 {
