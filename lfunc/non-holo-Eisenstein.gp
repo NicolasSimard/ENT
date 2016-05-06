@@ -38,3 +38,13 @@ nonholoG(k,z,s) = imag(z)^s*MiyakeE(k,z,s);
 addhelp(nonholoG,"nonholoG(k,z,s): Non-holomorphic Eisenstein series defined as in Miyake's book"\
 " book on modular forms for the trivial characters, BUT multiplied by y^s, i.e."\
 " nonholoG(k,z,s) = Im(z)^s*sum_{m,n}(mz+n)^(-k)|mz+n|^(-2s).")
+
+/*Note:
+It has been tested numerically that
+1/2*gamma(4)*(2*Pi*I)^-4*nonholoG(4,z,0) = 1/240+suminf(n=1,sigma(n,3)*exp(2*Pi*I*n*z))
+1/2*gamma(6)*(2*Pi*I)^-6*nonholoG(6,z,0) = -1/504+suminf(n=1,sigma(n,5)*exp(2*Pi*I*n*z))
+
+However,
+1/2*gamma(2)*(2*Pi*I)^-2*nonholoG(2,z,0) != (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z))
+But it seems like the LHS tends to -1/24 as Z->+oo, as the RHS.
+*/
