@@ -124,3 +124,29 @@ fi2(i:small, pr:small = 20) =
     );
     fi += polcoeff(g4quot,i,'q)*j4pow*f0;
 }
+
+gD(D:small, pr:small = 15) =
+{
+    if(D%4 != 0 && D%4 != 1, error("Wrong value for D: has to be cong to 0 or 1 mod 4."));
+    my(gDs = vector(D), tmp, j4); \\ gDs[D] = g_D
+    
+    gDs[1] = theta1_qexp(pr)*V(4)(E_qexp(4,pr))/V(4)(eta3_qexp(pr))^2/'q;
+    if(D == 1, return(gDs[1]));
+    
+    j4 = V(4)(j_qexp(pr));
+    gDs[4] = (10*('q*gDs[1]')*V(4)(E_qexp(10,pr))-3/2*gDs[1]*('q*V(4)(E_qexp(10,pr))'))/V(4)(delta_qexp(pr));
+    gDs[4] = (gDs[4] + (10*j4-21344)*gDs[1])/-20;
+
+    for(j = 5, D,
+        if(j%4 == 0 || j%4 == 1,
+            tmp = j4*gDs[j-4];
+            for(n = -j, -1,
+                if((-n)%4 == 0 || (-n)%4 == 1, 
+                    tmp -= polcoeff(tmp,n,'q)*gDs[-n]
+                );
+            );
+            gDs[j] = tmp;
+        );
+    );
+    gDs[D];
+}
