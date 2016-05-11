@@ -205,9 +205,17 @@ two_torsion(D) =
 }
 
 \\ Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
-\\ modular forms by Zagier. Tested for D = -4.
-CSperiod(D) =
+\\ modular forms by Zagier.
+CSperiodZag(D) =
 {
     control(D);
     return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/class_nbr(D))/sqrt(2*Pi*abs(D)));
+}
+
+\\ Returns the Chowla-selberg period of discriminant D, as defined Cohen's book
+on Number Theory, volume 2. Gives better results for E2 and E6...
+CSperiod(D) =
+{
+    control(D);
+    return(sqrt(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/2/class_nbr(D))/(4*Pi*sqrt(abs(D)))));
 }
