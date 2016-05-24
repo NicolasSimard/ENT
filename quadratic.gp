@@ -212,8 +212,8 @@ CSperiodZag(D) =
     return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/class_nbr(D))/sqrt(2*Pi*abs(D)));
 }
 
-\\ Returns the Chowla-selberg period of discriminant D, as defined Cohen's book
-on Number Theory, volume 2. Gives better results for E2 and E6...
+/* Returns the Chowla-selberg period of discriminant D, as defined Cohen's book
+on Number Theory, volume 2. Gives better results for E2 and E6...*/
 CSperiod(D) =
 {
     control(D);
