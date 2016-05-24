@@ -219,3 +219,6 @@ CSperiod(D) =
     control(D);
     return(sqrt(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/2/class_nbr(D))/(4*Pi*sqrt(abs(D)))));
 }
+
+/* Return the Minkowski bound of a number field K (not necessarily quadratic).*/
+Minkowski(K) = my(n=K.r1+2*K.r2); n!/(n^n)*(4/Pi)^K.r2*sqrt(abs(K.disc));
