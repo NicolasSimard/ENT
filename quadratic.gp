@@ -193,10 +193,9 @@ addhelp(ida,"ida(f): Return the ideal attached to the quadratic form f=[a,b,c], 
 
 two_torsion(D) =
 {
-    my(forms, fv);
+    my(forms, fv=[]);
     forms = primitive_reduced_forms(D);
-    fv = [forms[1]];
-    for(i=2, length(forms),
+    for(i=1, length(forms),
         if(forms[i][2] == 0 || forms[i][1] == forms[i][3] || abs(forms[i][2]) == forms[i][1],
         fv = concat(fv,[forms[i]]);
         );
