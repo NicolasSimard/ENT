@@ -54,6 +54,7 @@ beta such that beta^2=D mod 4N and a factorisation m1*m2 of gcd(N,beta,(beta^2-D
 one has an explicit bijection between the sets Q^0_{D,N,beta}/Gamma_0(N) and
 Q^0_D/Gamma(1), where Q^0_D is the set of primitive binary quadratic forms of
 discriminant D and
+
 Q^0_{D,N,,beta}={[a,b,c] in Q^0_D|a=0 mod N, b=beta mod 2N}.
 
 The bijection is explicit and depends of m1 and m2 (see Gross-Kohnen-Zagier, Heegner
@@ -202,6 +203,9 @@ two_torsion(D) =
     );
     return(fv);
 }
+addhelp(twotorsion,"two_torsion(D): Return representatives of the two-torsion of the class group of discriminant D. The number"\
+"number of such classes is equal to the number of genera for the discriminant D.");
+
 
 \\ Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
 \\ modular forms by Zagier.
