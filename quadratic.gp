@@ -188,6 +188,15 @@ genus_nbr(D) =
     return(2^(mu-1));
 }
 
+qfbtohnf(f) =
+{
+    if(type(f) == "t_QFI", f=Vec(f));
+    my(D=f[2]^2-4*f[1]*f[3], K=nfinit('w^2-D), t = nfalgtobasis(K,(-f[2]+'w)/2));
+    [f[1],t[1];0,t[2]];
+}
+addhelp(qfbtohnf,"qfbtohnf(f): Return the Hermite normal form of the ideal"\
+"corresponding to f in the integral basis of nfinit(x^2-D).");
+
 ida(f) = [f[1],(f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2];
 addhelp(ida,"ida(f): Return the ideal attached to the quadratic form f=[a,b,c], i.e."\
 "ida(f)=[a,(b+sqrt(D))/2].");
