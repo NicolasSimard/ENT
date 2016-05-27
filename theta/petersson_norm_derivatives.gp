@@ -34,23 +34,17 @@ dnnum(P,n) =
 pip(pipdata,ell,ida,idb) = 
 {
     my(K = pipdata[1]);
-    print(K);
-    print(ida);
-    print(idb);
-    print(bnfisprincipal(K,idealmul(K,ida,idealinv(K,idb))));
     'C_K*idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
 }
 
 S(pipdata,ell,ida) =
 {
-    my(mu, K=pipdata[1], amb = pipdata[3], t, sqroot, c0);
-    t = bnfisprincipal(K,ida);
-    print(t);
-    for(i=1,#t[1],if(t[1][i]%2 != 0, return(0)));
-    sqroot = vector(#t[1],i,t[1][i]/2);
-    ac0 = subst(K.zk*t[2],'x,K.roots[1]);
-    c0 = idealfactorback(K,K.gen,sqroot); \\ ida = ac0*c0^2
-    print(ac0,":",bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida)));
+    my(mu, K=pipdata[1], amb = pipdata[3], coords, sqroot, c0);
+    coords = bnfisprincipal(K,ida,0);
+    for(i=1,#coords,if(coords[i]%2 != 0, return(0)));
+    sqroot = vector(#coords,i,coords[i]/2)~;
+    c0 = idealinv(K,idealfactorback(K,K.gen,sqroot));
+    ac0 = subst(K.zk*bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida))[2],'x,K.roots[1]);
     ac0^(2*ell)*sum(i=1,#amb, amb[i][2]^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
 }
 
