@@ -3,8 +3,7 @@ isdisc(D) = return(D%4 <= 1);
 control(D) = if(D%4 > 1 || D>=0,error(D," is not a negative discriminant."));
 
 /*Every discriminant uniquely determines an order in a quadratc field. This
-function returns its conductor (the index of this order in the maximal order).
-*/
+function returns its conductor (the index of this order in the maximal order).*/
 conductor(D) =
 {
     my(L = factor(D),p);
@@ -12,8 +11,6 @@ conductor(D) =
     p=prod(n=1,length(L~),L[,1][n]^floor(L[,2][n]/2)); \\ D=p^2m, m sq-free
     if(isdisc(D/p^2),return(p),return(p/2));
 }
-
-isprimitive(D) = (conductor(D) == 1);
 
 right_act(f,M) =
 {

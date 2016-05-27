@@ -1,0 +1,1 @@
+read("quadratic.gp");
