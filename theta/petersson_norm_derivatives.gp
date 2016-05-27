@@ -31,10 +31,10 @@ dnnum(P,n) =
     z->subst(subst(subst(diffop(P,v,d,n),'E2,E2num(z)),'E4,E4num(z)),'E6,E6num(z));
 }
 
-pip(pipdata,ell,ida,idb) = 
+pip(pipdata,ell,ida,idb,flag) = 
 {
     my(K = pipdata[1]);
-    'C_K*idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
+    if(flag,1,'C_K)*idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
 }
 
 S(pipdata,ell,ida) =
@@ -59,9 +59,10 @@ d2l_1E2(pipdata,ell,ida) =
 }
 
 \\ Petersson inner product init
-pipinit(Kraw) =
+pipinit(D) =
 {
-    my(tmp,D=Kraw.disc, K=bnfinit('x^2-D),hK=K.clgp.no);
+    if(!isfundamental(D), error(D," is not a fundamental discriminant."));
+    my(tmp, K=bnfinit('x^2-D),hK=K.clgp.no);
     my(reps = vector(hK), amb = [], fs, eiseval = vector(3,n,vector(hK)));
     
     fs = reduced_forms(D);
@@ -74,8 +75,10 @@ pipinit(Kraw) =
             amb = concat(amb,[[reps[i][1],subst(K.zk*tmp[2],'x,K.roots[1])]]);
         );
     );
-    print(reps);
-    print(amb);
+    print("Class group:                   ",K.clgp);
+    print("Size of 2-torsion:             ",#amb);
+    print("Size of ClK^2:                 ",K.clgp.no/#amb);
+    print("Representatives:               ",reps);
     
     \\ Evaluate the Eisenstein series at CM points
     print("Evaluating the Eisenstein series...");
@@ -85,7 +88,6 @@ pipinit(Kraw) =
         eiseval[2][i] = tmp[1]^-4*E4num(tmp[2]/tmp[1]);
         eiseval[3][i] = tmp[1]^-6*E6num(tmp[2]/tmp[1]);
     );
-    print("Done.");
     
     return([K,reps,amb,eiseval]);
 }
