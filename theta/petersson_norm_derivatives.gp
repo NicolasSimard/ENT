@@ -39,10 +39,10 @@ pip(pipdata,ell,ida,idb,flag) =
 
 S(pipdata,ell,ida) =
 {
-    my(mu, K=pipdata[1], amb = pipdata[3], coords, sqroot, c0);
+    my(mu, K=pipdata[1], amb = pipdata[3], cyc=K.clgp.cyc, coords, sqroot, c0, ac0);
     coords = bnfisprincipal(K,ida,0);
-    for(i=1,#coords,if(coords[i]%2 != 0, return(0)));
-    sqroot = vector(#coords,i,coords[i]/2)~;
+    for(i=1,#cyc,if(coords[i]%2 != 0 && cyc[i]%2 == 0, return(0)));
+    sqroot = vector(#coords,i,if(coords[i]%2==0,coords[i]/2,(coords[i]-cyc[i])/2));
     c0 = idealinv(K,idealfactorback(K,K.gen,sqroot));
     ac0 = subst(K.zk*bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida))[2],'x,K.roots[1]);
     ac0^(2*ell)*sum(i=1,#amb, amb[i][2]^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
