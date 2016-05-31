@@ -60,36 +60,47 @@ d2l_1E2(pipdata,ell,ida) =
     mu^(-4*ell)*subst(subst(subst(dn('E2,2*ell-1),'E2,pipdata[4][1][i0]),'E4,pipdata[4][2][i0]),'E6,pipdata[4][3][i0]);
 }
 
+orient(ida) = if(imag(ida[2]/ida[1]) > 0, ida, vector(2,i,ida[3-i]));
+
 \\ Petersson inner product init
-pipinit(D) =
+pipinit(D,verbose) =
 {
     if(!isfundamental(D), error(D," is not a fundamental discriminant."));
-    my(tmp, K=bnfinit('x^2-D),hK=K.clgp.no);
+    my(tmp, K=bnfinit('x^2-D),w,hK=K.clgp.no);
     my(reps = vector(hK), amb = [], fs, eiseval = vector(3,n,vector(hK)));
     
     fs = reduced_forms(D);
+    w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])); \\ make sure w in H
     
     for(i=1,#fs,
         reps[i] = [qfbtohnf(fs[i]),0];
         reps[i][2] = bnfisprincipal(K,reps[i][1],0); \\ Only the coordinates
         tmp = bnfisprincipal(K,idealpow(K,reps[i][1],2));
         if(tmp[1] == 0,
-            amb = concat(amb,[[reps[i][1],subst(K.zk*tmp[2],'x,K.roots[1])]]);
+            amb = concat(amb,[[reps[i][1],subst(K.zk*tmp[2],'x,w)]]);
         );
     );
-    print("Class group:                   ",K.clgp);
-    print("Size of 2-torsion:             ",#amb);
-    print("Size of ClK^2:                 ",K.clgp.no/#amb);
-    print("Representatives:               ",reps);
+    if(verbose,
+        print("Class group:                   ",K.clgp);
+        print("Size of 2-torsion:             ",#amb);
+        print("Size of ClK^2:                 ",K.clgp.no/#amb);
+        print("Representatives:               ",reps);
+    );
     
     \\ Evaluate the Eisenstein series at CM points
-    print("Evaluating the Eisenstein series...");
+    if(verbose,print("Evaluating the Eisenstein series..."));
     for(i=1,hK,
-        tmp = subst(K.zk*reps[i][1],'x,K.roots[1]); \\ tmp = [a,(-b+sqrt(D))/2]
+        tmp = subst(K.zk*reps[i][1],'x,w); \\ tmp = [a,(-b+sqrt(D))/2]
         eiseval[1][i] = tmp[1]^-2*E2num(tmp[2]/tmp[1]);
         eiseval[2][i] = tmp[1]^-4*E4num(tmp[2]/tmp[1]);
         eiseval[3][i] = tmp[1]^-6*E6num(tmp[2]/tmp[1]);
     );
     
     return([K,reps,amb,eiseval]);
+}
+
+M(D,ell) =
+{
+    my(data=pipinit(D), hk=data[1].clgp.no);
+    matrix(hk,hk,i,j,pip(data,ell,data[2][i][1],data[2][j][1],1));
 }
