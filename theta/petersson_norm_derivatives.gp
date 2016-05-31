@@ -99,8 +99,20 @@ pipinit(D,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
-M(D,ell) =
+Mredreps(D,ell) =
 {
     my(data=pipinit(D), hk=data[1].clgp.no);
     matrix(hk,hk,i,j,pip(data,ell,data[2][i][1],data[2][j][1],1));
 }
+
+MParireps(D,ell) =
+{
+    my(data=pipinit(D), K=data[1], Clk=K.clgp, reps=[]);
+    forvec(e=vector(#Clk.cyc,i,[0,Clk.cyc[i]-1]),
+        reps=concat(reps,[idealfactorback(K,Clk.gen,e)]);
+    );
+    \\return(reps);
+    matrix(Clk.no,Clk.no,i,j,pip(data,ell,reps[i],reps[j],1));
+}
+
+minpolZag(D,ell) = algdep(matdet(Mredreps(D,ell))/CSperiodZag(D)^(4*class_nbr(D)*ell),5);
