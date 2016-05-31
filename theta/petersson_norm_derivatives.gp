@@ -33,8 +33,10 @@ dnnum(P,n) =
 
 pip(pipdata,ell,ida,idb,flag) = 
 {
-    my(K = pipdata[1]);
-    if(flag,1,'C_K)*idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
+    my(K = pipdata[1],tmp);
+    tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
+    if(flag == 0, return(tmp)); \\ C_K*tmp = (.,.)
+    if(flag == 1, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V*K.clgp.no*(|K.disc|/4)^ell*tmptmp = (.,.)
 }
 
 S(pipdata,ell,ida) =
