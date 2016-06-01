@@ -31,14 +31,7 @@
     ");
 }
 
-/* To define the Eisenstein series, we follow Zagier's convention:
-
-G_k(s) = 1/2*sum_{(m,n)\neq(0,0)}(mz+n)^-k
-
-E_k(s)=G_k(s)/zeta(k) (leading coefficient is 1)
-
-GG_k(s) = (k-1)!/(2*Pi*I)^kG_k(s) (all non-constant Fourrier coeff are int)
-*/
+/*------------------------General modular forms ----------------------*/
 
 G(k,x) =
 {
@@ -213,4 +206,54 @@ gD(D:small, pr:small = 15) =
     gDs[D];
 }
 
+/*------------------------Basis of modular forms ----------------------*/
 
+vmbasis(k,N=0,reduce=1) = 
+{
+    my(n,e,ls,A,E6,E6_squared,D,Eprod,Dprod,pr=default(seriesprecision));
+    if(k%2 == 1,error("The weight ",k," must be even."));
+    if(k==0, return([1+O('q^pr)]));
+
+    e=k%12 + 12*(k%12 == 2);
+    n=(k-e)/12;
+
+    if(pr <= n,
+        ls = vector(n+1);
+        ls[1] = 1+ O('q^pr);
+        for(i=2,pr,ls[i] = q^i + O('q^pr));
+        for(i=pr+1,n+1,ls[i] = O('q^pr));
+        return(ls);
+    );
+
+    E6 = E(6,'q);
+    A = if(e==0,1,E(e,'q)); \\ Slight difference with e=6
+    if(polcoeff(A,0,'q) == -1, A=-A);
+    D = delta('q);
+
+    if(N>0,E6 = E6*Mod(1,N); A = A*Mod(1,N); D = D*Mod(1,N));
+
+    E6_squared = sqr(E6) + O('q^pr);
+    Eprod = E6_squared;
+    Dprod = D;
+
+    ls = vector(n+1,i,A);
+    for(i=1,n,
+        ls[n-i+1] = ls[n-i+1]*Eprod + O('q^pr);
+        ls[i+1] = ls[i+1]*Dprod + O('q^pr);
+        Eprod = Eprod*E6_squared + O('q^pr);
+        Dprod = Dprod*D + O('q^pr);
+    );
+    \\At this point the basis is upper triangular
+    if(reduce == 0,return(ls));
+    for(i=1,n,
+        for(j=1,i,
+            ls[j] = ls[j] - polcoeff(ls[j],i,'q)*ls[i+1];
+        );
+    );
+    return(ls);
+}
+{
+    addhelp(vmbasis,"vmbasis(k,{N=0},{reduce=1}): Returns the Victor Miller
+    basis of weight k up to precision pr. If N > 0, returns this basis 
+    modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
+}
