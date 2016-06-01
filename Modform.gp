@@ -119,7 +119,7 @@ jpol(f) =
 {
     my(j,js,M,B,k=-valuation(f,'q));
     if(k <=  0, return(f));
-    j=j_qexp(k);
+    j=ellj('q);
     js=vector(k+1,n,j^(k+1-n));
     M=matrix(k+1,k+1,n,m,polcoeff(js[m],n-k-1,'q));
     B=vector(k+1,n,polcoeff(f,n-k-1,'q));
