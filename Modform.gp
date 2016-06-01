@@ -24,7 +24,7 @@
     - V(n,f('q)) -> V_n(f{'q)) (V_n operator in level 1)
     - pstab(p,f('q)) -> f('q)^[p] (p-stabilisation of f)
     - rcbracket(f('q),k_f,g('q),k_g) -> [f('q),g('q)] (Rankin-Cohen bracket)
-    - d(f('q),n) -> d^n(f('q)) (d='q*d/d'q)
+    - dop(f('q),n) -> d^n(f('q)) (d='q*d/d'q)
     
     *Other functions:
     - jpol(p('q)) -> P(X): P(j('q)) = p('q)
@@ -96,7 +96,7 @@ theta1(x) =
     (=sum_{n\in\Z} (-1)^n*q^(n^2)) of weight 1/2 up to precision pr.");
 }
 
-\\ Auxiliary funtion to compute delta('q) efficiently
+\\ Auxiliary function to compute delta('q) efficiently
 eta3(x) =
 {
     my(d, pr=default(seriesprecision));
@@ -130,15 +130,15 @@ jpol(f) =
     returns a polynomial g(Y) such that g(j)=f, where j is the j-function.");
 }
 
-fd(i:small, pr:small = 15) =
+fd(i:small) =
 {
     if(i%4 != 0 && i%4 != 3, error("Wrong value for i: has to be cong to 0 or 3 mod 4."));
-    my(fis = vector(i+1), tmp, j4); \\ fis[i] = f_{i-1}, so f_i = fis[i+1]
-    if(i == 0, return(theta_qexp(pr)), fis[1] = theta_qexp(pr));
-    tmp = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))/2-10*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
+    my(fis = vector(i+1), tmp, j4, pr=default(seriesprecision)); \\ fis[i] = f_{i-1}, so f_i = fis[i+1]
+    if(i == 0, return(theta0('q)), fis[1] = theta0('q));
+    tmp = (theta0('q)*dop(V(4,E(10,'q)))/2-10*dop(theta0('q))*V(4,E(10,'q)))/V(4,delta('q));
     tmp = (tmp+608*fis[1])/-20;
     if(i == 3, return(tmp), fis[4] = tmp);
-    j4 = V(4)(j_qexp(pr));
+    j4 = V(4,ellj('q));
     for(j = 4, i,
         if(j%4 == 0 || j%4 == 3,
             tmp = j4*fis[j-4+1];
@@ -153,18 +153,18 @@ fd(i:small, pr:small = 15) =
     fis[i+1];
 }
 
-fd2(i:small, pr:small = 20) =
+fd2(i:small) =
 {
     if(i%4 != 0 && i%4 != 3, error("Wrong value for i: has to be cong to 0 or 3 mod 4."));
-    my(g1, g1quot, g4, g4quot, j4, j4pow, f0, f3, fi = 0);
-    if(i == 0, return(theta_qexp(pr)), f0 = theta_qexp(pr));
-    f3 = (theta_qexp(pr)*d(V(4)(E_qexp(10,pr)))/2-10*d(theta_qexp(pr))*V(4)(E_qexp(10,pr)))/V(4)(delta_qexp(pr));
+    my(g1, g1quot, g4, g4quot, j4, j4pow, f0, f3, fi = 0, pr=default(seriesprecision));
+    if(i == 0, return(theta0('q)), f0 = theta0('q));
+    f3 = (theta0('q)*dop(V(4,E(10,'q)))/2-10*dop(theta0('q))*V(4,E(10,'q)))/V(4,delta('q));
     f3 = (f3+608*f0)/-20;
     if(i == 3, return(f3));
     
-    j4 = V(4)(j_qexp(pr));
-    g1 = theta1_qexp(pr)*V(4)(E_qexp(4,pr))/V(4)(eta3_qexp(pr))^2/'q;
-    g4 = (10*d(g1)*V(4)(E_qexp(10,pr))-3/2*g1*d(V(4)(E_qexp(10,pr))))/V(4)(delta_qexp(pr));
+    j4 = V(4,ellj('q));
+    g1 = theta1('q)*V(4,E(4,'q))/V(4,eta3('q))^2/'q;
+    g4 = (10*dop(g1)*V(4,E(10,'q))-3/2*g1*dop(V(4,E(10,'q))))/V(4,delta('q));
     g4 = (g4 + (10*j4-21344)*g1)/-20;
 
     j4pow = 1;
@@ -180,16 +180,16 @@ fd2(i:small, pr:small = 20) =
     fi += polcoeff(g4quot,i,'q)*j4pow*f0;
 }
 
-gD(D:small, pr:small = 15) =
+gD(D:small) =
 {
     if(D%4 != 0 && D%4 != 1, error("Wrong value for D: has to be cong to 0 or 1 mod 4."));
-    my(gDs = vector(D), tmp, j4); \\ gDs[D] = g_D
+    my(gDs = vector(D), tmp, j4, pr=default(seriesprecision)); \\ gDs[D] = g_D
     
-    gDs[1] = theta1_qexp(pr)*V(4)(E_qexp(4,pr))/V(4)(eta3_qexp(pr))^2/'q;
+    gDs[1] = theta1('q)*V(4,E(4,'q))/V(4,eta3('q))^2/'q;
     if(D == 1, return(gDs[1]));
     
-    j4 = V(4)(j_qexp(pr));
-    gDs[4] = (10*('q*gDs[1]')*V(4)(E_qexp(10,pr))-3/2*gDs[1]*('q*V(4)(E_qexp(10,pr))'))/V(4)(delta_qexp(pr));
+    j4 = V(4,ellj('q));
+    gDs[4] = (10*('q*gDs[1]')*V(4,E(10,'q))-3/2*gDs[1]*('q*V(4,E(10,'q))'))/V(4,delta('q));
     gDs[4] = (gDs[4] + (10*j4-21344)*gDs[1])/-20;
 
     for(j = 5, D,
@@ -256,4 +256,44 @@ vmbasis(k,N=0,reduce=1) =
     addhelp(vmbasis,"vmbasis(k,{N=0},{reduce=1}): Returns the Victor Miller
     basis of weight k up to precision pr. If N > 0, returns this basis 
     modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
+}
+
+/*------------------------Operators on modular forms ----------------------*/
+U(m,f) =
+{
+    my(v=variable(f),pr=poldegree(truncate(f),v));
+    precision(Ser(vector(floor(pr/m),n,polcoeff(f,(n-1)*m,v)),v),pr);
+}
+{
+    addhelp(U,"U(m,f): Returns the operator U_m on modular forms of level 1.
+    Takes a modular form sum_n a_n*q^n as input and returns sum_n a_{mn}*q^n.");
+}
+
+V(m,f) =
+{
+    my(v=variable(f));
+    precision(subst(f,v,v^m),default(seriesprecision));
+}
+{
+    addhelp(V,"V(m,f): Returns the operator V_m on modular forms of level 1.
+    Takes a modular form sum_n a_n*q^n as input and returns sum_n a_n*q^{mn}.");
+}
+
+dop(f,t=1) =
+{
+    my(v=variable(f),pr=poldegree(truncate(f),v));
+    Ser(concat([0],vector(pr-1,n,n^t*polcoeff(f,n,v))),v)+O(v^pr);
+}
+{
+    addhelp(dop,"dop(f,{t=1}): Operator d=q*d/dq on modular forms of level 1.
+    Takes a modular form sum_n a_n*q^n and returns sum_n n^t*a_n*q^n.");
+}
+
+pstab(p,f) = f-V(p,U(p,f));
+addhelp(pstab,"pstab(p,f): p-stabilisation operator *^[p]=1-U_pV_p on modular forms.");
+
+rcbracket(f,k,g,l) = k*dop(g)*f-l*dop(f)*g;
+{
+    addhelp(rcbracket,"rcbracket(f,k,g,l): Return the Rankin-Cohen bracket of
+    the two modular forms f and g of weigh k and l, respectively.");
 }
