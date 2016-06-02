@@ -289,6 +289,37 @@ dop(f,t=1) =
     Takes a modular form sum_n a_n*q^n and returns sum_n n^t*a_n*q^n.");
 }
 
+dopformal(P,n=1) =
+{
+    my(v,d);
+    v=['E2,'E4,'E6];
+    d=[('E2^2-'E4)/12,('E2*'E4-'E6)/3,('E2*'E6-'E4^2)/2];
+    diffop(P,v,d,n);
+}
+{
+    addhelp(dopformal,"dopformal(P,{n=1}): Formal differentiation of a quasimodular
+    form of level 1 represented by a weighted homogeneous polynomial P in
+    'E2, 'E4 and 'E6. The operator dop = q*d/dq preserves this ring and the
+    formulas are given in Zagier - 1,2,3 of modular forms (prop 15). If n is
+    given, returns the nth iteration of dop.");
+}
+
+delkformal(P,n=1) = 
+{
+    my(v,d);
+    v=['E2s,'E4,'E6];
+    d=[5/6*'E4-2*'E2s^2,7/10*'E6-8*'E2s*'E4,400/7*'E4^2-12*'E2s*'E6];
+    diffop(P,v,d,n);
+}
+{
+    addhelp(delkformal,"delkformal(P,{n=1}): Formal differentiation of an almost holomorphic
+    modular form of level 1 represented by a weighted homogeneous polynomial P in
+    'E2s, 'E4 and 'E6, where 'E2s is the almost holomorphic weight 2 modular form
+    given by E2-3/(Pi*y). The operator delk = q*d/dq - k/(4*Pi*y) preserves this
+    ring and the formulas are given in Shimura - Elementary Dirichlet series and
+    modular forms. If n is given, returns the nth iteration of del.");
+}
+
 pstab(p,f) = f-V(p,U(p,f));
 addhelp(pstab,"pstab(p,f): p-stabilisation operator *^[p]=1-U_pV_p on modular forms.");
 
