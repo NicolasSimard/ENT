@@ -1,35 +1,7 @@
 /* This script uses he formula for the Petersson norm of theta series in terms
 of linear combinations of derivatives of the Eisenstein series E2.*/
 
-E2num(z) = (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z));
-
-E4num(z) = 1/240+suminf(n=1,sigma(n,3)*exp(2*Pi*I*n*z));
-
-E6num(z) = -1/504+suminf(n=1,sigma(n,5)*exp(2*Pi*I*n*z));
-
-dnE2(n) =
-{
-    my(v,d);
-    v=['E2,'E4,'E6];
-    d=[5/6*'E4-2*'E2^2,7/10*'E6-8*'E2*'E4,400/7*'E4^2-12*'E2*'E6];
-    z->subst(subst(subst(diffop('E2,v,d,n),'E2,E2num(z)),'E4,E4num(z)),'E6,E6num(z));
-}
-
-dn(P,n) =
-{
-    my(v,d);
-    v=['E2,'E4,'E6];
-    d=[5/6*'E4-2*'E2^2,7/10*'E6-8*'E2*'E4,400/7*'E4^2-12*'E2*'E6];
-    diffop(P,v,d,n);
-}
-
-dnnum(P,n) =
-{
-    my(v,d);
-    v=['E2,'E4,'E6];
-    d=[5/6*'E4-2*'E2^2,7/10*'E6-8*'E2*'E4,400/7*'E4^2-12*'E2*'E6];
-    z->subst(subst(subst(diffop(P,v,d,n),'E2,E2num(z)),'E4,E4num(z)),'E6,E6num(z));
-}
+\r ../Modform.gp
 
 pip(pipdata,ell,ida,idb,flag) = 
 {
@@ -57,7 +29,7 @@ d2l_1E2(pipdata,ell,ida) =
     while(pipdata[2][i0][2] != coords, i0 += 1);
     mu = bnfisprincipal(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida))[2];
     mu = subst(K.zk*mu,'x,K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
-    mu^(-4*ell)*subst(subst(subst(dn('E2,2*ell-1),'E2,pipdata[4][1][i0]),'E4,pipdata[4][2][i0]),'E6,pipdata[4][3][i0]);
+    mu^(-4*ell)*subst(subst(subst(delkformal('E2s,2*ell-1),'E2s,pipdata[4][1][i0]),'E4,pipdata[4][2][i0]),'E6,pipdata[4][3][i0]);
 }
 
 orient(ida) = if(imag(ida[2]/ida[1]) > 0, ida, vector(2,i,ida[3-i]));
@@ -91,28 +63,27 @@ pipinit(D,verbose) =
     if(verbose,print("Evaluating the Eisenstein series..."));
     for(i=1,hK,
         tmp = subst(K.zk*reps[i][1],'x,w); \\ tmp = [a,(-b+sqrt(D))/2]
-        eiseval[1][i] = tmp[1]^-2*E2num(tmp[2]/tmp[1]);
-        eiseval[2][i] = tmp[1]^-4*E4num(tmp[2]/tmp[1]);
-        eiseval[3][i] = tmp[1]^-6*E6num(tmp[2]/tmp[1]);
+        eiseval[1][i] = tmp[1]^-2*E2star(tmp[2]/tmp[1]);
+        eiseval[2][i] = tmp[1]^-4*E(4,tmp[2]/tmp[1]);
+        eiseval[3][i] = tmp[1]^-6*E(6,tmp[2]/tmp[1]);
     );
     
     return([K,reps,amb,eiseval]);
 }
 
-Mredreps(D,ell) =
+Mredreps(pipdata,ell) =
 {
-    my(data=pipinit(D), hk=data[1].clgp.no);
-    matrix(hk,hk,i,j,pip(data,ell,data[2][i][1],data[2][j][1],1));
+    my(hk=pipdata[1].clgp.no);
+    matrix(hk,hk,i,j,pip(pipdata,ell,pipdata[2][i][1],pipdata[2][j][1],1));
 }
 
-MParireps(D,ell) =
+MParireps(pipdata,ell) =
 {
-    my(data=pipinit(D), K=data[1], Clk=K.clgp, reps=[]);
+    my(K=pipdata[1], Clk=K.clgp, reps=[]);
     forvec(e=vector(#Clk.cyc,i,[0,Clk.cyc[i]-1]),
         reps=concat(reps,[idealfactorback(K,Clk.gen,e)]);
     );
-    \\return(reps);
-    matrix(Clk.no,Clk.no,i,j,pip(data,ell,reps[i],reps[j],1));
+    matrix(Clk.no,Clk.no,i,j,pip(pipdata,ell,reps[i],reps[j],1));
 }
 
 minpolZag(D,ell) = algdep(matdet(Mredreps(D,ell))/CSperiodZag(D)^(4*class_nbr(D)*ell),5);
