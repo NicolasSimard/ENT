@@ -18,6 +18,7 @@
     
     *Basis of modular forms:
     - vmbasis(k,N,flag) -> [f1('q),f2('q),...,fd('q)] (q-expansions of Victor Miller basis)
+    - GktoG4G6(k) -> P(G4,G6) : P(G4,G6)=Gk
     
     *Operators:
     - U(n,f('q)) -> U_n(f('q)) (U_n operator in level 1)
@@ -257,6 +258,22 @@ vmbasis(k,N=0,reduce=1) =
     basis of weight k up to precision pr. If N > 0, returns this basis 
     modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
 }
+
+GktoG4G6(k) =
+{
+    if(k%2 == 1, return(0));
+    if(k == 4, return('G4));
+    if(k == 6, return('G6));
+    6*(k-2)!/(k/2-3)/(k+1)*sum(r=4,k-2,GktoG4G6(r)/(r-2)!*GktoG4G6(k-r)/(k-r-2)!);
+}
+addhelp(GktoG4G6,"GktoG4G6(k): Express G_k as a polynomial in 'G4 and 'G6.");
+
+EktoE4E6(k) =
+{
+    my(P=GktoG4G6(k));
+    -2*k/bernfrac(k)*subst(subst(P,'G4,'E4/240),'G6,-'E6/504);
+}
+addhelp(EktoE4E6,"EktoE4E6(k): Express E_k as a polynomial in 'E4 and 'E6.");
 
 /*------------------------Operators on modular forms ----------------------*/
 U(m,f) =
