@@ -72,11 +72,11 @@ pipinit(D,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
-pipgrammat(pipdata,ell,reps="red") =
+pipgrammat(pipdata,ell,reps='red) =
 {
     my(hk = pipdata[1].clgp.no, ClK);
-    if(reps == "red", ClK = redrepshnf(pipdata[1]),
-    if(reps == "pari", ClK = parirepshnf(pipdata[1]), ClK = reps);
+    if(reps == 'red, ClK = redrepshnf(pipdata[1]),
+    if(reps == 'pari, ClK = parirepshnf(pipdata[1]), ClK = reps);
     );
     matrix(hk,hk,i,j,pip(pipdata,ell,ClK[i],ClK[j],1));
 }
