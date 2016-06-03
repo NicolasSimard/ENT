@@ -1,5 +1,5 @@
 {
-    addhelp(Modform,"This package defines a few functions that deal with
+    addhelp(Quadratic,"This package defines a few functions that deal with
     quadratic forms and quadratic fields. A quadratic form is represented by
     a 3-component vector [a,b,c]. In PARI, they are represented by objects of
     type t_QFI created as Qfb(a,b,c). 
