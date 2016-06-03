@@ -2,6 +2,7 @@
 of linear combinations of derivatives of the Eisenstein series E2.*/
 
 \r ../Modform.gp
+\r ../Quadratic.gp
 
 pip(pipdata,ell,ida,idb,flag) = 
 {
@@ -45,7 +46,8 @@ pipinit(D,verbose) =
     w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])); \\ make sure w in H
     
     for(i=1,#fs,
-        reps[i] = [qfbtohnf(fs[i]),bnfisprincipal(K,reps[i][1],0)];
+        reps[i] = [qfbtohnf(fs[i]),0];
+        reps[i][2] = bnfisprincipal(K,reps[i][1],0);
         tmp = bnfisprincipal(K,idealpow(K,reps[i][1],2));
         if(tmp[1] == 0,
             amb = concat(amb,[[reps[i][1],subst(K.zk*tmp[2],'x,w)]]);
@@ -70,30 +72,15 @@ pipinit(D,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
-pipgrammat(pipdata,ell,reps='red) =
+pipgrammat(pipdata,ell,reps="red") =
 {
-    my(hk = pipdata[1].clgp.no)
-    if(reps = 'red,  reps = redrepshnf(pipdata[1]));
-    if(reps = 'pari, reps = parirepshnf(pipdata[1]));
-    matrix(hk,hk,i,j,pip(pipdata,ell,reps[i],reps[j],1));
+    my(hk = pipdata[1].clgp.no, ClK);
+    if(reps == "red", ClK = redrepshnf(pipdata[1]),
+    if(reps == "pari", ClK = parirepshnf(pipdata[1]), ClK = reps);
+    );
+    matrix(hk,hk,i,j,pip(pipdata,ell,ClK[i],ClK[j],1));
 }
 
 pipgramdet(pipdata,ell,reps='red) = matdet(pipgrammat(pipdata,ell,reps));
-
-/*
-Mredreps(pipdata,ell) =
-{
-    my(hk=pipdata[1].clgp.no);
-    matrix(hk,hk,i,j,pip(pipdata,ell,pipdata[2][i][1],pipdata[2][j][1],1));
-}
-
-MParireps(pipdata,ell) =
-{
-    my(K=pipdata[1], Clk=K.clgp, reps=[]);
-    forvec(e=vector(#Clk.cyc,i,[0,Clk.cyc[i]-1]),
-        reps=concat(reps,[idealfactorback(K,Clk.gen,e)]);
-    );
-    matrix(Clk.no,Clk.no,i,j,pip(pipdata,ell,reps[i],reps[j],1));
-}*/
 
 minpolZag(D,ell) = algdep(pipgramdet(pipinit(D),ell)/CSperiod(D)^(4*bnfclassno(D)*ell),5);
