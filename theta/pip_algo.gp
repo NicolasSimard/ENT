@@ -9,7 +9,7 @@ pip(pipdata,ell,ida,idb,flag) =
     my(K = pipdata[1],tmp);
     tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
     if(flag == 0, return(tmp)); \\ C_K*tmp = (.,.)
-    if(flag == 1, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V*K.clgp.no*(|K.disc|/4)^ell*tmptmp = (.,.)
+    if(flag == 1, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
 }
 
 S(pipdata,ell,ida) =
