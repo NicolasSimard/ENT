@@ -18,10 +18,10 @@ transmat(qhdata,ell,reps) =
     forvec(e=vector(#K.clgp.cyc,i,[0,K.clgp.cyc[i]-1]),
         qhcomps = concat(qhcomps,[e]);
     );
-    matrix(hK,hK,i,j,qhchar(qhdata,qhcomps[i],2*ell,ClK[j]));
+    matrix(hK,hK,i,j,2/hK*qhchar(qhdata,qhcomps[i],2*ell,ClK[j]));
 }
 {
     addhelp(transmat,"transmat(qhdata,ell,reps): Transition matrix M between the
     basis theta_psi and theta_ida. It is such that
-    M*psigrammat*M^* = pipgrammat.");
+    det((M^*)*psigrammat*M) = det(pipgrammat).");
 }
