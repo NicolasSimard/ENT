@@ -264,7 +264,7 @@ redrepshnf(K) =
 
 parirepshnf(K) =
 {
-    my(ClK=K.clgp);
+    my(ClK=K.clgp, reps = []);
     forvec(e=vector(#ClK.cyc,i,[0,ClK.cyc[i]-1]),
         reps=concat(reps,[idealfactorback(K,ClK.gen,e)]);
     );
