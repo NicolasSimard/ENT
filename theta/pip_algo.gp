@@ -8,8 +8,8 @@ pip(pipdata,ell,ida,idb,flag) =
 {
     my(K = pipdata[1],tmp);
     tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
-    if(flag == 0, return(tmp)); \\ C_K*tmp = (.,.)
-    if(flag == 1, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
+    if(flag == 0, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
+    if(flag == 1, return(tmp)); \\ C_K*tmp = (.,.)
 }
 
 S(pipdata,ell,ida) =
@@ -72,15 +72,15 @@ pipinit(D,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
-pipgrammat(pipdata,ell,reps='red) =
+pipgrammat(pipdata,ell,reps) =
 {
     my(hk = pipdata[1].clgp.no, ClK);
-    if(reps == 'red, ClK = redrepshnf(pipdata[1]),
-    if(reps == 'pari, ClK = parirepshnf(pipdata[1]), ClK = reps);
+    if(reps == 0, ClK = redrepshnf(pipdata[1]),
+    if(reps == 1, ClK = parirepshnf(pipdata[1]), ClK = reps);
     );
-    matrix(hk,hk,i,j,pip(pipdata,ell,ClK[i],ClK[j],1));
+    matrix(hk,hk,i,j,pip(pipdata,ell,ClK[i],ClK[j]));
 }
 
-pipgramdet(pipdata,ell,reps='red) = matdet(pipgrammat(pipdata,ell,reps));
+pipgramdet(pipdata,ell,reps) = matdet(pipgrammat(pipdata,ell,reps));
 
 minpolZag(D,ell) = algdep(pipgramdet(pipinit(D),ell)/CSperiod(D)^(4*bnfclassno(D)*ell),5);
