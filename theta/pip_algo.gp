@@ -63,9 +63,9 @@ pipinit(K,verbose) =
     if(verbose,print("Evaluating the Eisenstein series..."));
     for(i=1,hK,
         tmp = subst(K.zk*reps[i][1],variable(K),w); \\ tmp = [a,(-b+sqrt(D))/2]
-        eiseval[1][i] = tmp[1]^-2*E2star(tmp[2]/tmp[1]);
-        eiseval[2][i] = tmp[1]^-4*E(4,tmp[2]/tmp[1]);
-        eiseval[3][i] = tmp[1]^-6*E(6,tmp[2]/tmp[1]);
+        eiseval[1][i] = tmp[1]^-2*G2star(tmp[2]/tmp[1]);
+        eiseval[2][i] = tmp[1]^-4*G(4,tmp[2]/tmp[1]);
+        eiseval[3][i] = tmp[1]^-6*G(6,tmp[2]/tmp[1]);
     );
     
     return([K,reps,amb,eiseval]);
