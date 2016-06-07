@@ -50,6 +50,7 @@ G(k,x) =
 {
     addhelp(G,"G(k,x): If x is a polonomial, returns the q-expansion of the
     Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1).
+    This is E_k in Shimura's notation in Elementary Dirichlet series and...
     If x is anything else, tries to numerically evaluate G_k at that point.");
 }
 
@@ -71,10 +72,10 @@ E(k,x) =
     If x is anything else, tries to numerically evaluate E_k at that point.");
 }
 
-E2star(z) = (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z));
+G2star(z) = (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z));
 {
-    addhelp(E2star,"E2star(z): evaluates the weight 2 Eisenstein series at z.
-    E2star is (8*Pi*imag(z))^-1-1/24+O('q).");
+    addhelp(G2star,"G2star(z): evaluates the weight 2 Eisenstein series at z.
+    G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
 }
 
 theta0(x) =
@@ -259,6 +260,10 @@ vmbasis(k,N=0,reduce=1) =
     modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
 }
 
+GpoltoEpol(P) = subst(subst(subst(subst(P,'G2s,-'E2s/24),'G2,-'E2/24),'G4,'E4/240),'G6,-'E6/504);
+
+EpoltoGpol(P) = subst(subst(subst(subst(P,'E2s,-24*'G2s),'E2,-24*'E2),'E4,240*'G4),'E6,-504*'G6);
+
 GktoG4G6(k) =
 {
     if(k%2 == 1, return(0));
@@ -268,11 +273,7 @@ GktoG4G6(k) =
 }
 addhelp(GktoG4G6,"GktoG4G6(k): Express G_k as a polynomial in 'G4 and 'G6.");
 
-EktoE4E6(k) =
-{
-    my(P=GktoG4G6(k));
-    -2*k/bernfrac(k)*subst(subst(P,'G4,'E4/240),'G6,-'E6/504);
-}
+EktoE4E6(k) = -2*k/bernfrac(k)*GpoltoEpol(GktoG4G6(k));;
 addhelp(EktoE4E6,"EktoE4E6(k): Express E_k as a polynomial in 'E4 and 'E6.");
 
 /*------------------------Operators on modular forms ----------------------*/
@@ -324,17 +325,19 @@ dopformal(P,n=1) =
 delkformal(P,n=1) = 
 {
     my(v,d);
-    v=['E2s,'E4,'E6];
-    d=[5/6*'E4-2*'E2s^2,7/10*'E6-8*'E2s*'E4,400/7*'E4^2-12*'E2s*'E6];
-    diffop(P,v,d,n);
+    v=['G2s,'G4,'G6,'E2s,'E4,'E6];
+    dG = [5/6*'G4-2*'G2s^2,7/10*'G6-8*'G2s*'G4,400/7*'G4^2-12*'G2s*'G6];
+    dE = [('E2s^2-'E4)/12,('E4*'E2s-'E6)/3,('E6*'E2s-'E4^2)/2];
+    diffop(P,v,concat(dG,dE),n);
 }
 {
     addhelp(delkformal,"delkformal(P,{n=1}): Formal differentiation of an almost holomorphic
     modular form of level 1 represented by a weighted homogeneous polynomial P in
     'E2s, 'E4 and 'E6, where 'E2s is the almost holomorphic weight 2 modular form
-    given by E2-3/(Pi*y). The operator delk = q*d/dq - k/(4*Pi*y) preserves this
-    ring and the formulas are given in Shimura - Elementary Dirichlet series and
-    modular forms. If n is given, returns the nth iteration of del.");
+    given by E2-3/(Pi*y), or a weighted homogeneous polynomial P in 'G2s, 'G4
+    and 'G6. The operator delk = q*d/dq - k/(4*Pi*y) preserves this ring and
+    the formulas are given in Shimura - Elementary Dirichlet series and
+    modular forms. If n is given, returns the nth iteration of delk.");
 }
 
 pstab(p,f) = f-V(p,U(p,f));
