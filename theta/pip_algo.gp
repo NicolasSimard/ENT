@@ -19,7 +19,7 @@ S(pipdata,ell,ida) =
     for(i=1,#cyc,if(coords[i]%2 != 0 && cyc[i]%2 == 0, return(0)));
     sqroot = vector(#coords,i,if(coords[i]%2==0,coords[i]/2,(coords[i]-cyc[i])/2));
     c0 = idealinv(K,idealfactorback(K,K.gen,sqroot));
-    ac0 = subst(K.zk*bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida))[2],'x,K.roots[1]);
+    ac0 = subst(K.zk*bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida))[2],variable(K),K.roots[1]);
     ac0^(2*ell)*sum(i=1,#amb, amb[i][2]^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
 }
 
@@ -29,30 +29,29 @@ d2l_1E2(pipdata,ell,ida) =
     my(mu, K=pipdata[1], i0=1, coords = bnfisprincipal(pipdata[1],ida,0));
     while(pipdata[2][i0][2] != coords, i0 += 1);
     mu = bnfisprincipal(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida))[2];
-    mu = subst(K.zk*mu,'x,K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
+    mu = subst(K.zk*mu,variable(K),K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
     mu^(-4*ell)*subst(subst(subst(delkformal('E2s,2*ell-1),'E2s,pipdata[4][1][i0]),'E4,pipdata[4][2][i0]),'E6,pipdata[4][3][i0]);
 }
 
 orient(ida) = if(imag(ida[2]/ida[1]) > 0, ida, vector(2,i,ida[3-i]));
 
 \\ Petersson inner product init
-pipinit(D,verbose) =
+pipinit(K,verbose) =
 {
-    if(!isfundamental(D), error(D," is not a fundamental discriminant."));
-    my(tmp, K=bnfinit('x^2-D),w,hK=K.clgp.no);
-    my(reps = vector(hK), amb = [], fs, eiseval = vector(3,n,vector(hK)));
+    my(tmp,sq,w,hK=K.clgp.no);
+    my(reps = [], amb = [], eiseval = vector(3,n,vector(hK)));
     
-    fs = reduced_forms(D);
-    w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])); \\ make sure w in H
+    w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1]));
     
-    for(i=1,#fs,
-        reps[i] = [qfbtohnf(fs[i]),0];
-        reps[i][2] = bnfisprincipal(K,reps[i][1],0);
-        tmp = bnfisprincipal(K,idealpow(K,reps[i][1],2));
-        if(tmp[1] == 0,
-            amb = concat(amb,[[reps[i][1],subst(K.zk*tmp[2],'x,w)]]);
+    forvec(e=vector(#K.clgp.cyc,i,[0,K.clgp.cyc[i]-1]),
+        tmp = idealred(K,idealfactorback(K,K.clgp.gen,e));
+        reps = concat(reps,[[tmp,e~]]);
+        sq = bnfisprincipal(K,idealpow(K,tmp,2));
+        if(sq[1] == 0,
+            amb = concat(amb,[[tmp,subst(K.zk*sq[2],variable(K),w)]]);
         );
     );
+    
     if(verbose,
         print("Class group:                   ",K.clgp);
         print("Size of 2-torsion:             ",#amb);
@@ -63,7 +62,7 @@ pipinit(D,verbose) =
     \\ Evaluate the Eisenstein series at CM points
     if(verbose,print("Evaluating the Eisenstein series..."));
     for(i=1,hK,
-        tmp = subst(K.zk*reps[i][1],'x,w); \\ tmp = [a,(-b+sqrt(D))/2]
+        tmp = subst(K.zk*reps[i][1],variable(K),w); \\ tmp = [a,(-b+sqrt(D))/2]
         eiseval[1][i] = tmp[1]^-2*E2star(tmp[2]/tmp[1]);
         eiseval[2][i] = tmp[1]^-4*E(4,tmp[2]/tmp[1]);
         eiseval[3][i] = tmp[1]^-6*E(6,tmp[2]/tmp[1]);
@@ -72,15 +71,11 @@ pipinit(D,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
-pipgrammat(pipdata,ell,reps) =
+pipgrammat(pipdata,ell,reps=0) =
 {
-    my(hk = pipdata[1].clgp.no, ClK);
-    if(reps == 0, ClK = redrepshnf(pipdata[1]),
-    if(reps == 1, ClK = parirepshnf(pipdata[1]), ClK = reps);
-    );
-    matrix(hk,hk,i,j,pip(pipdata,ell,ClK[i],ClK[j]));
+    my(hK = pipdata[1].clgp.no, ClK);
+    if(reps == 0, ClK = vector(hK,i,pipdata[2][i][1]));
+    matrix(hK,hK,i,j,pip(pipdata,ell,ClK[i],ClK[j]));
 }
 
-pipgramdet(pipdata,ell,reps) = matdet(pipgrammat(pipdata,ell,reps));
-
-minpolZag(D,ell) = algdep(pipgramdet(pipinit(D),ell)/CSperiod(D)^(4*bnfclassno(D)*ell),5);
+pipgramdet(pipdata,ell,reps=0) = matdet(pipgrammat(pipdata,ell,reps));
