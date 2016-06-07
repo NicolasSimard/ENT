@@ -34,7 +34,9 @@ qhchar(qhdata,qhcomp,t,ida) =
     above information.");
 }
 
-/* Tested: qhlfun(qhcinit(-23),[i],2,2) = values in Watkin's paper. */
+/* Tested: qhlfun(qhcinit(-23),[i],2,2) = values in Watkin's paper
+and prod(i=0,2,qhlfun(qhcinit(-23),[i],2,2))=Pi^2/5*qhlfun(qhcinit(-23),[0],6,4)
+as in Watkin's paper.*/
 qhlfun(qhdata,qhcomp,t,m) =
 {
     if(t%2 == 1 || t < 2 || 2*m-t < 2 || t-m < 0, error("Wrong values for infinity type and m."));
@@ -54,9 +56,9 @@ qhlfun(qhdata,qhcomp,t,m) =
         eiseval[3][i] = tmp[1]^-6*G(6,tmp[2]/tmp[1]);
     );
     
-    mf = if(2*m-t == 2, delkformal('E2s,t-m), delkformal(EktoE4E6(2*m-t),t-m));
+    mf = if(2*m-t == 2, delkformal('G2s,t-m), delkformal(GktoG4G6(2*m-t),t-m));
     S = sum(i=1,hK,
-        qhchar(qhdata,qhcomp,t,reps[i])*subst(subst(subst(mf,'E2s,eiseval[1][i]),'E4,eiseval[2][i]),'E6,eiseval[3][i]);
+        qhchar(qhdata,qhcomp,t,reps[i])*subst(subst(subst(mf,'G2s,eiseval[1][i]),'G4,eiseval[2][i]),'G6,eiseval[3][i]);
     );
     return(I^t*(2*Pi)^m/gamma(m)*sqrt(abs(K.disc))^(t-m)*S);
 }
