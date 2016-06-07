@@ -30,7 +30,7 @@ d2l_1E2(pipdata,ell,ida) =
     while(pipdata[2][i0][2] != coords, i0 += 1);
     mu = bnfisprincipal(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida))[2];
     mu = subst(K.zk*mu,variable(K),K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
-    mu^(-4*ell)*subst(subst(subst(delkformal('E2s,2*ell-1),'E2s,pipdata[4][1][i0]),'E4,pipdata[4][2][i0]),'E6,pipdata[4][3][i0]);
+    mu^(-4*ell)*subst(subst(subst(delkformal('G2s,2*ell-1),'G2s,pipdata[4][1][i0]),'G4,pipdata[4][2][i0]),'G6,pipdata[4][3][i0]);
 }
 
 orient(ida) = if(imag(ida[2]/ida[1]) > 0, ida, vector(2,i,ida[3-i]));
