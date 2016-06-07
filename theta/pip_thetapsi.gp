@@ -4,6 +4,7 @@
 pnorm(qhdata,qhcomp,ell) =
 {
     my(K=qhdata[1], hK = K.clgp.no);
+    qhcomp = vector(#qhcomp,i,2*qhcomp[i]);
     sqrt(abs(K.disc))*2*hK*(2*ell)!/(4*Pi)^(2*ell+1)*qhlfun(qhdata,qhcomp,4*ell,2*ell+1);
 }
 {
@@ -14,7 +15,7 @@ pnorm(qhdata,qhcomp,ell) =
 transmat(qhdata,ell,reps) =
 {
     my(K = qhdata[1], hK = K.clgp.no, ClK, qhcomps=[]);
-    if(reps == 0, ClK = redrepshnf(K), ClK = reps);
+    if(reps == 0, ClK = redrepshnf(K), ClK = parirepshnf(K));
     forvec(e=vector(#K.clgp.cyc,i,[0,K.clgp.cyc[i]-1]),
         qhcomps = concat(qhcomps,[e]);
     );
