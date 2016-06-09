@@ -31,7 +31,7 @@ qhchars(K,T=[0,0]) =
 
 qhceval(qhcdata,qhc,ida) =
 {
-    my(K=qhcdata[1],ClK = K.clgp, decomp = bnfisprincipal(K,ida));
+    my(K=qhcdata[1],ClK = K.clgp, decomp = bnfisprincipal(K,ida), mu);
     if(#qhc[1] != #ClK.cyc, error("Invalid component vector."));
     mu = subst(K.zk*decomp[2],variable(K),K.roots[1]);
     mu^qhc[2][1]*conj(mu^qhc[2][2])*prod(i=1,#ClK.cyc,(qhcdata[2][i]^qhc[2][1]*conj(qhcdata[2][i])^qhc[2][2]*exp(2*Pi*I*qhc[1][i]/ClK.cyc[i]))^decomp[1][i]);

@@ -3,6 +3,7 @@ of linear combinations of derivatives of the Eisenstein series E2.*/
 
 \r ../Modform.gp
 \r ../Quadratic.gp
+\r ../lfunc/qhlfun-eisender.gp
 
 pip(pipdata,ell,ida,idb,flag) = 
 {
@@ -10,6 +11,21 @@ pip(pipdata,ell,ida,idb,flag) =
     tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
     if(flag == 0, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
     if(flag == 1, return(tmp)); \\ C_K*tmp = (.,.)
+}
+
+/*Note that the petersson norm is normalized by removing the volume factor.*/
+pnorm(data,qhc) =
+{
+    if(qhc[2][2] != 0, error("Wrong infinity type: ",qhc[2]));
+    my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
+    my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1], qhcsq);
+    qhcsq = [vector(#qhc[1],i,2*qhc[1][i]),[2*t,0]];
+    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1);
+}
+{
+    addhelp(pnorm,"pnorm(qhldata,qhc): return the norm of theta_psi, where
+    psi is determined by qhc = [c,[2*ell,0]] and qhldata is the data returned
+    by qhlinit.");
 }
 
 S(pipdata,ell,ida) =
@@ -71,6 +87,20 @@ pipinit(K,verbose) =
     return([K,reps,amb,eiseval]);
 }
 
+pipdatatoqhldata(data) = [qhcinit(data[1]),data[2],data[4]];
+
+psigrammat(qhldata,ell) =
+{
+    my(K = qhldata[1][1], chars = qhchars(K,[2*ell,0]));
+    matrix(K.clgp.no,K.clgp.no,i,j,if(i==j,pnorm(qhldata,chars[i])));
+}
+{
+    addhelp(psigrammat,"psigrammat(qhldata,ell): Gramm matrix of the Petersson
+    inner product in the basis of theta_psi.");
+}
+
+psigramdet(qhldata,ell) = matdet(psigrammat(qhldata,ell));
+
 pipgrammat(pipdata,ell,reps=0) =
 {
     my(hK = pipdata[1].clgp.no, ClK);
@@ -79,3 +109,15 @@ pipgrammat(pipdata,ell,reps=0) =
 }
 
 pipgramdet(pipdata,ell,reps=0) = matdet(pipgrammat(pipdata,ell,reps));
+
+transmat(qhcdata,ell,reps) =
+{
+    my(K = qhcdata[1], hK = K.clgp.no, ClK, chars = qhchars(K,[2*ell,0]));
+    if(reps == 0, ClK = redrepshnf(K), ClK = parirepshnf(K));
+    matrix(hK,hK,i,j,2/hK*qhceval(qhcdata,chars[i],ClK[j]));
+}
+{
+    addhelp(transmat,"transmat(qhcdata,ell,reps): Transition matrix M between the
+    basis theta_psi and theta_ida. It is such that
+    M~*psigrammat*conj(M) = pipgrammat.");
+}
