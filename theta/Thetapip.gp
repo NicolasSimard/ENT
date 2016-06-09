@@ -1,8 +1,34 @@
-/* This script uses he formula for the Petersson norm of theta series in terms
-of linear combinations of derivatives of the Eisenstein series E2.*/
+{
+    addhelp(Thetapip,"The Thetapip package is there to compute the Petersson
+    inner product and norm of various theta functions attached to an imaginary
+    quadratic field K. The first type of theta series is attached to an ideal
+    of K and an integer ell>0. The second is the theta series attached to a
+    Hecke character of infinity type 2*ell>0. All those modular forms are cusp
+    forms, so all this makes sense.
+    
+    Recall that a Hecke character of K is represented by [c,T] (see Qhc package
+    for more details).
+    
+    *Petersson inner product
+    - pip(pipdata,ell,ida,idb) -> <theta_ida,theta_idb>
+    - pnorm(data,qhc) -> <theta_qhc,theta_qhc>
+    
+    *Various objects attached to K
+    - pipgrammat(pipdata,ell,{reps=redreps}) -> Gramm matrix in basis reps
+    - pipgramdet(pipdata,ell,{reps=redreps}) -> determinant of pipgrammat
+    - psigrammat(data,ell) -> Gramm matrix in basis of theta_psi
+    - psigramdet(data,ell) -> determinant of psigrammat
+    - transmat(K,ell,reps) -> transition matrix between reps and theta_psi
+    
+    *Auxilary functions
+    - pipdatatoqhldata(pipdata) -> qhldata
+    ");
+}
+
 
 \r ../Modform.gp
 \r ../Quadratic.gp
+\r ../lfunc/Qhc.gp
 \r ../lfunc/qhlfun-eisender.gp
 
 pip(pipdata,ell,ida,idb,flag) = 
@@ -11,6 +37,13 @@ pip(pipdata,ell,ida,idb,flag) =
     tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
     if(flag == 0, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
     if(flag == 1, return(tmp)); \\ C_K*tmp = (.,.)
+}
+{
+    addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product
+    of the theta series attached to ida and idb, with parameter ell. pipdata is
+    the data returned by pipinit. By default, the Petersson inner product is
+    normalized by removing the volume factor. If flag = 1, return the product
+    without the constant C_K.");
 }
 
 /*Note that the petersson norm is normalized by removing the volume factor.*/
@@ -23,9 +56,9 @@ pnorm(data,qhc) =
     sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1);
 }
 {
-    addhelp(pnorm,"pnorm(qhldata,qhc): return the norm of theta_psi, where
-    psi is determined by qhc = [c,[2*ell,0]] and qhldata is the data returned
-    by qhlinit.");
+    addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where
+    psi is determined by qhc = [c,[2*ell,0]] and data is either the data
+    returned by qhlinit or pipinit.");
 }
 
 S(pipdata,ell,ida) =
@@ -89,17 +122,18 @@ pipinit(K,verbose) =
 
 pipdatatoqhldata(data) = [qhcinit(data[1]),data[2],data[4]];
 
-psigrammat(qhldata,ell) =
+psigrammat(data,ell) =
 {
-    my(K = qhldata[1][1], chars = qhchars(K,[2*ell,0]));
-    matrix(K.clgp.no,K.clgp.no,i,j,if(i==j,pnorm(qhldata,chars[i])));
+    my(K = if(#data == 4, data[1], data[1][1]), chars = qhchars(K,[2*ell,0]));
+    matrix(K.clgp.no,K.clgp.no,i,j,if(i==j,pnorm(data,chars[i])));
 }
 {
-    addhelp(psigrammat,"psigrammat(qhldata,ell): Gramm matrix of the Petersson
-    inner product in the basis of theta_psi.");
+    addhelp(psigrammat,"psigrammat(data,ell): Gramm matrix of the Petersson
+    inner product in the basis of theta_psi and data is either returned by
+    qhlinit of pipinit.");
 }
 
-psigramdet(qhldata,ell) = matdet(psigrammat(qhldata,ell));
+psigramdet(data,ell) = matdet(psigrammat(data,ell));
 
 pipgrammat(pipdata,ell,reps=0) =
 {
@@ -107,17 +141,21 @@ pipgrammat(pipdata,ell,reps=0) =
     if(reps == 0, ClK = vector(hK,i,pipdata[2][i][1]));
     matrix(hK,hK,i,j,pip(pipdata,ell,ClK[i],ClK[j]));
 }
+{
+    addhelp(pipgrammat,"pipgrammat(pipdata,ell,{reps=redreps}): Gramm matrix of
+    the Petersson inner product in the basis of reps (reduced reps by default.)");
+}
 
 pipgramdet(pipdata,ell,reps=0) = matdet(pipgrammat(pipdata,ell,reps));
 
-transmat(qhcdata,ell,reps) =
+transmat(K,ell,reps) =
 {
-    my(K = qhcdata[1], hK = K.clgp.no, ClK, chars = qhchars(K,[2*ell,0]));
+    my(qhcdata = qhcinit(K), hK = K.clgp.no, ClK, chars = qhchars(K,[2*ell,0]));
     if(reps == 0, ClK = redrepshnf(K), ClK = parirepshnf(K));
     matrix(hK,hK,i,j,2/hK*qhceval(qhcdata,chars[i],ClK[j]));
 }
 {
-    addhelp(transmat,"transmat(qhcdata,ell,reps): Transition matrix M between the
-    basis theta_psi and theta_ida. It is such that
+    addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M
+    between the basis theta_psi and reps basis. It is such that
     M~*psigrammat*conj(M) = pipgrammat.");
 }
