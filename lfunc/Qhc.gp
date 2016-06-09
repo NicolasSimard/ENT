@@ -3,7 +3,7 @@ qhcinit(K) =
     my(mu, ClK = K.clgp, psi0=vector(#ClK.cyc));
     for(i=1,#ClK.cyc,
         mu = bnfisprincipal(K,idealpow(K,ClK.gen[i],ClK.cyc[i]))[2];
-        psi0[i] = subst(K.zk*mu,variable(K),K.roots[1]);
+        psi0[i] = subst(K.zk*mu,variable(K),K.roots[1])^(1/ClK.cyc[i]);
     );
     [K,psi0];
 }
@@ -37,7 +37,7 @@ qhceval(qhcdata,qhc,ida) =
     mu^qhc[2][1]*conj(mu^qhc[2][2])*prod(i=1,#ClK.cyc,(qhcdata[2][i]^qhc[2][1]*conj(qhcdata[2][i])^qhc[2][2]*exp(2*Pi*I*qhc[1][i]/ClK.cyc[i]))^decomp[1][i]);
 }
 {
-    addhelp(qhchar,"qhchar(qhdata,qhc,ida): Any Hecke character [c,T] of K
+    addhelp(qhceval,"qhceval(qhdata,qhc,ida): Any Hecke character [c,T] of K
     evaluated at a generator g_i of the class group has value
     psi(g_i) = r_i^T[1]*conj(r_i)^T[2]*zeta_i^c_i, where r_i is as above and
     zeta_i = exp(2*Pi*I/o_i) and 0 <=c_i<o_i. Then if
