@@ -4,10 +4,8 @@
 
 qhlinit(K) =
 {
-    my(hK = K.clgp.no, w, reps, eiseval=vector(3,n,vector(hK)), tmp);
+    my(hK = K.clgp.no, w, reps = redrepshnf(K), eiseval=vector(3,n,vector(hK)), tmp);
     w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])); \\ make sure w in H
-    
-    reps = vector(hK,i,qfbtohnf(reduced_forms(K.disc)[i])); \\ Use idealred instead
     
     \\ Evaluate the Eisenstein series at CM points    
     for(i=1,hK,
