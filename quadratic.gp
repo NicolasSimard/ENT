@@ -36,6 +36,10 @@
     *Arithmetic
     - CSperiod(D) -> Omega_D
     - CSperiodCoh(D) -> Omega_D
+    
+    *Imaginary quadratic fields
+    - redrepshnf(K) -> [a_1,...,a_h]
+    - parirepshnf(K) -> [a_1,...,a_h]
     ");
 }
 
@@ -258,8 +262,11 @@ Minkowski(K) = my(n=K.r1+2*K.r2); n!/(n^n)*(4/Pi)^K.r2*sqrt(abs(K.disc));
 
 redrepshnf(K) =
 {
-    my(fs = reduced_forms(K.disc));
-    vector(K.clgp.no,i,qfbtohnf(fs[i]));
+    my(ClK=K.clgp, reps = []);
+    forvec(e=vector(#ClK.cyc,i,[0,ClK.cyc[i]-1]),
+        reps=concat(reps,[idealred(K,idealfactorback(K,ClK.gen,e))]);
+    );
+    reps;
 }
 
 parirepshnf(K) =
