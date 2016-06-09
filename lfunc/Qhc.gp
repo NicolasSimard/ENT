@@ -14,19 +14,19 @@ qhcinit(K) =
     [K,[r_i]], where r_i=y_i^(1/o_i).");
 }
 
-qcchars(K) =
+qhchars(K,T=[0,0]) =
 {
     my(qccs=[]);
     forvec(e=vector(#K.clgp.cyc,i,[0,K.clgp.cyc[i]-1]),
-        qccs = concat(qccs,[[e,[0,0]]]);
+        qccs = concat(qccs,[[e,T]]);
     );
     qccs;
 }
 {
-    addhelp(qcchars,"qcchars(K): Given an imaginary quadratic field K, returns
-    all characters of the class group of K, represented as vectors [c,T],
+    addhelp(qhchars,"qhchars(K): Given an imaginary quadratic field K, returns
+    all Hecke characters of K of infinity type T, represented as vectors [c,T],
     where c is the component vector in terms of an elementary divisor
-    decomposition of ClK and T=[0,0] is the infinity type of the character.");
+    decomposition of ClK.");
 }
 
 qhceval(qhcdata,qhc,ida) =
