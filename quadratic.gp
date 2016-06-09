@@ -273,11 +273,11 @@ parirepshnf(K) =
 
 /*-----------------------------Arithmetic------------------------------------*/
 /*Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
-modular forms by Zagier.*/
+modular forms by Zagier, but with a 4 instead of 2 in the factor.*/
 CSperiod(D) =
 {
     control(D);
-    return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/qfbclassno(D))/sqrt(2*Pi*abs(D)));
+    return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/qfbclassno(D))/sqrt(4*Pi*abs(D)));
 }
 
 /* Returns the Chowla-selberg period of discriminant D, as defined Cohen's book
