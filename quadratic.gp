@@ -23,6 +23,7 @@
     - qfbhclassno(d) -> H(d) (d>0)
     - genusno(D) -> #genus
     - two_torsion(D) -> [amb] = ClK[2]
+    - discofclassno(n) -> [D_1,...,D_k]: h(D_i) = n (n <= 10)
     
     *Heegner forms
     - Heegner_form(f,N,beta) -> g: g~f and N|a(g)
@@ -239,6 +240,23 @@ two_torsion(D) =
 }
 addhelp(twotorsion,"two_torsion(D): Return representatives of the two-torsion of the class group of discriminant D. The number"\
 "number of such classes is equal to the number of genera for the discriminant D.");
+
+discofclassno(n) =
+{
+    if(n > 10, error("Not implemented yet. Too lazy!"));
+    my(discs = []);
+    for(D=3,13843,
+        if(isfundamental(-D) && qfbclassno(-D) == n,
+            discs = concat(discs,[-D])
+        )
+    );
+    return(discs);
+}
+{
+    addhelp(discofclassno,"discofclassno(n): Return all fundamental discriminants
+    with class number n. The problem is solved only for n <= 100 by Watkins,
+    and implemented for n <= 10 for the moment.");
+}
 
 /*-----------------------------Conversion------------------------------------*/
 
