@@ -12,7 +12,7 @@ factortex(N) =
         );
         str=concat(str,tmp);
     );
-    return(str);
+    return(concat(concat("$",str),"$"));
 }
 
 /*
@@ -38,15 +38,16 @@ for(i=1,#discs,
     D = discs[i];
     dataD = pipinit(bnfinit(x^2-D));
     periodD = CSperiod(D);
-    comps = concat(comps,D);
+    comps = concat(comps,[concat(concat("$",Str(D)),"$")]);
     print(D);
     for(ell=1,maxell,
         tmp = Vec(algdep(pip(dataD,ell,1,1)/periodD^(4*ell),2));
         comps = concat(comps,[if(#tmp == 2, factortex(tmp[2]/tmp[1]), "X")]);
     )
 );
-\\print(matrix(#comps/(maxell+1),maxell+1,D,ell,comps[(D-1)*(maxell+1)+ell]));
+/*
 writetex(out,
     matrix(#comps/(maxell+1),maxell+1,D,ell,comps[(D-1)*(maxell+1)+ell])
-);
+);*/
+for(i=1,#comps,write(out,comps[i]));
 }
