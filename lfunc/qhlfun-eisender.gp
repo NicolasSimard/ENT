@@ -1,6 +1,5 @@
 \r ../Quadratic.gp
 \r ../Modform.gp
-\r Qhc.gp
 
 qhlinit(K) =
 {

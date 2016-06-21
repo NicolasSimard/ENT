@@ -28,7 +28,6 @@
 
 \r ../Modform.gp
 \r ../Quadratic.gp
-\r ../lfunc/Qhc.gp
 \r ../lfunc/qhlfun-eisender.gp
 
 pip(pipdata,ell,ida,idb,flag) = 
