@@ -15,24 +15,13 @@ factortex(N) =
     return(concat(concat("$",str),"$"));
 }
 
-/*
 \\ For idoneal numbers (Note: -35 is not idoneal, but clgp has exponent 2...)
-{
-    my(idoneal=[]);
-    for(n=1,1848,
-        if(isfundamental(-4*n) && qfbclassno(-4*n) == genusno(-4*n),idoneal=concat(idoneal,[-4*n]))
-    );
-    for(i=1,#idoneal,
-        print(idoneal[i],":");
-        dataD = pipinit(bnfinit(x^2-idoneal[i]));
-        periodD = CSperiod(idoneal[i]);
-        for(ell=1,5,print(Vec(algdep(pip(dataD,ell,1,1)/periodD^(4*ell),3))))
-    )
-}
-*/
+idoneal=[];
+for(n=1,1848,if(isfundamental(-4*n) && qfbclassno(-4*n) == genusno(-4*n) && qfbclassno(-4*n) > 2, idoneal=concat(idoneal,[-4*n])));
 
 table(discs, maxell, out) =
 {
+print("Number of discs: ",#discs);
 my(comps = [],dataD,periodD,tmp,D);
 for(i=1,#discs,
     D = discs[i];
