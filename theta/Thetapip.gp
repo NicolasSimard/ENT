@@ -134,18 +134,18 @@ psigrammat(data,ell) =
 
 psigramdet(data,ell) = matdet(psigrammat(data,ell));
 
-pipgrammat(pipdata,ell,reps=0) =
+pipgrammat(pipdata,ell,reps) =
 {
-    my(hK = pipdata[1].clgp.no, ClK);
-    if(reps == 0, ClK = vector(hK,i,pipdata[2][i][1]));
-    matrix(hK,hK,i,j,pip(pipdata,ell,ClK[i],ClK[j]));
+    my(hK = pipdata[1].clgp.no);
+    if(reps == 0, reps = vector(hK,i,pipdata[2][i][1]));
+    matrix(hK,hK,i,j,pip(pipdata,ell,reps[i],reps[j]));
 }
 {
     addhelp(pipgrammat,"pipgrammat(pipdata,ell,{reps=redreps}): Gramm matrix of
     the Petersson inner product in the basis of reps (reduced reps by default.)");
 }
 
-pipgramdet(pipdata,ell,reps=0) = matdet(pipgrammat(pipdata,ell,reps));
+pipgramdet(pipdata,ell,reps) = matdet(pipgrammat(pipdata,ell,reps));
 
 transmat(K,ell,reps) =
 {
