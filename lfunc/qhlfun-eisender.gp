@@ -17,8 +17,13 @@ qhlinit(K) =
     return([qhcinit(K),reps,eiseval]);
 }
 
-/* Tested: qhlfun(qhcinit(-23),[[i],[2,0]],2) = values in Watkin's paper and
-prod(i=0,2,qhlfun(qhcinit(-23),[[i],[2,0]],2))=Pi^2/5*qhlfun(qhcinit(-23),[[0],[6,0]],4)
+/* Tested: qhlfun(qhlinit(bnfinit('x^2+23)),[[i],[2,0]],2) = values in Watkin's paper
+
+and
+
+prod(i=0,2,qhlfun(qhlinit(bnfinit('x^2+23)),[[i],[2,0]],2))=
+Pi^2/5*qhlfun(qhlinit(bnfinit('x^2+23)),[[0],[6,0]],4)
+
 as in Watkin's paper.*/
 qhlfun(qhldata,qhc,m) =
 {
@@ -34,8 +39,8 @@ qhlfun(qhldata,qhc,m) =
     return(I^t*(2*Pi)^m/gamma(m)*sqrt(abs(K.disc))^(t-m)*S);
 }
 {
-    addhelp(qhlfun,"qhlfun(qhdata,qhc,m): Evaluates the Hecke L-function
+    addhelp(qhlfun,"qhlfun(qhldata,qhc,m): Evaluates the Hecke L-function
     attached to the Hecke character [c,T] (where c are the components and T is
     the infinity type) at the point m (for the moment, we need t/2+1 <= m <= t).
-    qhdata is the data returned by qhcinit.");
+    qhldata is the data returned by qhlinit.");
 }
