@@ -27,6 +27,8 @@
     - pstab(p,f('q)) -> f('q)^[p] (p-stabilisation of f)
     - rcbracket(f('q),k_f,g('q),k_g) -> [f('q),g('q)] (Rankin-Cohen bracket)
     - dop(f('q),n) -> d^n(f('q)) (d='q*d/d'q)
+    - dopformal(P,n) -> d^n(P) (P in C['E2,'E4,'E6])
+    - delkformal(P,n) -> del_k^n(P) (P in C['E2s,'E4,'E6, 'G2s,'G4,'G6])
     
     *Other functions:
     - jpol(p('q)) -> P(X): P(j('q)) = p('q)
@@ -320,7 +322,7 @@ dopformal(P,n=1) =
     form of level 1 represented by a weighted homogeneous polynomial P in
     'E2, 'E4 and 'E6. The operator dop = q*d/dq preserves this ring and the
     formulas are given in Zagier - 1,2,3 of modular forms (prop 15). If n is
-    given, returns the nth iteration of dop.");
+    given, returns the nth iteration of dopformal. Note that E_k = 1 + O(q).");
 }
 
 delkformal(P,n=1) = 
@@ -338,7 +340,8 @@ delkformal(P,n=1) =
     given by E2-3/(Pi*y), or a weighted homogeneous polynomial P in 'G2s, 'G4
     and 'G6. The operator delk = q*d/dq - k/(4*Pi*y) preserves this ring and
     the formulas are given in Shimura - Elementary Dirichlet series and
-    modular forms. If n is given, returns the nth iteration of delk.");
+    modular forms. If n is given, returns the nth iteration of delkformal.
+    Note that G_k = -B_k/2k + O(q) and E_k = 1 + O(q).");
 }
 
 pstab(p,f) = f-V(p,U(p,f));
