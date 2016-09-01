@@ -9,6 +9,7 @@
     *General modular forms:
     - G(k,'q) -> q-expansion; G(k,z) -> G_k(z) (numerical value)
     - E(k,'q) -> q-expansion; E(k,z) -> E_k(z) (numerical value)
+    -                         G2star(z) -> numerical value
     - theta0(x) -> q-expansion
     - theta1(x) -> q-expansion
     - ellj('q) -> q-expansion (PARI built-in); ellj(z) -> j(z) (numerical value)
