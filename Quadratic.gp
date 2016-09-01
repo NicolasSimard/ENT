@@ -243,9 +243,9 @@ addhelp(twotorsion,"two_torsion(D): Return representatives of the two-torsion of
 
 discofclassno(n) =
 {
-    if(n > 10, error("Not implemented yet. Too lazy!"));
+    if(n > 11, error("Not implemented yet. Too lazy!"));
     my(discs = []);
-    for(D=3,13843,
+    for(D=3,15667,
         if(isfundamental(-D) && qfbclassno(-D) == n,
             discs = concat(discs,[-D])
         )
@@ -255,7 +255,7 @@ discofclassno(n) =
 {
     addhelp(discofclassno,"discofclassno(n): Return all fundamental discriminants
     with class number n. The problem is solved only for n <= 100 by Watkins,
-    and implemented for n <= 10 for the moment.");
+    and implemented for n <= 11 for the moment.");
 }
 
 /*-----------------------------Conversion------------------------------------*/
