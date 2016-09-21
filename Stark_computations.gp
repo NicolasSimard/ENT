@@ -5,6 +5,13 @@ f(K,ida) = {
     sqrt(imag(tau[2]/tau[1]))*eta(tau[2]/tau[1],1)^2;
 }
 
+Zag_psi(K,ida) = {
+    my(w,tau);
+    w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1]));
+    tau = subst(K.zk*idealhnf(K,ida),variable(K),w);
+    imag(tau[2]/tau[1])*abs(eta(tau[2]/tau[1],1))^4;
+}
+
 eps(K,charcomp) = {
     my(qhcdata=qhcinit(K),reps=redrepshnf(qhcdata[1]),sqchar);
     sqchar=vector(#charcomp,i,2*charcomp[i]);
