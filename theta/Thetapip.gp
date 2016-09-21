@@ -30,12 +30,11 @@
 \r ../Quadratic.gp
 \r ../lfunc/qhlfun-eisender.gp
 
-pip(pipdata,ell,ida,idb,flag) = 
+pip(pipdata,ell,ida,idb) = 
 {
     my(K = pipdata[1],tmp);
     tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
-    if(flag == 0, return(4*(abs(K.disc)/4)^ell*tmp)); \\ V^-1*4*(|K.disc|/4)^ell*tmp = (.,.)
-    if(flag == 1, return(tmp)); \\ C_K*tmp = (.,.)
+    return(4*(abs(K.disc)/4)^ell*tmp);
 }
 {
     addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product
@@ -45,7 +44,6 @@ pip(pipdata,ell,ida,idb,flag) =
     without the constant C_K.");
 }
 
-/*Note that the petersson norm is normalized by removing the volume factor.*/
 pnorm(data,qhc) =
 {
     if(qhc[2][2] != 0, error("Wrong infinity type: ",qhc[2]));

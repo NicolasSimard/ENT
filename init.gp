@@ -1,1 +1,2 @@
-read("quadratic.gp");
+read("Quadratic.gp");
+read("Modform.gp");
