@@ -15,8 +15,8 @@ product of theta series attached to ideals of Hecke characters of imaginary
 quadratic fields.
 - Thetafunc.gp: Defines the theta series themselves (their q-expansion, etc.)
 
-## Examples of use of some scripts
-Here are some examples of computations one can do with the scripts
+## Examples
+Here are some examples of computations one can do with the scripts.
 
 ### Computing Petersson inner products of theta series attached to ideals
 Here is an example of a computations with theta series attached to
