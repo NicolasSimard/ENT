@@ -13,8 +13,6 @@ Here are some of the most useful scripts in the directory.
 - Thetapip.gp: Defines a bunch of functions to compute the Petersson inner
 product of theta series attached to ideals of Hecke characters of imaginary
 quadratic fields.
-- lfunction.gp: Defines the L-function attached to theta series using the
-computel script.
 - Thetafunc.gp: Defines the theta series themselves (their q-expansion, etc.)
 
 ## Examples of use of some scripts
