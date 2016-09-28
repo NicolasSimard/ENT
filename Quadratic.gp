@@ -32,7 +32,7 @@
     
     *Conversion
     - qfbtohnf(f) -> [a,*;0,*]
-    - ida(f) -> [a,a*tau(f)]
+    - idatoqfb(K,ida) -> [a,b,c]
     
     *Arithmetic
     - CSperiod(D) -> Omega_D
@@ -266,12 +266,17 @@ qfbtohnf(f) =
     my(D=f[2]^2-4*f[1]*f[3], K=nfinit('w^2-D), t = nfalgtobasis(K,(-f[2]+'w)/2));
     [f[1],t[1];0,t[2]];
 }
-addhelp(qfbtohnf,"qfbtohnf(f): Return the Hermite normal form of the ideal"\
-"corresponding to f in the integral basis of nfinit(x^2-D).");
+{
+    addhelp(qfbtohnf,"qfbtohnf(f): Return the Hermite normal form of the ideal corresponding to f in the integral basis of nfinit(x^2-D).");
+}
 
-ida(f) = [f[1],(f[2]+sqrt(f[2]^2-4*f[1]*f[3]))/2];
-addhelp(ida,"ida(f): Return the ideal attached to the quadratic form f=[a,b,c], i.e."\
-"ida(f)=[a,(b+sqrt(D))/2].");
+idatoqfb(K,ida) = {
+    my(Zbasis = subst(K.zk*idealhnf(K,ida),variable(K),K.roots[1]));
+    Vec(round(('X*Zbasis[1]-Zbasis[2])*conj('X*Zbasis[1]-Zbasis[2])/idealnorm(K,ida)));
+}
+{
+    addhelp(idatoqfb,"idatoqfb(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding binary quadratic form N(ax-by)/N(ida).");
+}
 
 /*-------------------------Imaginary quadratic fields------------------------*/
 
