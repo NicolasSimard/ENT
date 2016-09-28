@@ -1,5 +1,5 @@
-read("computel");           \\ read the ComputeL package
-read("delta_coeff.gp");     \\define tau(k)
+read("../computel");
+read("../Numth.gp");
 
 coefgrow(n) = 2*n^(11/2);
 
@@ -9,6 +9,6 @@ gammaV    = [0,1];          \\ list of gamma-factors
 weight    = 12;             \\ L(s)=sgn*L(weight-s)
 sgn       = 1;              \\ sign in the functional equation
 
-initLdata("tau(k)");        \\ L-series coefficients a(k)
+initLdata("ramanujantau(k)");        \\ L-series coefficients a(k)
 
-print("Verifying functional equation. Error: ",errprint(checkfeq()))
+print("Verifying functional equation. Error: ",errprint(checkfeq()));
