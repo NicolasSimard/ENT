@@ -44,7 +44,7 @@ binthetaqfb(f,ell,var='q,flag) = {
     coeffs = vector(pr+1);
     
     L = mateigen([f[1],f[2]/2;f[2]/2,f[3]],1)[1];
-    M=floor(sqrt(pr/max(L[1],L[2])));
+    M = floor(sqrt(pr/min(L[1],L[2])));
     
     Zbasis = [f[1],-(f[2] + D%2)/2+quadgen(D)];
     if(flag, Zbasis[1] = Zbasis[1]*1.0);
