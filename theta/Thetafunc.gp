@@ -35,19 +35,18 @@ binthetaida(K,ida,ell,var='q,flag) = binthetaqfb(idatoqfb(K,ida),ell,var,flag);
 }
 
 binthetaqfb(f,ell,var='q,flag) = {
-    my(D, M, K, n, Zbasis, pr, coeffs, L);
+    my(D, M, n, Zbasis, pr, coeffs, L);
     
     pr = default(seriesprecision);
     f = Vec(f); \\ make sure f is a vector (not of type t_QFI)
     D = f[2]^2-4*f[1]*f[3];
-    K = nfinit('r^2-D);
     coeffs = vector(pr+1);
     
     L = mateigen([f[1],f[2]/2;f[2]/2,f[3]],1)[1];
     M = floor(sqrt(pr/min(L[1],L[2])));
     
     Zbasis = [f[1],-(f[2] + D%2)/2+quadgen(D)];
-    if(flag, Zbasis[1] = Zbasis[1]*1.0);
+    if(flag, Zbasis[2] *= 1.0);
     
     forvec(pt=[[-M,M],[-M,M]],
         n = f[1]*pt[1]^2 + f[2]*pt[1]*pt[2] + f[3]*pt[2]^2;
