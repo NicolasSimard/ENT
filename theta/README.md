@@ -90,17 +90,15 @@ set the working precision, define K and call `pipinit`:
 
 ```
 (14:39) gp > \r Thetapip.gp
-(14:39) gp > \r ../lfunc/Qhc.gp
-(14:39) gp > \r ../lfunc/qhlfun-eisender.gp
+(14:39) gp > \r ../Quadratic.gp
+(14:39) gp > \r ../lfunc/nf/quadhecke.gp
 (14:40) gp > \p 500
    realprecision = 500 significant digits
 (14:40) gp > K=bnfinit('x^2+23);
 (14:40) gp > data=pipinit(K);
 ```
 
-Note that we have to load two more scripts here, namely `../lfunc/Qhc.gp` and
-`../lfunc/qhlfun-eisender.gp`, which define Hecke characters and the L-function
-attached to those Hecke characters, respectively.
+Note that we have to load an extra script, namely `../lfunc/nf/quadhecke.gp`, which defines the L-function attached to Hecke characters of imaginary quadratic fields. The script `../Quadratic.gp` is also needed to define Hecke characters.
 
 We can now compute the Petersson norm of the theta series attached to one of
 these Hecke characters of infinity type 2*ell for ell=2:
@@ -114,7 +112,6 @@ these Hecke characters of infinity type 2*ell for ell=2:
 Again, we can normalize by the Chowla-Selberg period to obtain algebraic numbers.
 
 ```
-(14:40) gp > \r ../Quadratic.gp
 (14:41) gp > OmK=CSperiod(-23);
 (14:41) gp > algdep(pnorm(data,[[0],[2*ell,0]])/OmK^(4*ell),20)
 %287 = x^9 - 188333424*x^6 + 639297099696618*x^3 - 389589775351907071941
