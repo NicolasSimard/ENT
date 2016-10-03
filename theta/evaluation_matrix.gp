@@ -2,8 +2,6 @@
 entry is theta_i(tau_j)
 */
 nbr_coeff = 100;
-
-read("theta_function.gp")
 read("../quadratic.gp");
 
 \\ (i,j)th coefficient of the matrix consisting of [theta_i(tau_j)]_ij

@@ -25,11 +25,6 @@
     ");
 }
 
-
-\r ../Modform.gp
-\r ../Quadratic.gp
-\r ../lfunc/qhlfun-eisender.gp
-
 pip(pipdata,ell,ida,idb) = 
 {
     my(K = pipdata[1],tmp);
