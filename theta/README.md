@@ -2,18 +2,18 @@
 
 ## Introduction
 This is where most computations with theta functions take place. The main
-script is Thetapip.gp, which defines a bunch of functions to efficiently compute
+script is `ENT/theta/Thetapip.gp`, which defines a bunch of functions to efficiently compute
 the Petersson inner product of binary theta series attached to imaginary quadratic
 fields. A detailed presentation of the formulas that are used in Thetapip.gp can
-be found in the NicolasSimard/Notes/ repo.
+be found in the `Notes/` repo.
 
-## Content of theta/ directory
+## Content of `ENT/theta/` directory
 Here are some of the most useful scripts in the directory.
 
-- Thetapip.gp: Defines a bunch of functions to compute the Petersson inner
+- `ENT/theta/Thetapip.gp`: Defines a bunch of functions to compute the Petersson inner
 product of theta series attached to ideals of Hecke characters of imaginary
 quadratic fields.
-- Thetafunc.gp: Defines the theta series themselves (their q-expansion, etc.)
+- `ENT/theta/Thetafunc.gp`: Defines the theta series themselves (their q-expansion, etc.)
 
 ## Examples
 Here are some examples of computations one can do with the scripts.
@@ -23,7 +23,7 @@ Here is an example of a computations with theta series attached to
 ideals in the field $K=\Q(\sqrt(-23))$.
 
 #### Initialize
-First of all, start PARI/GP in the theta/ directory. Then load the script,
+First of all, start PARI/GP in the `ENT/theta/` directory. Then load the script,
 set the working precision and define K.
 
 ```
@@ -51,7 +51,7 @@ attached to the ideal 1 for ell=2:
 
 where the `[...]` means that I cut the output to make it fit on this page (the
 PARI output is much longer)! Of course, this becomes more interesting if we
-normalize by the Chowla-Selberg period (defined in the Quadratic.gp script),
+normalize by the Chowla-Selberg period (defined in the `ENT/Quadratic.gp` script),
 since we know that we obtain algebraic integers:
 
 ```
@@ -85,8 +85,8 @@ Here is an example of a computations with theta series attached to Hecke charact
 of the field $K=\Q(\sqrt(-23))$.
 
 #### Initialize
-As in the previous example, start PARI/GP in the theta/ directory, load the scripts,
-set the working precision, define K and call `pipinit`:
+As in the previous example, start PARI/GP in the `ENT/theta/` directory, load the scripts,
+set the working precision, define K and call `pipinit(K)`:
 
 ```
 (14:39) gp > \r Thetapip.gp
@@ -98,7 +98,7 @@ set the working precision, define K and call `pipinit`:
 (14:40) gp > data=pipinit(K);
 ```
 
-Note that we have to load an extra script, namely `../lfunc/nf/quadhecke.gp`, which defines the L-function attached to Hecke characters of imaginary quadratic fields. The script `../Quadratic.gp` is also needed to define Hecke characters.
+Note that we have to load an extra script, namely `ENT/lfunc/nf/quadhecke.gp`, which defines the L-function attached to Hecke characters of imaginary quadratic fields. The script `ENT/Quadratic.gp` is also needed to define Hecke characters.
 
 We can now compute the Petersson norm of the theta series attached to one of
 these Hecke characters of infinity type 2*ell for ell=2:
