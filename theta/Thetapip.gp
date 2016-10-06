@@ -56,11 +56,17 @@ pnorm(data,qhc) =
     addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
 }
 
-F(z) = sqrt(imag(z))*abs(eta(z,1))^2;
+FF(z) = sqrt(imag(z))*eta(z,1)^2;
+
+F(z) = abs(FF(z));
 addhelp(F,"F(z): Defined as F(z) = imag(z)^1/2*abs(eta(z,1))^2.");
 
-F_hom(K,ida) = sqrt(2/sqrt(abs(K.disc)))*F(idatouhp(K,ida));
+FF_hom(K,ida) = sqrt(2/sqrt(abs(K.disc)))*FF(idatouhp(K,ida));
+
+F_hom(K,ida) = abs(FF_hom(K,ida));
 addhelp(F_hom,"F_hom(K,ida): Defined as F_hom(K,ida) = N(ida)^1/2*abs(eta(ida))^2.");
+
+rho(K,ida,idb) = (FF_hom(K,ida)/FF_hom(K,idealmul(K,ida,idealinv(K,idb))))^(12*qfbclassno(K.disc));
 
 S(pipdata,ell,ida) =
 {
