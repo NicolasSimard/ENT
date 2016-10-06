@@ -33,6 +33,7 @@
     *Conversion
     - qfbtohnf(f) -> [a,*;0,*]
     - idatoqfb(K,ida) -> [a,b,c]
+    - idatouhp(K,ida) -> tau_ida
     
     *Arithmetic
     - CSperiod(D) -> Omega_D
@@ -281,6 +282,14 @@ idatoqfb(K,ida) = {
 }
 {
     addhelp(idatoqfb,"idatoqfb(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding binary quadratic form N(ax-by)/N(ida).");
+}
+
+idatouhp(K,ida) = {
+    my(tmp=subst(K.zk*idealhnf(K,ida),variable(K),K.roots[1]));
+    if(imag(tmp[2]/tmp[1])>0,tmp[2]/tmp[1],tmp[1]/tmp[2]);
+}
+{
+    addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding point b/a or a/b in the upper-half plane.");
 }
 
 /*-------------------------Imaginary quadratic fields------------------------*/
