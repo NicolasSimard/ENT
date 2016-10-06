@@ -45,13 +45,22 @@ pnorm(data,qhc) =
     my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
     my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1], qhcsq);
     qhcsq = [vector(#qhc[1],i,2*qhc[1][i]),[2*t,0]];
-    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1);
+    if(t == 0,
+        my(reps=redrepshnf(K), qhcdata = qhcinit(K));
+        -hK*sum(i=1,#reps,qhceval(qhcdata,qhcsq,reps[i])*log(F_hom(K,reps[i])));
+    ,
+        sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1)
+    );
 }
 {
-    addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where
-    psi is determined by qhc = [c,[2*ell,0]] and data is either the data
-    returned by qhlinit or pipinit.");
+    addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
 }
+
+F(z) = sqrt(imag(z))*abs(eta(z,1))^2;
+addhelp(F,"F(z): Defined as F(z) = imag(z)^1/2*abs(eta(z,1))^2.");
+
+F_hom(K,ida) = sqrt(2/sqrt(abs(K.disc)))*F(idatouhp(K,ida));
+addhelp(F_hom,"F_hom(K,ida): Defined as F_hom(K,ida) = N(ida)^1/2*abs(eta(ida))^2.");
 
 S(pipdata,ell,ida) =
 {
@@ -73,8 +82,6 @@ d2l_1E2(pipdata,ell,ida) =
     mu = subst(K.zk*mu,variable(K),K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
     mu^(-4*ell)*subst(subst(subst(delkformal('G2s,2*ell-1),'G2s,pipdata[4][1][i0]),'G4,pipdata[4][2][i0]),'G6,pipdata[4][3][i0]);
 }
-
-orient(ida) = if(imag(ida[2]/ida[1]) > 0, ida, vector(2,i,ida[3-i]));
 
 \\ Petersson inner product init
 pipinit(K,verbose) =
@@ -113,6 +120,12 @@ pipinit(K,verbose) =
 }
 
 pipdatatoqhldata(data) = [qhcinit(data[1]),data[2],data[4]];
+
+generator(K,ida) = {
+    my(tmp=bnfisprincipal(K,ida));
+    if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
+    subst(K.zk*tmp[2],variable(K),K.roots[1]);
+}
 
 psigrammat(data,ell) =
 {
