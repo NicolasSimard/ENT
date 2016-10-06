@@ -1,6 +1,3 @@
-\r ../Quadratic.gp
-\r ../Modform.gp
-
 qhlinit(K) =
 {
     my(hK = K.clgp.no, w, reps = redrepshnf(K), eiseval=vector(3,n,vector(hK)), tmp);
