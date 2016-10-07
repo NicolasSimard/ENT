@@ -45,12 +45,7 @@ pnorm(data,qhc) =
     my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
     my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1], qhcsq);
     qhcsq = [vector(#qhc[1],i,2*qhc[1][i]),[2*t,0]];
-    if(t == 0,
-        my(reps=redrepshnf(K), qhcdata = qhcinit(K));
-        -hK*sum(i=1,#reps,qhceval(qhcdata,qhcsq,reps[i])*log(F_hom(K,reps[i])));
-    ,
-        sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1)
-    );
+    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1);
 }
 {
     addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
