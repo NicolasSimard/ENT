@@ -34,6 +34,7 @@
     - qfbtohnf(f) -> [a,*;0,*]
     - idatoqfb(K,ida) -> [a,b,c]
     - idatouhp(K,ida) -> tau_ida
+    - idatozgen(K,ida) -> [w1,w2]
     
     *Arithmetic
     - CSperiod(D) -> Omega_D
@@ -290,6 +291,14 @@ idatouhp(K,ida) = {
 }
 {
     addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding point b/a or a/b in the upper-half plane.");
+}
+
+idatozgen(K,ida) = {
+    my(w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])));
+    subst(K.zk*idealhnf(K,ida),variable(K),w); \\[a,(-b+sqrt(D))/2]
+}
+{
+    addhelp(hnftozgen,"hnftozgen(K,ida): return [w1,w2] such that ida = Z*w1+Z*w2, with w2/w1 in the upper half plane.");
 }
 
 /*-------------------------Imaginary quadratic fields------------------------*/
