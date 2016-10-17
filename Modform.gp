@@ -32,6 +32,7 @@
     
     *Other functions:
     - jpol(p('q)) -> P(X): P(j('q)) = p('q)
+    - area([w_1,w_2]) -> area of Z*w_1+Z*w_2, area([a,b;c,d]) -> det([a,b;c,d])
     ");
 }
 
@@ -51,10 +52,7 @@ G(k,x) =
     );
 }
 {
-    addhelp(G,"G(k,x): If x is a polonomial, returns the q-expansion of the
-    Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1).
-    This is E_k in Shimura's notation in Elementary Dirichlet series and...
-    If x is anything else, tries to numerically evaluate G_k at that point.");
+    addhelp(G,"G(k,x): If x is a polonomial, returns the q-expansion of the Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura's notation in Elementary Dirichlet series and... If x is anything else, tries to numerically evaluate G_k at that point.");
 }
 
 E(k,x) =
@@ -77,8 +75,7 @@ E(k,x) =
 
 G2star(z) = (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z));
 {
-    addhelp(G2star,"G2star(z): evaluates the weight 2 Eisenstein series at z.
-    G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
+    addhelp(G2star,"G2star(z): evaluates the weight 2 Eisenstein series at z. G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
 }
 
 theta0(x) =
@@ -131,8 +128,7 @@ jpol(f) =
     return(Pol(matsolve(M,B~),'X));
 }
 {
-    addhelp(jpol,"jpol(f): Given a q-expansion f(q) with enough coefficients,
-    returns a polynomial g(Y) such that g(j)=f, where j is the j-function.");
+    addhelp(jpol,"jpol(f): Given a q-expansion f(q) with enough coefficients,returns a polynomial g(Y) such that g(j)=f, where j is the j-function.");
 }
 
 fd(i:small) =
@@ -351,4 +347,13 @@ rcbracket(f,k,g,l) = k*dop(g)*f-l*dop(f)*g;
 {
     addhelp(rcbracket,"rcbracket(f,k,g,l): Return the Rankin-Cohen bracket of
     the two modular forms f and g of weigh k and l, respectively.");
+}
+
+/*--------------- Other functions --------------------------------------*/
+area(K,L) = {
+    if(type(L) == "t_VEC" && #L == 2, return(matdet([real(L[1]),imag(L[1]); real(L[2]),imag(L[2])])));
+    return(area(K,idatozgen(K,L)));
+}
+{
+    addhelp(area,"area(K,L): return the area of the Z-lattice L. If L = [w1,w2] is a 2-component vector of linearly independent complex numbers, returns the area of the lattice spanned by those numbers in C. If L is a square matrix (representing L in a Z-basis in the imaginary quadratic field K), area(K,L) = area(K,idatozgen(K,L)).");
 }
