@@ -32,11 +32,7 @@ pip(pipdata,ell,ida,idb) =
     return(4*(abs(K.disc)/4)^ell*tmp);
 }
 {
-    addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product
-    of the theta series attached to ida and idb, with parameter ell. pipdata is
-    the data returned by pipinit. By default, the Petersson inner product is
-    normalized by removing the volume factor. If flag = 1, return the product
-    without the constant C_K.");
+    addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell. pipdata is the data returned by pipinit. By default, the Petersson inner product is normalized by removing the volume factor. If flag = 1, return the product without the constant C_K.");
 }
 
 pnorm(data,qhc) =
