@@ -38,42 +38,39 @@
 
 /*------------------------General modular forms ----------------------*/
 
+/*Note that
+elleisnum([w1,w2],k)=(2*Pi*I/w2)^k(1+2/zeta(1-k)*\sum_{n\geq1}sigma_{k-1}(n)q^n)
+                    =(2*Pi*I/w2)^k(1+2/zeta(1-k)q+O(q^2))
+and
+zeta(1-k)=-bernfrac(k)/k.
+
+Note also that G(k,z) is \mathbb{G}_k(z) in Zagier - 1-2-3 of modular forms.
+*/
 G(k,x) =
 {
     if(type(x) == "t_POL",
-        -bernfrac(k)/2/k
-        +subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x)
-        +O(variable(x)^default(seriesprecision))
+        -bernfrac(k)/2/k + subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x) + O(variable(x)^default(seriesprecision))
     ,
-        if(k == 2,
-        -1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*x)),
-        -bernfrac(k)/(2*k)+suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*x))
-        )
+        elleisnum([z,1],k)/(2*Pi*I)^k/2*zeta(1-k)
     );
 }
 {
-    addhelp(G,"G(k,x): If x is a polonomial, returns the q-expansion of the Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura's notation in Elementary Dirichlet series and... If x is anything else, tries to numerically evaluate G_k at that point.");
+    addhelp(G,"G(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura - Elementary Dirichlet series and L-function. If x is anything else, tries to numerically evaluate G_k at that point.");
 }
 
 E(k,x) =
 {
     if(type(x) == "t_POL",
-        1-2*k/bernfrac(k)*subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x)
-        +O(variable(x)^default(seriesprecision))
+        -G(k,x)*2*k/bernfrac(k);
     ,
-        if(k == 2,
-        1-24*suminf(n=1,sigma(n)*exp(2*Pi*I*n*x)),
-        1-2*k/bernfrac(k)*suminf(n=1,sigma(n,k-1)*exp(2*Pi*I*n*x))
-        )
+        elleisnum([z,1],k)/(2*Pi*I)^k;
     );
 }
 {
-    addhelp(E,"E(k,x): If x is a polonomial, returns the q-expansion of the
-    Eisenstein series E_k(x) (normalized so that the constant term is 1).
-    If x is anything else, tries to numerically evaluate E_k at that point.");
+    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k(x) (normalized so that the constant term is 1). If x is anything else, tries to numerically evaluate E_k at that point.");
 }
 
-G2star(z) = (8*Pi*imag(z))^-1-1/24+suminf(n=1,sigma(n)*exp(2*Pi*I*n*z));
+G2star(z) = (8*Pi*imag(z))^-1-elleisnum([z,1],2)/(2*Pi*I)^2/24;
 {
     addhelp(G2star,"G2star(z): evaluates the weight 2 Eisenstein series at z. G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
 }
