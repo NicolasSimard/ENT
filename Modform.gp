@@ -51,7 +51,7 @@ G(k,x) =
     if(type(x) == "t_POL",
         -bernfrac(k)/2/k + subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x) + O(variable(x)^default(seriesprecision))
     ,
-        elleisnum([z,1],k)/(2*Pi*I)^k/2*zeta(1-k)
+        elleisnum([x,1],k)/(2*Pi*I)^k/2*zeta(1-k)
     );
 }
 {
@@ -63,7 +63,7 @@ E(k,x) =
     if(type(x) == "t_POL",
         -G(k,x)*2*k/bernfrac(k);
     ,
-        elleisnum([z,1],k)/(2*Pi*I)^k;
+        elleisnum([x,1],k)/(2*Pi*I)^k;
     );
 }
 {
