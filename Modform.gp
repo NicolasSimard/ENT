@@ -1,19 +1,16 @@
 {
-    addhelp(Modform,"This package defines some common modular forms, some operators
-    on them and tools to compute basis of certain spaces of modular forms.
+    addhelp(Modform,"This package defines some common modular forms, some operators on them and tools to compute basis of certain spaces of modular forms.
     
-    In general, a modular form is represented by a q-expansion. The precision
-    of the q-expansion is determined by the constant default(seriesprecision)
-    which can be changed with the command \ps prec.
+    In general, a modular form is represented by a q-expansion. The precision of the q-expansion is determined by the constant default(seriesprecision) which can be changed with the command \ps prec.
     
     *General modular forms:
-    - G(k,'q) -> q-expansion; G(k,z) -> G_k(z) (numerical value)
-    - E(k,'q) -> q-expansion; E(k,z) -> E_k(z) (numerical value)
-    -                         G2star(z) -> numerical value
+    - G(k,'q) -> q-expansion; G(k,z) -> G_k(z) in C; G(k,L) -> G_k(L) in C; 
+    - E(k,'q) -> q-expansion; E(k,z) -> E_k(z) in C; E(k,L) -> E_k(L) in C;
+    -                         G2star(z) -> value in C; G2star(L) -> value in C; 
     - theta0(x) -> q-expansion
     - theta1(x) -> q-expansion
     - ellj('q) -> q-expansion (PARI built-in); ellj(z) -> j(z) (numerical value)
-    - delta('q) -> q-expansion; delta(z) -> delta(z) (numerical value)
+    - delta('q) -> q-expansion; delta(z) -> delta(z) in C; delta(L) -> delta(L) in C;
     - fd(d) -> q-expansion
     - gD(D) -> q-expansion
     
@@ -50,29 +47,32 @@ G(k,x) =
 {
     if(type(x) == "t_POL",
         -bernfrac(k)/2/k + subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x) + O(variable(x)^default(seriesprecision))
-    ,
+    , if(type(x) == "t_VEC",
+        elleisnum(x,k)/(2*Pi*I)^k/2*zeta(1-k)
+    , \\ If x is not a polynomial or a lattice, assume x is complex
         elleisnum([x,1],k)/(2*Pi*I)^k/2*zeta(1-k)
-    );
+    ));
 }
 {
-    addhelp(G,"G(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series G_k(x) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura - Elementary Dirichlet series and L-function. If x is anything else, tries to numerically evaluate G_k at that point.");
-}
-
-E(k,x) =
-{
-    if(type(x) == "t_POL",
-        -G(k,x)*2*k/bernfrac(k);
-    ,
-        elleisnum([x,1],k)/(2*Pi*I)^k;
-    );
-}
-{
-    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k(x) (normalized so that the constant term is 1). If x is anything else, tries to numerically evaluate E_k at that point.");
+    addhelp(G,"G(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series G_k('q) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura - Elementary Dirichlet series and L-function. If x = [w1,w2] is a Z-basis of a lattice in C, G(k,x) = w2^-k*G_k(w1/w2). Otherwise, assume x is in C and evaluate G_k(x).");
 }
 
-G2star(z) = (8*Pi*imag(z))^-1-elleisnum([z,1],2)/(2*Pi*I)^2/24;
+E(k,x) = -G(k,x)*2*k/bernfrac(k);
 {
-    addhelp(G2star,"G2star(z): evaluates the weight 2 Eisenstein series at z. G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
+    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k(x) (normalized so that the constant term is 1). If x = [w1,w2] is a Z-basis of a lattice in C, E(k,x) = w2^-k*E_k(w1/w2). Otherwise, assume x is in C and evaluate E_k(x).");
+}
+
+G2star(x) = 
+{
+    if(type(x) == "t_VEC",
+        (8*Pi*imag(x))^-1-elleisnum(x,2)/(2*Pi*I)^2/24
+    , \\ If x is not a lattice, assume x is complex
+        (8*Pi*imag(x))^-1-elleisnum([x,1],2)/(2*Pi*I)^2/24
+    );
+}
+
+{
+    addhelp(G2star,"G2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, G2star(x) = w2^-2*G_2(w1/w2). Otherwise, assume x is in C and evaluate G_2(x).. G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
 }
 
 theta0(x) =
@@ -106,9 +106,11 @@ delta(x) =
 {
     if(type(x) == "t_POL",
        x*sqr(sqr(sqr(eta3(x))))+O(variable(x)^default(seriesprecision))
-    ,
+    , if(type(x) == "t_VEC",
+        if(imag(x[2]/x[1]) > 0, x[1]^-12*eta(x[2]/x[1],1)^24, x[2]^-12*eta(x[1]/x[2],1)^24)
+    , \\ If x is not a polynomial or a lattice, assume x is complex
         eta(x,1)^24
-    );
+    ));
 }
 addhelp(delta,"delta(x): modular form delta='q*prod(n=1,oo,1-'q^n)^24.");
 
