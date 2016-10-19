@@ -65,14 +65,18 @@ E(k,x) = -G(k,x)*2*k/bernfrac(k);
 G2star(x) = 
 {
     if(type(x) == "t_VEC",
-        (8*Pi*imag(x))^-1-elleisnum(x,2)/(2*Pi*I)^2/24
+        if(imag(x[1]/x[2])>0,x[2]^-2*G2star(x[1]/x[2]),x[1]^-2*G2star(x[2]/x[1]))
     , \\ If x is not a lattice, assume x is complex
-        (8*Pi*imag(x))^-1-elleisnum([x,1],2)/(2*Pi*I)^2/24
+        1/(8*Pi*imag(x))+G(2,x)
     );
 }
-
 {
-    addhelp(G2star,"G2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, G2star(x) = w2^-2*G_2(w1/w2). Otherwise, assume x is in C and evaluate G_2(x).. G2star is (8*Pi*imag(z))^-1-1/24+O('q).");
+    addhelp(G2star,"G2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, G2star(x) = w2^-2*G_2^*(w1/w2). Otherwise, assume x is in C. G2star(z) is (8*Pi*imag(z))^-1-1/24+O('q).");
+}
+
+E2star(x) = -24*G2star(x);
+{
+    addhelp(E2star,"E2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, E2star(x) = w2^-2*E_2^*(w1/w2). Otherwise, assume x is in C. E2star(z) is -3/(Pi*imag(z))+1+O('q). This is the same E_2^* as in Zagier - 1-2-3 of modular forms.");
 }
 
 theta0(x) =
