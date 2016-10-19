@@ -42,6 +42,11 @@ and
 zeta(1-k)=-bernfrac(k)/k.
 
 Note also that G(k,z) is \mathbb{G}_k(z) in Zagier - 1-2-3 of modular forms.
+
+All Eisenstein series were tested in two ways. First, their q-expansion was
+compared with know q-expansion up to small precision. Second, the numerical
+value of E2star, E4 and E6 at lattices was compared with the CM-values table in Zagier - 1-2-3 of modular forms (after proposition 27). The CM values of delta
+were also compared with the entries of the same table. 
 */
 G(k,x) =
 {
