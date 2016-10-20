@@ -84,6 +84,11 @@ E2star(x) = -24*G2star(x);
     addhelp(E2star,"E2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, E2star(x) = w2^-2*E_2^*(w1/w2). Otherwise, assume x is in C. E2star(z) is -3/(Pi*imag(z))+1+O('q). This is the same E_2^* as in Zagier - 1-2-3 of modular forms.");
 }
 
+s2(x) = -8*Pi^2*G2star(x);
+{
+    addhelp(s2,"s2(x): If L is a lattice in C, s2=lim_{s->0}sum_{w\in L}w^-2|w|^-2s. Note that s2(x) = -8*Pi^2*G2star(x).");
+}
+
 theta0(x) =
 {
     my(pr=default(seriesprecision));
