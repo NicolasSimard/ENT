@@ -197,6 +197,9 @@ Heegner_points(D,N,beta=[]) =
 }
 
 /*---------------------Binary quadratic forms--------------------------------*/
+vectoQfb(f) = Qfb(f[1],f[2],f[3]);
+addhelp(vectoQfb,"vectoQfb(f): return Qfb(f[1],f[2],f[3]).");
+
 reduced_forms(D) =
 {
     my(b0 = D%2, fv,a,c,zv,n);
@@ -375,6 +378,35 @@ parirepshnf(K) =
     );
     reps;
 }
+
+quaddata(D) =
+{
+    my(data=[[D,factordisc(D)]],nf,v,reps);
+    nf=bnfinit(x^2-D);
+    reps = primitive_reduced_forms(D);
+    
+    \\ Class group part: [h_K, [elementary div], [gens of cyclic comp]]
+    data = concat(data,[nf.clgp]);
+    for(i=1,#data[2][3],data[2][3][i] = Vec(qfbred(vectoQfb(idatoqfb(K,data[2][3][i])))));
+    
+    \\ Genus theory part: [genus no, [2-torsion Cl_K], [Cl_K^2]]
+    v = [genusno(D), two_torsion(D)];
+    v = concat(v,[Set(vector(#reps,i,Vec(qfbred(qfbpowraw(vectoQfb(reps[i]),2)))))]);
+    data = concat(data,[v]);
+    
+    \\ Class field theory: [Hilbert class polynomial]
+    data = concat(data,[[quadhilbert(D)]]);
+}
+{
+    addhelp(quaddata,"quaddata(D): return the data attached to the imaginary
+    quadratic field of discriminant D. The data is of the form
+    [[disc],[clgp],[genus theory],[cft]], where
+    - [disc] = [D,prime disc facto]
+    - [clgp] = [h_D,[cyc],[gen]]
+    - [genus theory] = [genus no, Cl_K[2], Cl_k^2]
+    - [cft] = [Hlibert class polynomial]");
+}
+
 
 /*-------------Hecke characters of Imaginary quadratic fields----------------*/
 qhcinit(K) =
