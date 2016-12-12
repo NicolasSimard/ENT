@@ -300,19 +300,14 @@ two_torsion(D) =
 
 discofclassno(n) =
 {
-    if(n > 11, error("Not implemented yet. Too lazy!"));
-    my(discs = []);
-    for(D=3,15667,
-        if(isfundamental(-D) && qfbclassno(-D) == n,
-            discs = concat(discs,[-D])
-        )
-    );
-    return(discs);
+    if(n > 100, error("The discriminants of class number >100 are not known yet."));
+    local(liste);
+    read("discs_of_class_no1-100.gp");
+    liste[n];
 }
 {
     addhelp(discofclassno,"discofclassno(n): Return all fundamental discriminants
-    with class number n. The problem is solved only for n <= 100 by Watkins,
-    and implemented for n <= 11 for the moment.");
+    with class number n. The problem is solved only for n <= 100 by Watkins.");
 }
 
 /*-----------------------------Conversion------------------------------------*/
