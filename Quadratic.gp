@@ -7,6 +7,7 @@
     *general functions
     - control(D) -> 1 or error
     - conductor(D) -> f: D=f^2D_0
+    - factordisc(D) -> [d_1,...,d_k]
     - liftSL2Z(M,N) -> M_0: M_0 = M mod N
     - sqrt_mod(D,M) -> [beta]: beta[i]^2 = D mod M 
     
@@ -67,6 +68,17 @@ conductor(D) =
     if(isdisc(D/p^2),return(p),return(p/2));
 }
 
+factordisc(D) =
+{
+    if(!isfundamental(D) || D>0,error("D has to be a field discriminant."));
+    my(v,L);
+    v = factor(-D);
+    L = vector(#v[,1],i,if(v[i,1] != 2,(-1)^((v[i,1]-1)/2)*v[i,1], 0));
+    if(D%2 == 0, L[1] = D/prod(i=2,#L,L[i]));
+    L;
+}
+addhelp(factordisc,"factordisc(D): Return the factorisation of D into prime discriminants.");
+
 right_act(f,M) =
 {
     return([f[1]*M[1,1]^2+f[2]*M[1,1]*M[2,1]+f[3]*M[2,1]^2,
@@ -74,8 +86,11 @@ right_act(f,M) =
             f[1]*M[1,2]^2+f[2]*M[1,2]*M[2,2]+f[3]*M[2,2]^2]
     );
 }
+{
+    addhelp(right_act,"right_act(f,M): right action of the matrix M in M_2(R)
+    on the binary quadratic form f.");
+}
 
-/* Lift a matrix M in SL2(Z/NZ) to a matrix in SL2(Z).*/
 liftSL2Z(M,N) =
 {
     my(MZ = lift(M));
@@ -100,6 +115,7 @@ liftSL2Z(M,N) =
     mya=mysol[1]; myb=mysol[2];
     return([mya,myb;myc,myd]);
 }
+addhelp(liftSL2Z,"liftSL2Z(M,N): lift the matrix M in SL_2(Z/NZ) to SL_2(Z).");
 
 sqrt_mod(D,M) =
 {
@@ -107,22 +123,23 @@ sqrt_mod(D,M) =
     while(n <= floor(M/2),if((n^2-D)%M == 0,betas=concat(betas,[n])); n+=1;);
     return(betas);
 }
+addhelp(sqrt_mod,"sqrt_mod(D,M): return all x mod M such that x^2=D mod M.");
 
 /*-----------------------------Heegner points--------------------------------*/
-
 /* Given N>=0, a discriminant D such that D is a square mod 4N, an integer mod 2N
 beta such that beta^2=D mod 4N and a factorisation m1*m2 of gcd(N,beta,(beta^2-D)/4N),
 one has an explicit bijection between the sets Q^0_{D,N,beta}/Gamma_0(N) and
 Q^0_D/Gamma(1), where Q^0_D is the set of primitive binary quadratic forms of
 discriminant D and
 
-Q^0_{D,N,,beta}={[a,b,c] in Q^0_D|a=0 mod N, b=beta mod 2N}.
+Q^0_{D,N,beta}={[a,b,c] in Q^0_D|a=0 mod N, b=beta mod 2N}.
 
-The bijection is explicit and depends of m1 and m2 (see Gross-Kohnen-Zagier, Heegner
+The bijection is explicit and depends on m1 and m2 (see Gross-Kohnen-Zagier, Heegner
 points and derivatives of L-series II). This function takes as input a quadratic form,
 an integer N and a beta as above and returns a form in Q^0_{D,N,beta} maping to it under
 the bijection. For the moment, the function assumes m1=m2=1, otherwise returns an error.
 */
+
 Heegner_form(f,beta,N,m1=1,m2=1) =
 {
     my(sol,m,a,b,c,D,M,r,s,t,u,T);
@@ -138,6 +155,17 @@ Heegner_form(f,beta,N,m1=1,m2=1) =
     T=liftSL2Z([r,s;t,u],N);
     return(right_act(f,T));
 }
+{
+    addhelp(Heegner_form,"Heegner_form(f,beta,N,{m1=1,m2=1}): Given N>=0, a
+    discriminant D such that D is a square mod 4N, an integer beta mod 2N such
+    that beta^2=D mod 4N and a factorisation m1*m2 of gcd(N,beta,(beta^2-D)/4N),
+    one has an explicit bijection between the sets Q^0_{D,N,beta}/Gamma_0(N) and
+    Q^0_D/Gamma(1), where Q^0_D is the set of primitive binary quadratic forms of
+    discriminant D and Q^0_{D,N,beta}={[a,b,c] in Q^0_D|a=0 mod N, b=beta mod 2N}.
+    The bijection depends on m1 and m2. Given f and beta, N, m1 and m2 as above,
+    returns a form in Q^0_{D,N,beta} mapping to f under the bijection. For the
+    moment, the function assumes m1=m2=1 (otherwise returns an error).");
+}
 
 Heegner_forms(D,N,beta=[]) =
 {
@@ -146,7 +174,13 @@ Heegner_forms(D,N,beta=[]) =
     if(length(beta) == 0, error("The pair (",D,",",N,") does not satisfy the Heegner hypothesis."));
     if((beta[1]^2-D)%(4*N) != 0, error("The integer ",beta[1]," is not a root of ",D," mod 4*",N));
     my(forms = primitive_reduced_forms(D));
-    return(vector(length(forms),n,Heegner_form(forms[n],beta[1],N)));
+    return(vector(#forms,n,Heegner_form(forms[n],beta[1],N)));
+}
+{
+    addhelp(Heegner_forms,"Heegner_forms(D,N,{beta=[]}): Return a set of
+    representatives of Q^0_{D,N,beta}/Gamma_0(N) (i.e. a set of Heegner forms).
+    If beta is not given, we choose one at random. See Heegner_form help for
+    more details on Heegner forms.");
 }
 
 Heegner_points(D,N,beta=[]) =
@@ -154,9 +188,15 @@ Heegner_points(D,N,beta=[]) =
     my(Hforms = Heegner_forms(D,N,beta));
     return(vector(length(Hforms),n,tau(Hforms[n])));
 }
+{
+    addhelp(Heegner_points,"Heegner_points(D,N,{beta=[]}): Return a set of
+    complex points in the complex upper half plane corresponding to a set of
+    representatives of Q^0_{D,N,beta}/Gamma_0(N) (i.e. a set of Heegner forms).
+    If beta is not given, we choose one at random. See Heegner_form help for
+    more details on Heegner forms.");
+}
 
 /*---------------------Binary quadratic forms--------------------------------*/
-
 reduced_forms(D) =
 {
     my(b0 = D%2, fv,a,c,zv,n);
@@ -233,6 +273,10 @@ genusno(D) =
     if(n%8 == 0,mu=r+2);
     return(2^(mu-1));
 }
+{
+    addhelp(genusno,"genusno(D): return the number of genus in the class group
+    of discriminant D.");
+}
 
 two_torsion(D) =
 {
@@ -245,8 +289,11 @@ two_torsion(D) =
     );
     return(fv);
 }
-addhelp(twotorsion,"two_torsion(D): Return representatives of the two-torsion of the class group of discriminant D. The number"\
-"number of such classes is equal to the number of genera for the discriminant D.");
+{
+    addhelp(twotorsion,"two_torsion(D): Return representatives of the two-torsion
+    of the class group of discriminant D. The number of such classes is equal to
+    the number of genera for the discriminant D.");
+}
 
 discofclassno(n) =
 {
@@ -274,7 +321,8 @@ qfbtohnf(f) =
     [f[1],t[1];0,t[2]];
 }
 {
-    addhelp(qfbtohnf,"qfbtohnf(f): Return the Hermite normal form of the ideal corresponding to f in the integral basis of nfinit(x^2-D).");
+    addhelp(qfbtohnf,"qfbtohnf(f): Return the Hermite normal form of the ideal
+    corresponding to f in the integral basis of nfinit(x^2-D).");
 }
 
 idatoqfb(K,ida) = {
