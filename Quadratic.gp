@@ -381,12 +381,12 @@ parirepshnf(K) =
 
 quaddata(D) =
 {
-    my(data=[[D,factordisc(D)]],nf,v,reps);
-    nf=bnfinit(x^2-D);
+    my(data=[[D,factordisc(D)]],K,v,reps);
+    K=bnfinit(x^2-D);
     reps = primitive_reduced_forms(D);
     
     \\ Class group part: [h_K, [elementary div], [gens of cyclic comp]]
-    data = concat(data,[nf.clgp]);
+    data = concat(data,[K.clgp]);
     for(i=1,#data[2][3],data[2][3][i] = Vec(qfbred(vectoQfb(idatoqfb(K,data[2][3][i])))));
     
     \\ Genus theory part: [genus no, [2-torsion Cl_K], [Cl_K^2]]
@@ -405,6 +405,15 @@ quaddata(D) =
     - [clgp] = [h_D,[cyc],[gen]]
     - [genus theory] = [genus no, Cl_K[2], Cl_k^2]
     - [cft] = [Hlibert class polynomial]");
+}
+
+quaddatacheck(data) =
+{
+    my(v=[]);
+    v = concat(v,[data[1][1] == prod(i=1,#data[1][2],data[1][2][i])]);
+    v = concat(v,[data[3][1] == 2^(#data[1][2]-1)]);
+    v = concat(v,[#data[3][2] == data[2][1]/#data[3][3]]);
+    if(prod(i=1,#v,v[i]),1,v);
 }
 
 
