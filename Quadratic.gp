@@ -313,7 +313,6 @@ discofclassno(n) =
 }
 
 /*-----------------------------Conversion------------------------------------*/
-
 qfbtohnf(f) =
 {
     if(type(f) == "t_QFI", f=Vec(f));
@@ -325,34 +324,39 @@ qfbtohnf(f) =
     corresponding to f in the integral basis of nfinit(x^2-D).");
 }
 
-idatoqfb(K,ida) = {
+idatoqfb(K,ida) =
+{
     my(Zbasis = subst(K.zk*idealhnf(K,ida),variable(K),K.roots[1]));
     Vec(round(('X*Zbasis[1]-Zbasis[2])*conj('X*Zbasis[1]-Zbasis[2])/idealnorm(K,ida)));
 }
 {
-    addhelp(idatoqfb,"idatoqfb(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding binary quadratic form N(ax-by)/N(ida).");
+    addhelp(idatoqfb,"idatoqfb(K,ida): Given an ideal ida=[a,b] in a quadratic
+    field K, return the corresponding binary quadratic form N(ax-by)/N(ida).");
 }
 
-idatouhp(K,ida) = {
+idatouhp(K,ida) =
+{
     my(tmp=subst(K.zk*idealhnf(K,ida),variable(K),K.roots[1]));
     if(imag(tmp[2]/tmp[1])>0,tmp[2]/tmp[1],tmp[1]/tmp[2]);
 }
 {
-    addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding point b/a or a/b in the upper-half plane.");
+    addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic
+    field K, return the corresponding point b/a or a/b in the upper-half plane.");
 }
 
-idatolat(K,ida) = {
+idatolat(K,ida) =
+{
     my(w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])));
     subst(K.zk*idealhnf(K,ida),variable(K),w); \\[a,(-b+sqrt(D))/2]
 }
 {
-    addhelp(idatolat,"idatolat(K,ida): return [w1,w2] such that ida = Z*w1+Z*w2, with w2/w1 in the upper half plane.");
+    addhelp(idatolat,"idatolat(K,ida): return [w1,w2] such that ida = Z*w1+Z*w2,
+    with w2/w1 in the upper half plane.");
 }
 
 /*-------------------------Imaginary quadratic fields------------------------*/
-
-/* Return the Minkowski bound of a number field K (not necessarily quadratic).*/
-Minkowski(K) = my(n=K.r1+2*K.r2); n!/(n^n)*(4/Pi)^K.r2*sqrt(abs(K.disc));
+minkbound(nf) = my(n=nf.r1+2*nf.r2); n!/(n^n)*(4/Pi)^nf.r2*sqrt(abs(nf.disc));
+addhelp(minkbound,"minkbound(nf): return the Minkowski bound of a number field nf.");
 
 redrepshnf(K) =
 {
@@ -383,7 +387,10 @@ qhcinit(K) =
     [K,psi0];
 }
 {
-    addhelp(qhcinit,"qhcinit(K): Given an imaginary quadratic field K, computes the principalisations y_i of the generators of ClK, i.e. if g_i is a generator of ClK of order o_i, then g_i^o_i=y_i O_K. Returns [K,[r_i]], where r_i=y_i^(1/o_i).");
+    addhelp(qhcinit,"qhcinit(K): Given an imaginary quadratic field K, computes
+    the principalisations y_i of the generators of ClK, i.e. if g_i is a generator
+    of ClK of order o_i, then g_i^o_i=y_i O_K. Returns [K,[r_i]],
+    where r_i=y_i^(1/o_i).");
 }
 
 qhchars(K,T=[0,0]) =
@@ -395,7 +402,10 @@ qhchars(K,T=[0,0]) =
     qccs;
 }
 {
-    addhelp(qhchars,"qhchars(K): Given an imaginary quadratic field K, returns all Hecke characters of K of infinity type T, represented as vectors [c,T], where c is the component vector in terms of an elementary divisor decomposition of ClK.");
+    addhelp(qhchars,"qhchars(K): Given an imaginary quadratic field K, returns
+    all Hecke characters of K of infinity type T, represented as vectors [c,T],
+    where c is the component vector in terms of an elementary divisor
+    decomposition of ClK.");
 }
 
 qhceval(qhcdata,qhc,ida) =
@@ -406,7 +416,12 @@ qhceval(qhcdata,qhc,ida) =
     mu^qhc[2][1]*conj(mu^qhc[2][2])*prod(i=1,#ClK.cyc,(qhcdata[2][i]^qhc[2][1]*conj(qhcdata[2][i])^qhc[2][2]*exp(2*Pi*I*qhc[1][i]/ClK.cyc[i]))^decomp[1][i]);
 }
 {
-    addhelp(qhceval,"qhceval(qhdata,qhc,ida): Any Hecke character [c,T] of K evaluated at a generator g_i of the class group has value psi(g_i) = r_i^T[1]*conj(r_i)^T[2]*zeta_i^c_i, where r_i is as above and zeta_i = exp(2*Pi*I/o_i) and 0 <=c_i<o_i. Then if ida = mu*g_1^e_1*...*g_d^e_d, one can determine psi(ida) from the above information. qhdata is returned by qhcinit(K).");
+    addhelp(qhceval,"qhceval(qhdata,qhc,ida): Any Hecke character [c,T] of K
+    evaluated at a generator g_i of the class group has value
+    psi(g_i) = r_i^T[1]*conj(r_i)^T[2]*zeta_i^c_i, where r_i is as above and
+    zeta_i = exp(2*Pi*I/o_i) and 0 <=c_i<o_i. Then if
+    ida = mu*g_1^e_1*...*g_d^e_d, one can determine psi(ida) from the above
+    information. qhdata is returned by qhcinit(K).");
 }
 
 /*-----------------------------Arithmetic------------------------------------*/
@@ -417,6 +432,12 @@ CSperiod(D) =
     control(D);
     return(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/4/qfbclassno(D))/sqrt(4*Pi*abs(D)));
 }
+{
+    addhelp(CSperiod,"CSperiod(D): return the Chowla-selberg period of
+    discriminant D, as defined in 1-2-3 of modular forms by Zagier, but with a
+    4 instead of 2 in the factor:
+    prod(j=1,|D|-1,gamma(j/|D|)^\chi_D(j))^(wD(D)/4/h_D)/sqrt(4*Pi*|D|)")
+}
 
 /* Returns the Chowla-selberg period of discriminant D, as defined Cohen's book
 on Number Theory, volume 2. Gives better results for E2 and E6...*/
@@ -424,4 +445,9 @@ CSperiodCoh(D) =
 {
     control(D);
     return(sqrt(prod(j=1,abs(D)-1,gamma(j/abs(D))^kronecker(D,j))^(wD(D)/2/qfbclassno(D))/(4*Pi*sqrt(abs(D)))));
+}
+{
+    addhelp(CSperiodCoh,"CSperiodCoh(D): return the Chowla-selberg period of
+    discriminant D, as defined Cohen's book on Number Theory, volume 2:
+    sqrt(prod(j=1,|D|-1,gamma(j/|D|)^\chi_D(j))^(wD(D)/2/h_D)/(4*Pi*sqrt(|D|)))")
 }
