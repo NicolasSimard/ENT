@@ -17,6 +17,9 @@
     *Basis of modular forms:
     - vmbasis(k,N,flag) -> [f1('q),f2('q),...,fd('q)] (q-expansions of Victor Miller basis)
     - GktoG4G6(k) -> P(G4,G6) : P(G4,G6)=Gk
+	- EktoE4E6(k) -> P(E4,E6) : P(E4,E6)=Ek
+	- GpoltoEpol(P) -> F(E4,E6) : F(E4,E6) = P(G4,G6)
+	- EpoltoGpol(P) -> F(G4,G6) : F(G4,G6) = P(E4,E6)
     
     *Operators:
     - U(n,f('q)) -> U_n(f('q)) (U_n operator in level 1)
@@ -272,9 +275,9 @@ vmbasis(k,N=0,reduce=1) =
     modulo N. If reduce = 0 (default is 1), the basis is not reduced.");
 }
 
-GpoltoEpol(P) = subst(subst(subst(subst(P,'G2s,-'E2s/24),'G2,-'E2/24),'G4,'E4/240),'G6,-'E6/504);
+GpoltoEpol(P) = substvec(P,['G2s,'G2,'G4,'G6],[-'E2s/24,-'E2/24,'E4/240,-'E6/504]);
 
-EpoltoGpol(P) = subst(subst(subst(subst(P,'E2s,-24*'G2s),'E2,-24*'E2),'E4,240*'G4),'E6,-504*'G6);
+EpoltoGpol(P) = substvec(P,['E2s,'E2,'E4,'E6],[-24*'G2s,-24*'E2,240*'G4,-504*'G6]);
 
 GktoG4G6(k) =
 {
