@@ -24,7 +24,7 @@
     *Operators:
     - U(n,f('q)) -> U_n(f('q)) (U_n operator in level 1)
     - V(n,f('q)) -> V_n(f{'q)) (V_n operator in level 1)
-    - pstab(p,f('q)) -> f('q)^[p] (p-stabilisation of f)
+    - pdep(p,f('q)) -> f('q)^[p] (p-depletion of f)
     - rcbracket(f('q),k_f,g('q),k_g) -> [f('q),g('q)] (Rankin-Cohen bracket)
     - dop(f('q),n) -> d^n(f('q)) (d='q*d/d'q)
     - dopformal(P,n) -> d^n(P) (P in C['E2,'E4,'E6])
@@ -356,8 +356,8 @@ delkformal(P,n=1) =
     Note that G_k = -B_k/2k + O(q) and E_k = 1 + O(q).");
 }
 
-pstab(p,f) = f-V(p,U(p,f));
-addhelp(pstab,"pstab(p,f): p-stabilisation operator *^[p]=1-U_pV_p on modular forms.");
+pdep(p,f) = f-V(p,U(p,f));
+addhelp(pstab,"pdep(p,f): p-depletion operator *^[p]=1-U_pV_p on modular forms.");
 
 rcbracket(f,k,g,l) = k*dop(g)*f-l*dop(f)*g;
 {
