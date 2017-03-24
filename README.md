@@ -34,8 +34,6 @@ typing `? + 'Name of the script'` in PARI/GP.
 - Quadratic.gp: Functions related to positive definite quadratic forms or
 imaginary quadratic fields.
 - Jacform.gp: Functions related to Jacobi forms.
-- Numth.gp: For the moment, it only contains a single function, the Ramanujan
-tau function
 
 ### Some projects
 Each directory contains a README file with a description of the project.
