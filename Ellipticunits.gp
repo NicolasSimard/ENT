@@ -8,18 +8,41 @@ bigtheta(K,ellida,ida,z) = fundtheta(idatolat(K,ellida),z)^idealnorm(K,ida)/fund
 addhelp(bigtheta,"bigtheta(K,ellida,ida,z): Return the function big theta attached to fractional ideals ellida and ida of K evaluated at z. Big theta is just a twist of fundtheta(ellida,z) by N(ida)-sigma_ida. In general, ellida could be any lattice with CM by O_K, but to compute the twist, it is simpler to assume that this lattice is contained in K. This is the function used to generate elliptic units in ray class fields of K.");
 
 deltaquot(K,ida,idb=1) = delta(idatolat(K,idb))/delta(idatolat(K,idealmul(K,idealinv(K,ida),idb)));
+addhelp(deltaquot,"deltaquot(K,ida,idb=1): return delta(idb)/delta(idb*ida^-1)");
 
-siegelunit(K,ida) = 
+siegelunit(K,ida,idb=1) = 
 {
-    my(alpha = subst(K.zk*bnfisprincipal(K,idealpow(K,ida,K.clgp.no))[2],variable(K),K.roots[1]));
-    deltaquot(K,ida)^K.clgp.no*alpha^12;
+    my(idbinv, genidaidb, genidb);
+    idbinv = idealinv(K,idb);
+    genidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idbinv,K.clgp.no))[2],variable(K),K.roots[1]);
+    genidaidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idealmul(K,ida,idbinv),K.clgp.no))[2],variable(K),K.roots[1]);
+    deltaquot(K,ida,idb)^K.clgp.no*genidaidb^12/genidb^12;
 }
 addhelp(siegelunit,"siegelunit(K,ida): Return the Siegel unit attached to the ideal ida of K. This unit is known to land in the Hilbert class field of K.")
 
 /* Here are a few examples:
+-----------------------------------Example 0-----------------------------------
+(09:59) gp > \r Ellipticunits.gp
+(09:59) gp > K=bnfinit(x^2+47);
+(09:59) gp > \p 500
+   realprecision = 500 significant digits
+(09:59) gp > K=bnfinit(x^2+47);
+(09:59) gp > p2=idealprimedec(K,2)[1];
+(10:00) gp > p3=idealprimedec(K,3)[1];
+(10:00) gp > p5=idealprimedec(K,5)[1];
+(10:00) gp > ida=idealmul(K,p2,p3);
+(10:01) gp > idb=idealmul(K,idealpow(K,p3,3),p5);
+(10:01) gp > algdep(siegelunit(K,ida),10)
+%23 = x^10 + 133547734060849615*x^9 + 4909059575945186345635433254174920*x^8 + 2934773274353554741585162128997411255*x^7 + 467669999439427716039105576882206218085*x^6 - 937365787675835092984768638688453323377*x^5 + 467669999439427716039105576882206218085*x^4 + 2934773274353554741585162128997411255*x^3 + 4909059575945186345635433254174920*x^2 + 133547734060849615*x + 1
+(10:01) gp > algdep(siegelunit(K,ida,idb),10)
+%24 = x^10 + 133547734060849615*x^9 + 4909059575945186345635433254174920*x^8 + 2934773274353554741585162128997411255*x^7 + 467669999439427716039105576882206218085*x^6 - 937365787675835092984768638688453323377*x^5 + 467669999439427716039105576882206218085*x^4 + 2934773274353554741585162128997411255*x^3 + 4909059575945186345635433254174920*x^2 + 133547734060849615*x + 1
+
+As expected, the Siegel unit attached to ida and idb is a root of the same
+polynomial as the one attached to ida only, since the later is a twist of the
+former byt the Froebenius of idb^-1 (see deShalit).
 -----------------------------------Example 1-----------------------------------
 (16:11) gp > \p 1000;
-(16:11) gp > \r ellunits.gp ;
+(16:11) gp > \r Ellunits.gp ;
 (16:12) gp > K=bnfinit(x^2+11);
 (16:12) gp > idm=6;
 (16:12) gp > ida=idealprimedec(K,5)[1];
@@ -43,7 +66,7 @@ addhelp(siegelunit,"siegelunit(K,ida): Return the Siegel unit attached to the id
 As the following example suggests, those units do not always generate the ray class field.
 
 (16:29) gp > \p 1000;
-(16:30) gp > \r ellunits.gp
+(16:30) gp > \r Ellunits.gp
 (16:30) gp > K=bnfinit(x^2+23);
 (16:30) gp > ida=idealprimedec(K,7)[1];
 (16:30) gp > idm=6;
@@ -89,7 +112,7 @@ field of K for the modulus 6:
 We illustrate the remark in another case.
 (17:21) gp > \p 4000
    realprecision = 4007 significant digits (4000 digits displayed)
-(17:21) gp > \r ellunits.gp
+(17:21) gp > \r Ellunits.gp
 (17:21) gp > K=bnfinit(x^2+47);
 (17:21) gp > idm=6;
 (17:21) gp > bnrclassno(K,idm)
