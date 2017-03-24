@@ -45,10 +45,13 @@
     - redrepshnf(K) -> [a_1,...,a_h]
     - parirepshnf(K) -> [a_1,...,a_h]
     
-    *Hecke characters of Imaginary quadratic fields
+    *Hecke characters of imaginary quadratic fields
     - qhcinit(K) -> [K,[r_i]]
     - qhchars(K,T=[0,0]) -> [psi_1,...,psi_h_K]
     - qhceval(qhcdata,psi,ida) -> psi(ida)
+	
+	*L-functions of Hecke characters of imaginary quadratic fields
+	- qhcLdata(K,qhc,{sdom}) -> Ldata = [a,as,Vga,k,N,eps]
     ");
 }
 
@@ -459,6 +462,27 @@ qhceval(qhcdata,qhc,ida) =
     ida = mu*g_1^e_1*...*g_d^e_d, one can determine psi(ida) from the above
     information. qhdata is returned by qhcinit(K).");
 }
+
+qhcLdata(K,qhc,eps) =
+{
+	my(a,astar,Vga,k,N,prec,Ldata);
+	
+	a = (n -> Vec(bintheta(K,qhc,1,'q,n)));
+	astar =1;
+	Vga = [0,1];
+	k = qhc[2][1] + qhc[2][2] + 1;
+	N = abs(K.disc);
+	Ldata = [a,astar,Vga,k,N,'X];
+	
+	\\ Compute the root number is eps = 0. Otherwise set it to eps
+	if(eps == 0, Ldata[6] = lfunrootres(lfuncreate(Ldata))[3], Ldata[6] = eps);
+	
+	return(lfuncreate(Ldata));
+}
+{
+	addhelp(qhcLdata,"qhcLdata(K,qhc,{eps=0}): Returl the data [a,astar,Vga,k,N,eps] for the L-function of the Hecke character qhc of K. If eps is not given (i.e. is 0), it will be automatically computed. This can be couputationnally costly and a good guess for eps is  1.");
+}
+
 
 /*-----------------------------Arithmetic------------------------------------*/
 /*Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
