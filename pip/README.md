@@ -16,12 +16,12 @@ Here is a detailed list of the formulas implemented in each folder
 - `periods.gp`: Computation of the periods of delta.
 - `rankinl.gp`: Petersson norm of delta as the special value of the Rankin-Selberg convolution L-function of delta with itself.
 
-## delta5/ folder
+### delta5/ folder
 - `cohenthm5.1.gp`: Petersson norm of delta_5 using the formula in Thm 5.1 of Cohen's article on Haberland's formula.
 - `def.gp`: Petersson norm of delta_5 from the definition as a double integral.
 - `lsym2.gp`: Petersson norm of delta using a special value of the symmetric square L-function of delta_5 (should be updated to use the built-in L-functions).
 
-## delta11/ folder
+### delta11/ folder
 - `cohenthm5.1.gp`: Petersson norm of delta_11 using the formula in Thm 5.1 of Cohen's article on Haberland's formula.
 - `def.gp`: Petersson norm of delta_11 from the definition as a double integral.
 - `lsym2.gp`: Petersson norm of delta using a special value of the symmetric square L-function of delta_11 (should be updated to use the built-in L-functions).
