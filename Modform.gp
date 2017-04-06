@@ -33,6 +33,7 @@
     *Other functions:
     - jpol(p('q)) -> P(X): P(j('q)) = p('q)
     - area([w_1,w_2]) -> area of the lattice Z*w_1+Z*w_2
+	- gammanot(N) -> index of Gamma_0(N) inside SL_2(Z).
     ");
 }
 
@@ -369,4 +370,9 @@ rcbracket(f,k,g,l) = k*dop(g)*f-l*dop(f)*g;
 area(L) = abs(matdet([real(L[1]),imag(L[1]); real(L[2]),imag(L[2])]));
 {
     addhelp(area,"area(L): return the area of the Z-lattice L. If L = [w1,w2] is a 2-component vector of linearly independent complex numbers, returns the area of the lattice spanned by those numbers in C.");
+}
+
+gammanot(N) = {
+	my(ps = factor(N)[1..-1,1]);
+	N*prod(i=1,#ps,1+1/ps[i]);
 }
