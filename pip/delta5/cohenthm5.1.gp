@@ -5,13 +5,12 @@
 
 \\ Define the parameters
 p = 5;
-k = 4
+k = 4;
 
 \\ Define the actual function
 f(z) = (eta(z,1)*eta(5*z,1))^4; \\ f === delta5
 
-\\ Define infinity and rho
-oo = [1];
+\\ Define rho
 rho = exp(2*Pi*I/3);
 
 V(z) = {
@@ -25,8 +24,8 @@ V(z) = {
 
 R1(m) = {
     if(m <= p,
-        I*intnum(t=1,[oo,2*Pi],V(I*t)*(m*I*t+1)^-k*f(I*t/(m*I*t+1))),
-        I*intnum(t=1,[oo,2*Pi],V(I*t)*(I*t)^-k*f(-1/(I*t)))
+        I*intnum(t=1,[[1],2*Pi],V(I*t)*(m*I*t+1)^-k*f(I*t/(m*I*t+1))),
+        I*intnum(t=1,[[1],2*Pi],V(I*t)*(I*t)^-k*f(-1/(I*t)))
     )
 };
 
@@ -47,7 +46,7 @@ a(m) = {
     R1m = R1(m);
     R2m = R2(m);
     sum(n = 0, k-2,(-1)^n*binomial(k-2,n)*R1m[k-2-n+1]*conj(R2m[n+1]))
-}
+};
 
 Peter_inner = sum(m = 1, r, a(m))/(2*I)^(k-1)/r;
 
