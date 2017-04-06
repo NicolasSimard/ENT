@@ -10,8 +10,7 @@ k = 2;
 \\ Define the actual function
 f(z) = (eta(z,1)*eta(11*z,1))^2; \\ f === delta11
 
-\\ Define infinity and rho
-oo = [1];
+\\ Define rho
 rho = exp(2*Pi*I/3);
 
 V(z) = {
@@ -25,11 +24,10 @@ V(z) = {
 
 R1(m) = {
     if(m <= p,
-        I*intnum(t=1,[oo,2*Pi],V(I*t)*(m*I*t+1)^-k*f(I*t/(m*I*t+1))),
-        I*intnum(t=1,[oo,2*Pi],V(I*t)*(I*t)^-k*f(-1/(I*t)))
+        I*intnum(t=1,[[1],2*Pi],V(I*t)*(m*I*t+1)^-k*f(I*t/(m*I*t+1))),
+        I*intnum(t=1,[[1],2*Pi],V(I*t)*(I*t)^-k*f(-1/(I*t)))
     )
 };
-
 
 R2(m) = {
     if(m <= p,
