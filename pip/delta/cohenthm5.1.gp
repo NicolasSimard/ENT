@@ -1,15 +1,12 @@
-/*Computation of the norm of the Delta modular form.                        */
-/*The script theta_det_def.gp is too slow, so we use theorem 5.1 of Cohen's */
-/*paper. Checked and it works.                                              */
+/*Computation of the norm of the Delta modular form. 
+The script theta_det_def.gp is too slow, so we use theorem 5.1 of Cohen's
+paper. Checked and it works.*/
 
 k = 12
 
-\\ Defines tau(n)
-read("delta_coeff.gp");
-
 print("Computing q-expansion...")
 qExp = [];
-for(i = 1, 100, qExp = concat(qExp,[tau(i)]));
+for(i = 1, 100, qExp = concat(qExp,[ramanujantau(i)]));
 
 f(z) = suminf(n=1, qExp[n]*exp(2*Pi*I*n*z));
 
