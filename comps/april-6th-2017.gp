@@ -10,6 +10,8 @@ wK = 2;
 /*Setting up the modular form*/
 k = 2*ell+1;
 N = abs(D);
+chi_D(n) = kronecker(D,n);
+
 comps = [9];
 qhc = [comps,[2*ell,0]];
 anf = (n -> Vec(bintheta(K,qhc,1,'q,n)));
@@ -20,17 +22,24 @@ a(n) = {
     direuler(p=2,n,
         if(N%p==0,
             1/(1-an[p]^2*X), \\factor at the bad primes
-            1/(1-(an[p]^2-p^(k-1))*X+p^(k-1)*(an[p]^2-p^(k-1))*X^2-p^(3*(k-1))*X^3)
+            1/(1-(an[p]^2-chi_D(p)*p^(k-1))*X+chi_D(p)*p^(k-1)*(an[p]^2-chi_D(p)*p^(k-1))*X^2-chi_D(p)*p^(3*(k-1))*X^3)
         )
     )
 };
+a2(n) = {
+    my(an=anf(n));
+    direuler(p=2,n,
+		ap2 = an[p]^2-chi_D(p)*p^(k-1);
+        1/(1-ap2*X+chi_D(p)*p^(k-1)*ap2*X^2-chi_D(p)*p^(3*(k-1))*X^3)
+    )
+};
 astar = 1;
-Vga = [0,1,2-k];
+Vga = [0,1,1-k];
 w = 2*k-1;
 cond = N^2;
 eps = 1;
 res = lfunrootres(lfuncreate([a,astar,Vga,w,cond,eps,0]))[1];
-Lsym2data = [a,astar,Vga,w,cond,eps,res];
+Lsym2data = [a2,astar,Vga,w,cond,eps,res];
 
 printf("Estimated error on symmetric square L-function: %.2f%%", (1.0-abs(lfuncheckfeq(lfuncreate(Lsym2data)))/default(realbitprecision))*100);
 /*
