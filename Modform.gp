@@ -295,8 +295,8 @@ addhelp(EktoE4E6,"EktoE4E6(k): Express E_k as a polynomial in 'E4 and 'E6.");
 /*------------------------Operators on modular forms ----------------------*/
 U(m,f) =
 {
-    my(v=variable(f),pr=poldegree(truncate(f),v));
-    precision(Ser(vector(floor(pr/m),n,polcoeff(f,(n-1)*m,v)),v),pr);
+    my(v=variable(f),pr=default(seriesprecision));
+    Ser(vector(floor(pr/m),n,polcoeff(f,(n-1)*m,v)),v)+O(v^pr);
 }
 {
     addhelp(U,"U(m,f): Returns the operator U_m on modular forms of level 1.
@@ -306,7 +306,7 @@ U(m,f) =
 V(m,f) =
 {
     my(v=variable(f));
-    precision(subst(f,v,v^m),default(seriesprecision));
+    subst(f,v,v^m)+O(v^default(seriesprecision));
 }
 {
     addhelp(V,"V(m,f): Returns the operator V_m on modular forms of level 1.
@@ -315,7 +315,7 @@ V(m,f) =
 
 dop(f,t=1) =
 {
-    my(v=variable(f),pr=poldegree(truncate(f),v));
+    my(v=variable(f),pr=default(seriesprecision));
     Ser(concat([0],vector(pr-1,n,n^t*polcoeff(f,n,v))),v)+O(v^pr);
 }
 {
