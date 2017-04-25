@@ -16,7 +16,7 @@ siegelunit(K,ida,idb=1) =
     idbinv = idealinv(K,idb);
     genidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idbinv,K.clgp.no))[2],variable(K),K.roots[1]);
     genidaidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idealmul(K,ida,idbinv),K.clgp.no))[2],variable(K),K.roots[1]);
-    deltaquot(K,ida,idb)^K.clgp.no*genidaidb^12/genidb^12;
+    abs(deltaquot(K,ida,idb)^K.clgp.no*(genidaidb/genidb)^12);
 }
 addhelp(siegelunit,"siegelunit(K,ida): Return the Siegel unit attached to the ideal ida of K. This unit is known to land in the Hilbert class field of K.")
 
