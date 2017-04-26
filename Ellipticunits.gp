@@ -7,6 +7,13 @@ addhelp(fundtheta,"fundtheta(L,z): Return the theta function attached to the lat
 bigtheta(K,ellida,ida,z) = fundtheta(idatolat(K,ellida),z)^idealnorm(K,ida)/fundtheta(idatolat(K,idealmul(K,idealinv(K,ida),ellida)),z);
 addhelp(bigtheta,"bigtheta(K,ellida,ida,z): Return the function big theta attached to fractional ideals ellida and ida of K evaluated at z. Big theta is just a twist of fundtheta(ellida,z) by N(ida)-sigma_ida. In general, ellida could be any lattice with CM by O_K, but to compute the twist, it is simpler to assume that this lattice is contained in K. This is the function used to generate elliptic units in ray class fields of K.");
 
+phi(K,ida) = 
+{
+    my(L=idatolat(K,ida));
+    sqrt(idealnorm(K,ida))*abs(L[1]^-1*eta(L[2]/L[1],1)^2);
+}
+
+
 deltaquot(K,ida,idb=1) = delta(idatolat(K,idb))/delta(idatolat(K,idealmul(K,idealinv(K,ida),idb)));
 addhelp(deltaquot,"deltaquot(K,ida,idb=1): return delta(idb)/delta(idb*ida^-1)");
 
