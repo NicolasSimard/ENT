@@ -1,4 +1,4 @@
-/*Try to attach a quantity to a pari of ideals ida and idb that only depends on
+/*Try to attach a quantity to a pair of ideals ida and idb that only depends on
 their ideal class.*/
 
 K = bnfinit(x^2+47);
