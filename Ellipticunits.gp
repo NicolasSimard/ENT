@@ -1,3 +1,20 @@
+{
+    addhelp(Ellipticunits,"This package defines functions to compute units in the Hilbert class field H of imaginary quadratic fields K.
+    
+    Our main reference for the definitions is Iwasawa Theory for CM Elliptic
+    curves of De Shalit.
+    
+    *Elliptic Units
+    - fundtheta(L,z) -> z in C;
+    - bigtheta(K,ellida,ida,z) -> z in C;
+    
+    *Siegel units
+    - phi(K,ida) -> z in C;
+    - deltaquot(K,ida,idb) -> z in C;
+    - siegelunit(K,ida,idb) -> z in C;    
+    ");
+}
+
 myeta(L,z) = Pi/area(L)*conj(z)+s2(L)*z;
 addhelp(myeta,"myeta(L,z): Return the eta function attached to the lattices L in C evaluated at z: Pi/area(L)*conj(z)+s2(L)*z.");
 
@@ -12,6 +29,7 @@ phi(K,ida) =
     my(L=idatolat(K,ida));
     sqrt(idealnorm(K,ida))*abs(L[1]^-1*eta(L[2]/L[1],1)^2);
 }
+addhelp(phi,"phi(K,ida): function N(ida)^1/2*|eta(ida)^2|.");
 
 
 deltaquot(K,ida,idb=1) = delta(idatolat(K,idb))/delta(idatolat(K,idealmul(K,idealinv(K,ida),idb)));
@@ -25,7 +43,7 @@ siegelunit(K,ida,idb=1) =
     genidaidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idealmul(K,ida,idbinv),K.clgp.no))[2],variable(K),K.roots[1]);
     abs(deltaquot(K,ida,idb)^K.clgp.no*(genidaidb/genidb)^12);
 }
-addhelp(siegelunit,"siegelunit(K,ida): Return the Siegel unit attached to the ideal ida of K. This unit is known to land in the Hilbert class field of K.")
+addhelp(siegelunit,"siegelunit(K,ida,idb=1): Return the Siegel unit attached to the ideal ida of K. This unit is known to land in the Hilbert class field of K. It is defined as (|Delta(idb)/Delta(idb*ida^-1)|N(ida)^6)^h_K");
 
 /* Here are a few examples:
 -----------------------------------Example 0-----------------------------------
