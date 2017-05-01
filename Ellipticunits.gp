@@ -35,14 +35,7 @@ addhelp(phi,"phi(K,ida): function N(ida)^1/2*|eta(ida)^2|.");
 deltaquot(K,ida,idb=1) = delta(idatolat(K,idb))/delta(idatolat(K,idealmul(K,idealinv(K,ida),idb)));
 addhelp(deltaquot,"deltaquot(K,ida,idb=1): return delta(idb)/delta(idb*ida^-1)");
 
-siegelunit(K,ida,idb=1) = 
-{
-    my(idbinv, genidaidb, genidb);
-    idbinv = idealinv(K,idb);
-    genidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idbinv,K.clgp.no))[2],variable(K),K.roots[1]);
-    genidaidb = subst(K.zk*bnfisprincipal(K,idealpow(K,idealmul(K,ida,idbinv),K.clgp.no))[2],variable(K),K.roots[1]);
-    abs(deltaquot(K,ida,idb)^K.clgp.no*(genidaidb/genidb)^12);
-}
+siegelunit(K,ida,idb=1) = (abs(deltaquot(K,ida,idb))*idealnorm(K,ida)^6)^K.clgp.no;
 addhelp(siegelunit,"siegelunit(K,ida,idb=1): Return the Siegel unit attached to the ideal ida of K. This unit is known to land in the Hilbert class field of K. It is defined as (|Delta(idb)/Delta(idb*ida^-1)|N(ida)^6)^h_K");
 
 /* Here are a few examples:
