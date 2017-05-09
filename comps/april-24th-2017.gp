@@ -22,8 +22,8 @@ normalpip(ida,idb,ell)=
 }
 
 normalpip2(ida,idb,ell)=
-{   \\ This is simply P(...)/E2*((ida*\bar{idb})^-1)^(2*ell), but it is NOT an invariant!
-    P(ida,idb,ell)/G(4,idatolat(K,idealmul(K,idealmul(K,idealinv(K,ida),idb),idealnorm(K,idb)^-1)))^ell;
+{   \\ It is NOT an invariant!
+    P(ida,idb,ell)/E(4,idatolat(K,idealmul(K,idealmul(K,idealinv(K,ida),idb),idealnorm(K,idb)^-1)))^ell;
 }
 
 inv1(ell)=matdet(matrix(#reps,#reps,i,j,normalpip(reps[i],reps[j],ell)));
