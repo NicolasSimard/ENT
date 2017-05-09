@@ -2,12 +2,10 @@
     addhelp(Thetapip,"The Thetapip package is there to compute the Petersson
     inner product and norm of various theta functions attached to an imaginary
     quadratic field K. The first type of theta series is attached to an ideal
-    of K and an integer ell>0. The second is the theta series attached to a
-    Hecke character of infinity type 2*ell>0. All those modular forms are cusp
-    forms, so all this makes sense.
+    of K and an integer ell>=0. The second is the theta series attached to a
+    Hecke character of infinity type [2*ell,0], for some positive ell.
     
-    Recall that a Hecke character of K is represented by [c,T] (see Qhc package
-    for more details).
+    Recall that a Hecke character of K is represented by [c,T].
     
     *Petersson inner product
     - pip(pipdata,ell,ida,idb) -> <theta_ida,theta_idb>
@@ -25,62 +23,8 @@
     ");
 }
 
-pip(pipdata,ell,ida,idb) = 
-{
-    my(K = pipdata[1],tmp);
-    tmp=idealnorm(K,idb)^(2*ell)*S(pipdata,ell,idealmul(K,ida,idealinv(K,idb)));
-    return(4*(abs(K.disc)/4)^ell*tmp);
-}
-{
-    addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell. pipdata is the data returned by pipinit. By default, the Petersson inner product is normalized by removing the volume factor. If flag = 1, return the product without the constant C_K.");
-}
 
-pnorm(data,qhc) =
-{
-    if(qhc[2][2] != 0, error("Wrong infinity type: ",qhc[2]));
-    my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
-    my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1], qhcsq);
-    qhcsq = [vector(#qhc[1],i,2*qhc[1][i]),[2*t,0]];
-    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,qhcsq,t+1);
-}
-{
-    addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
-}
-
-FF(z) = sqrt(imag(z))*eta(z,1)^2;
-
-F(z) = abs(FF(z));
-addhelp(F,"F(z): Defined as F(z) = imag(z)^1/2*abs(eta(z,1))^2.");
-
-FF_hom(K,ida) = sqrt(2/sqrt(abs(K.disc)))*FF(idatouhp(K,ida));
-
-F_hom(K,ida) = abs(FF_hom(K,ida));
-addhelp(F_hom,"F_hom(K,ida): Defined as F_hom(K,ida) = N(ida)^1/2*abs(eta(ida))^2.");
-
-rho(K,ida,idb) = (FF_hom(K,ida)/FF_hom(K,idealmul(K,ida,idealinv(K,idb))))^(12*qfbclassno(K.disc));
-
-S(pipdata,ell,ida) =
-{
-    my(mu, K=pipdata[1], amb = pipdata[3], cyc=K.clgp.cyc, coords, sqroot, c0, ac0);
-    coords = bnfisprincipal(K,ida,0);
-    for(i=1,#cyc,if(coords[i]%2 != 0 && cyc[i]%2 == 0, return(0)));
-    sqroot = vector(#coords,i,if(coords[i]%2==0,coords[i]/2,(coords[i]-cyc[i])/2));
-    c0 = idealinv(K,idealfactorback(K,K.gen,sqroot));
-    ac0 = subst(K.zk*bnfisprincipal(K,idealmul(K,idealpow(K,c0,2),ida))[2],variable(K),K.roots[1]);
-    ac0^(2*ell)*sum(i=1,#amb, amb[i][2]^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
-}
-
-\\ Evaluates d^(2*ell-1)E_2 at quadratic ideals
-d2l_1E2(pipdata,ell,ida) =
-{
-    my(mu, K=pipdata[1], i0=1, coords = bnfisprincipal(pipdata[1],ida,0));
-    while(pipdata[2][i0][2] != coords, i0 += 1);
-    mu = bnfisprincipal(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida))[2];
-    mu = subst(K.zk*mu,variable(K),K.roots[1]); \\ ida = mu*pipdata[2][i0][1]
-    mu^(-4*ell)*subst(subst(subst(delkformal('G2s,2*ell-1),'G2s,pipdata[4][1][i0]),'G4,pipdata[4][2][i0]),'G6,pipdata[4][3][i0]);
-}
-
-\\ Petersson inner product init
+/*-----------------Functions to compute to Petersson inner product -----------*/
 pipinit(K,verbose) =
 {
     my(tmp,sq,w,hK=K.clgp.no);
@@ -106,35 +50,61 @@ pipinit(K,verbose) =
     
     \\ Evaluate the Eisenstein series at CM points
     if(verbose,print("Evaluating the Eisenstein series..."));
-    for(i=1,hK,
-        tmp = idatolat(K,reps[i][1]); \\ lattice corresponding to reps[i]
-        \\tmp = subst(K.zk*reps[i][1],variable(K),w);  tmp = [a,(-b+sqrt(D))/2]
-        eiseval[1][i] = G2star(tmp);
-        eiseval[2][i] = G(4,tmp);
-        eiseval[3][i] = G(6,tmp);
-    );
+    eiseval = matrix(hK,3,i,j,E(2*j,idatolat(K,reps[i])));
     
     return([K,reps,amb,eiseval]);
 }
+addhelp(pipinit,"pipinit(K,{verbose=0}): Initialise the data to compute the Petersson inner product of theta series attached to the imaginary quadratic field K. If verbose=1, display information about the quadratic field while the computations are performed.");
 
-pipdatatoqhldata(data) = [qhcinit(data[1]),data[2],data[4]];
+pnorm(data,qhc) =
+{
+    if(qhc[2][2] != 0, error("Wrong infinity type: ",qhc[2]));
+    
+    my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
+    my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1]);
+    
+    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,2*qhc,t+1);
+}
+addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
 
-generator(K,ida) = {
-    my(tmp=bnfisprincipal(K,ida));
-    if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
-    subst(K.zk*tmp[2],variable(K),K.roots[1]);
+pip(pipdata,ell,ida,idb) =
+{
+    if(ell == 0, error("ell has to be > 0."));
+    
+    my(K=pipdata[1], idbbar, coords, c0coords, c0, amb = pipdata[3], lambdac);
+    idbbar = idealmul(K,idealinv(K,idb),idealnorm(K,idb));
+    
+    \\ Check if ida*idbbar is a square and return 0 if it isn't
+    coords = bnfisprincipal(K,idealmul(K,ida,idbbar),0);
+    for(i=1,#K.clgp.cyc,if(coords[i]%2 != 0 && K.clgp.cyc[i]%2 == 0, return(0)));
+    
+    \\ find an ideal c0 st ida*idbbar*c0^2 = lambdac0 O_K
+    c0coords = vector(#coords,i,if(coords[i]%2==0,coords[i]/2,(coords[i]-K.clgp.cyc[i])/2));
+    c0 = idealinv(K,idealfactorback(K,K.gen,c0coords));
+    lambdac0 = generator(K,idealmul(K,ida,idealmul(K,idbbar,idealpow(K,c0,2))));
+    
+    \\ Compute the sum
+    4*(abs(K.disc)/4)^ell*sum(i=1,#amb,(lambdac0*amb[i][2])^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
+}
+addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell. pipdata is the data returned by pipinit. By default, the Petersson inner product is normalized by removing the volume factor. If flag = 1, return the product without the constant C_K.");
+
+\\ Evaluates d^(2*ell-1)E_2 at quadratic ideals
+d2l_1E2(pipdata,ell,ida) =
+{
+    my(mu, K=pipdata[1], i0=1, coords = bnfisprincipal(pipdata[1],ida,0));
+    \\i0 = select((rep->rep[2] == coords), pipdata[2],1)[1];
+    while(pipdata[2][i0][2] != coords, i0 += 1);
+    mu = generator(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida)); \\ ida = mu*pipdata[2][i0][1]
+    mu^(-4*ell)*substvec(delkformal('E2,2*ell-1),['E2,'E4,'E6],pipdata[4][i0,]);
 }
 
+/*-----------------------Various objects attached to K------------------------*/
 psigrammat(data,ell) =
 {
     my(K = if(#data == 4, data[1], data[1][1]), chars = qhchars(K,[2*ell,0]));
     matrix(K.clgp.no,K.clgp.no,i,j,if(i==j,pnorm(data,chars[i])));
 }
-{
-    addhelp(psigrammat,"psigrammat(data,ell): Gramm matrix of the Petersson
-    inner product in the basis of theta_psi and data is either returned by
-    qhlinit of pipinit.");
-}
+addhelp(psigrammat,"psigrammat(data,ell): Gramm matrix of the Petersson inner product in the basis of theta_psi and data is either returned by qhlinit of pipinit.");
 
 psigramdet(data,ell) = matdet(psigrammat(data,ell));
 
@@ -144,10 +114,7 @@ pipgrammat(pipdata,ell,reps) =
     if(reps == 0, reps = vector(hK,i,pipdata[2][i][1]));
     matrix(hK,hK,i,j,pip(pipdata,ell,reps[i],reps[j]));
 }
-{
-    addhelp(pipgrammat,"pipgrammat(pipdata,ell,{reps=redreps}): Gramm matrix of
-    the Petersson inner product in the basis of reps (reduced reps by default.)");
-}
+addhelp(pipgrammat,"pipgrammat(pipdata,ell,{reps=redreps}): Gramm matrix of the Petersson inner product in the basis of reps (reduced reps by default.)");
 
 pipgramdet(pipdata,ell,reps) = matdet(pipgrammat(pipdata,ell,reps));
 
@@ -157,8 +124,13 @@ transmat(K,ell,reps) =
     if(reps == 0, ClK = redrepshnf(K), ClK = parirepshnf(K));
     matrix(hK,hK,i,j,2/hK*qhceval(qhcdata,chars[i],ClK[j]));
 }
-{
-    addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M
-    between the basis theta_psi and reps basis. It is such that
-    M~*psigrammat*conj(M) = pipgrammat.");
+addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M between the basis theta_psi and reps basis. It is such that M~*psigrammat*conj(M) = pipgrammat.");
+
+/*-------------------------Auxilarry functions--------------------------------*/
+pipdatatoqhldata(pipdata) = qhlinit(pipdata[1]);
+
+generator(K,ida) = {
+    my(tmp=bnfisprincipal(K,ida));
+    if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
+    subst(K.zk*tmp[2],variable(K),K.roots[1]);
 }
