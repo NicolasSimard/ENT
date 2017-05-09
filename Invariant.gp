@@ -3,7 +3,7 @@ normalpip(pipdata,ell,ida,idb)=
     if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
 
     my(K=pipdata[1]);
-    pip(pipdata,ell,ida,idb)/G2star(idatolat(K,idealinv(K,ida)))^ell/conj(G2star(idatolat(K,idealinv(K,idb))))^ell;
+    pip(pipdata,ell,ida,idb)/E(2,idatolat(K,idealinv(K,ida)))^ell/conj(E(2,idatolat(K,idealinv(K,idb))))^ell;
 }
 
 invariant(data,ell) =
