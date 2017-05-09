@@ -49,24 +49,46 @@ Note also that G(k,z) is \mathbb{G}_k(z) in Zagier - 1-2-3 of modular forms.
 
 All Eisenstein series were tested in two ways. First, their q-expansion was
 compared with know q-expansion up to small precision. Second, the numerical
-value of E2star, E4 and E6 at lattices was compared with the CM-values table in Zagier - 1-2-3 of modular forms (after proposition 27). The CM values of delta
+value of E2star, E4 and E6 at lattices was compared with the CM-values table
+in Zagier - 1-2-3 of modular forms (after proposition 27). The CM values of delta
 were also compared with the entries of the same table. 
 */
-G(k,x) =
+
+elleisqexp(k,term='q) =
+{
+    if(k<=0,error("k has to be >=2, got ",k,"."));
+    if(poldegree(truncate(term)) >= default(seriesprecision),error("Seriesprecision too low to specify the term of degree ",poldegree(term),"."));
+    
+    my(qexp,var,d);
+    d = poldegree(truncate(term));
+    var = if(!variable(term),'q,variable(term));
+    qexp = -bernfrac(k)/2/k + subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,var) + O(var^default(seriesprecision));
+    
+    polcoeff(term,d)/polcoeff(qexp,d)*qexp;
+}
+{
+    addhelp(elleisqexp,"elleisqexp(k,term='q): Return the q-expansion of the weight k Eisenstein series. By default, the q-expansion is normalized in such a way that a_1=1. To change the normalisation, specify the term you want in the q-expansion. For example, if term = 3, the q-expansion will have constant term equal to 3. As another example, if term = 2*X^2, the q-expansion will be given in terms of X and will contain the term 2*X^2. As a final example, term = 1+O(t) would return the same thing as term = 1, but in terms of the variable t. The series precision of the q-expansion is given by default(seriesprecision).");
+}
+
+
+E(k,x) =
 {
     if(type(x) == "t_POL",
-        -bernfrac(k)/2/k + subst(Ser(concat([0],vector(default(seriesprecision)-1,n,sigma(n,k-1))),'X),'X,x) + O(variable(x)^default(seriesprecision))
+        if(k==2,error("The classical weigth 2 eisenstein series doesnot have a q-expansion."));
+        elleisqexp(k,'q);
     , if(type(x) == "t_VEC",
-        elleisnum(x,k)/(2*Pi*I)^k/2*zeta(1-k)
+        if(imag(x[1]/x[2]) <= 0,error("The lattice ",x," is not positively oriented."));
+        -bernfrac(k)/2/k/(2*Pi*I)^k*elleisnum(x,k) + (k==2)*1/(8*Pi*abs(x[2])^2*imag(x[1]/x[2]));
     , \\ If x is not a polynomial or a lattice, assume x is complex
-        elleisnum([x,1],k)/(2*Pi*I)^k/2*zeta(1-k)
+        if(imag(x) <= 0,error("The complex number ",x," is not in the upper-half plane."));
+        -bernfrac(k)/2/k/(2*Pi*I)^k*elleisnum([x,1],k) + (k==2)*1/(8*Pi*imag(x));
     ));
 }
 {
-    addhelp(G,"G(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series G_k('q) (normalized so that the coefficient of 'q is 1). This is E_k in Shimura - Elementary Dirichlet series and L-function. If x = [w1,w2] is a Z-basis of a lattice in C, G(k,x) = w2^-k*G_k(w1/w2). Otherwise, assume x is in C and evaluate G_k(x).");
+    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k('q) (normalized so that the coefficient of 'q is 1). If x = [w1,w2] is a Z-basis of a lattice in C, E(k,x) = w2^-k*E_k(w1/w2). Otherwise, assume x is in C and evaluate E_k(x). If k=2 and xis a lattice or a complex number, includes the 1/(8*Pi*imag(x)) term.");
 }
 
-E(k,x) = -G(k,x)*2*k/bernfrac(k);
+/*(k,x) = -G(k,x)*2*k/bernfrac(k);
 {
     addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k(x) (normalized so that the constant term is 1). If x = [w1,w2] is a Z-basis of a lattice in C, E(k,x) = w2^-k*E_k(w1/w2). Otherwise, assume x is in C and evaluate E_k(x).");
 }
@@ -86,7 +108,7 @@ G2star(x) =
 E2star(x) = -24*G2star(x);
 {
     addhelp(E2star,"E2star(x): If x = [w1,w2] is a Z-basis of a lattice in C, E2star(x) = w2^-2*E_2^*(w1/w2). Otherwise, assume x is in C. E2star(z) is -3/(Pi*imag(z))+1+O('q). This is the same E_2^* as in Zagier - 1-2-3 of modular forms.");
-}
+}*/
 
 s2(x) = -8*Pi^2*G2star(x);
 {
