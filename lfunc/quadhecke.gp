@@ -1,21 +1,9 @@
 qhlinit(K) =
 {
-    my(hK = K.clgp.no, w, reps = redrepshnf(K), eiseval=vector(3,n,vector(hK)), tmp);
-    w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])); \\ make sure w in H
-    
-    \\ Evaluate the Eisenstein series at CM points    
-    for(i=1,hK,
-        tmp = subst(K.zk*reps[i],variable(K),w); \\ tmp = [a,(-b+sqrt(D))/2]
-        eiseval[1][i] = tmp[1]^-2*G2star(tmp[2]/tmp[1]);
-        eiseval[2][i] = tmp[1]^-4*G(4,tmp[2]/tmp[1]);
-        eiseval[3][i] = tmp[1]^-6*G(6,tmp[2]/tmp[1]);
-    );
-    
-    return([qhcinit(K),reps,eiseval]);
+    my(hK = K.clgp.no, reps = redrepshnf(K));    
+    return([qhcinit(K),reps,vector(3,n,vector(hK,i,E(2*n,idatolat(K,reps[i]))))]);
 }
-{
-    addhelp(qhlinit,"qhlinit(K): initialize data to evaluate the L-function of a Hecke character of an imaginary quadratic field. This is a vector of the form [qhcinit(K),reps,eiseval].");
-}
+addhelp(qhlinit,"qhlinit(K): initialize data to evaluate the L-function of a Hecke character of an imaginary quadratic field. This is a vector of the form [qhcinit(K),reps,eiseval].");
 
 /* Tested: qhlfun(qhlinit(bnfinit('x^2+23)),[[i],[2,0]],2) = values in Watkin's paper
 
@@ -44,15 +32,8 @@ qhlfun(qhldata,qhc,m) =
     
     my(S, mf);
     
-    mf = if(2*m-t == 2, delkformal('G2s,t-m), delkformal(GktoG4G6(2*m-t),t-m));
-    S = sum(i=1,hK,
-        qhceval(qhldata[1],qhc,qhldata[2][i])*subst(subst(subst(mf,'G2s,qhldata[3][1][i]),'G4,qhldata[3][2][i]),'G6,qhldata[3][3][i]);
-    );
+    mf = if(2*m-t == 2, delkformal('E2,t-m), delkformal(EktoE4E6(2*m-t),t-m));
+    S = sum(i=1,hK,qhceval(qhldata[1],qhc,qhldata[2][i])*substvec(mf,['E2,'E4,'E6],vector(3,n,qhldata[3][n][i])));
     return(I^t*(2*Pi)^m/gamma(m)*sqrt(abs(K.disc))^(t-m)*S);
 }
-{
-    addhelp(qhlfun,"qhlfun(qhldata,qhc,m): Evaluates the Hecke L-function
-    attached to the Hecke character [c,T] (where c are the components and T is
-    the infinity type) at the point m (for the moment, we need t/2+1 <= m <= t, or t = 0 and m = 1).
-    qhldata is the data returned by qhlinit.");
-}
+addhelp(qhlfun,"qhlfun(qhldata,qhc,m): Evaluates the Hecke L-function attached to the Hecke character [c,T] (where c are the components and T is the infinity type) at the point m (for the moment, we need t/2+1 <= m <= t, or t = 0 and m = 1). qhldata is the data returned by qhlinit.");
