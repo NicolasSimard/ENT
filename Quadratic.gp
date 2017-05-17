@@ -480,7 +480,7 @@ qhcLdata(K,qhc,eps) =
 	return(lfuncreate(Ldata));
 }
 {
-	addhelp(qhcLdata,"qhcLdata(K,qhc,{eps=0}): Returl the data [a,astar,Vga,k,N,eps] for the L-function of the Hecke character qhc of K. If eps is not given (i.e. is 0), it will be automatically computed. This can be couputationnally costly and a good guess for eps is  1.");
+	addhelp(qhcLdata,"qhcLdata(K,qhc,{eps=0}): Return the data [a,astar,Vga,k,N,eps] for the L-function of the Hecke character qhc of K. If eps is not given (i.e. is 0), it will be automatically computed. This can be couputationnally costly and a good guess for eps is  1.");
 }
 
 
