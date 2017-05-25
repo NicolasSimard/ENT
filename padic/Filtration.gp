@@ -1,5 +1,4 @@
-E2star(p) = mfadd(E(2),mfmul(-p,V(p)(E(2))));
-pjVjE2star(p,j) = mfmul(p^j,V(p,j)(E2star(p)));
+E2pstab(p) = P('q)-p*V(p,P('q));
 
 find_min_k(f,w,N,match='auto,k_range=[0,[1]]) =
 {
