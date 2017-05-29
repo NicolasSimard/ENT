@@ -40,6 +40,7 @@
     *Arithmetic
     - CSperiod(D) -> Omega_D
     - CSperiodCoh(D) -> Omega_D
+    - canperiod(K,ida,flag) -> Omega
     
     *Imaginary quadratic fields
     - redrepshnf(K) -> [a_1,...,a_h]
