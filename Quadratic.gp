@@ -511,3 +511,30 @@ CSperiodCoh(D) =
     discriminant D, as defined Cohen's book on Number Theory, volume 2:
     sqrt(prod(j=1,|D|-1,gamma(j/|D|)^\chi_D(j))^(wD(D)/2/h_D)/(4*Pi*sqrt(|D|)))")
 }
+
+canperiod(K,ida,flag) =
+{
+    my(E, ida_lat, idb, j, M, f, t, dist, rootsinK, tau, alpha, Om);
+    ida_lat = idatolat(K,ida);
+    j = ellj(ida_lat[2]/ida_lat[1]);
+    E = if(j == 1728,
+            ellinit([1,0]),
+        if(j == 0,
+            ellinit([0,1]),
+        \\ else (i.e. j != 0,1728)
+            ellinit([1,0,0,-36/(j-1728),-1/(j-1728)])
+        ));
+    M = ellperiods(E); \\ C/M is defined over the Hilbert class field of K
+    
+    t = varhigher("t",variable(K));
+    f = subst(algdep(M[1]/M[2],2),'x,t);
+    rootsinK = nfroots(K,f);
+    dist = apply((r)->subst(K.zk*nfalgtobasis(K,r),variable(K),K.roots[1])-M[1]/M[2],rootsinK);
+    tau = if(abs(dist[1]) < abs(dist[2]),rootsinK[1], rootsinK[2]); \\ M[1]/M[2] = tau
+    idb = idealhnf(K,1,tau);
+    alpha = bnfisprincipal(K,idealmul(K,ida,idealinv(K,idb)))[2];
+    Om = subst(K.zk*alpha,variable(K), K.roots[1])/M[2];
+    
+    if(flag,[Om,M],Om);
+}
+addhelp(canperiod,"canperiod(K,ida,{flag = 0}): Return a somewhat canonical period Om such that ida = Om*M for some lattice M in C such that the elliptic curve C/M is defined over the Hilbert class field of K. This period is well-defined up to a unit in O_K. If flag != 0, return M also.");
