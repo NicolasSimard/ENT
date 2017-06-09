@@ -4,7 +4,7 @@
     In general, a modular form is represented by a q-expansion. The precision of the q-expansion is determined by the constant default(seriesprecision) which can be changed with the command \ps prec.
     
     *General modular forms:
-    - E(k,'q) -> q-expansion; E(k,z) -> G_k(z) in C; E(k,L) -> G_k(L) in C; 
+    - E(k,'q) -> q-expansion; E(k,z) -> E_k(z) in C; E(k,L) -> E_k(L) in C; 
     - elleisqexp(k,'q) -> q-expansion;
     - theta0(x) -> q-expansion
     - theta1(x) -> q-expansion
