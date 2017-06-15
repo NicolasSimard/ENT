@@ -60,13 +60,13 @@ E(k,x) =
         elleisqexp(k,'q);
     , if(type(x) == "t_VEC",
         if(imag(x[1]/x[2]) > 0,
-            -bernfrac(k)/2/k/(2*Pi*I)^k*elleisnum(x,k) + (k==2)*1/(8*Pi*abs(x[2])^2*imag(x[1]/x[2]))
+            zeta(1-k)/2/(2*Pi*I)^k*elleisnum(x,k) + (k==2)*1/(8*Pi*abs(x[2])^2*imag(x[1]/x[2]))
         ,
             E(k,x*[0,1;1,0]); \\ If the lattice is not positively oriented, we switch the order...
         );
     , \\ If x is not a polynomial or a lattice, assume x is complex
         if(imag(x) <= 0,error("The complex number ",x," is not in the upper-half plane."));
-        -bernfrac(k)/2/k/(2*Pi*I)^k*elleisnum([x,1],k) + (k==2)*1/(8*Pi*imag(x));
+        zeta(1-k)/2/(2*Pi*I)^k*elleisnum([x,1],k) + (k==2)*1/(8*Pi*imag(x));
     ));
 }
 {
