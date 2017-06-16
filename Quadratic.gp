@@ -515,9 +515,8 @@ CSperiodCoh(D) =
 
 canperiod(K,ida,flag) =
 {
-    my(E, ida_lat, idb, j, M, f, t, dist, rootsinK, tau, alpha, Om);
-    ida_lat = idatolat(K,ida);
-    j = ellj(ida_lat[2]/ida_lat[1]);
+    my(E, idb, j, M, f, t, dist, rootsinK, tau, alpha, Om);
+    j = ellj(idatouhp(K,ida));
     E = if(j == 1728,
             ellinit([1,0]),
         if(j == 0,
@@ -527,6 +526,7 @@ canperiod(K,ida,flag) =
         ));
     M = ellperiods(E); \\ C/M is defined over the Hilbert class field of K
     
+    print(E);    
     t = varhigher("t",variable(K));
     f = subst(algdep(M[1]/M[2],2),'x,t);
     rootsinK = nfroots(K,f);
