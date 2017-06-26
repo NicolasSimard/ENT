@@ -526,7 +526,6 @@ canperiod(K,ida,flag) =
         ));
     M = ellperiods(E); \\ C/M is defined over the Hilbert class field of K
     
-    print(E);    
     t = varhigher("t",variable(K));
     f = subst(algdep(M[1]/M[2],2),'x,t);
     rootsinK = nfroots(K,f);
