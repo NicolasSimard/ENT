@@ -1,4 +1,4 @@
-/* Computing the twisted bu chi_D symmetric square L-function of theta series.*/
+/* Computing the twisted by chi_D symmetric square L-function of theta series.*/
 
 /*Setting up the field.*/
 ell = 2;
