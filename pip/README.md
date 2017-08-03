@@ -3,7 +3,7 @@
 ## Introduction
 This folder contains many formulas to compute the Petersson inner product of the three modular forms delta, delta_11 and delta_5. Those formula come from Cohen's article on Haberland's formula.
 
-For example, the most efficient formula to compute the Petersson norm of delta is the one using its symmetric square L-function. To call it, run GP/PARI in the ENT repo and execute the following commend: '\r pip/delta/lsym2.gp'.
+For example, the most efficient formula to compute the Petersson norm of delta is the one using its symmetric square L-function. To call it, run GP/PARI in the ENT repo and execute the following command: '\r pip/delta/lsym2.gp'.
 
 ## List of formulas implemented
 Here is a detailed list of the formulas implemented in each folder
