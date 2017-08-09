@@ -55,9 +55,9 @@ addhelp(P,"P(term): Ramanujan series P = 1-24*q+O(q^2). This is a p-adic modular
 
 E(k,x) =
 {
-    if(type(x) == "t_POL",
-        if(k==2,error("The classical weigth 2 eisenstein series doesnot have a q-expansion."));
-        elleisqexp(k,'q);
+    if(type(x) == "t_POL" || type(x) == "t_SER",
+        if(k==2,error("The classical weigth 2 eisenstein series does not have a q-expansion."));
+        elleisqexp(k,x);
     , if(type(x) == "t_VEC",
         if(imag(x[1]/x[2]) > 0,
             zeta(1-k)/2/(2*Pi*I)^k*elleisnum(x,k) + (k==2)*1/(8*Pi*abs(x[2])^2*imag(x[1]/x[2]))
