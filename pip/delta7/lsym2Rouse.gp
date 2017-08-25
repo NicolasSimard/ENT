@@ -6,24 +6,20 @@ anf(n) = lfunan(lfunetaquo([1,3;7,3]),n);
 
 chi(n) = kronecker(-7,n);
 
-/*Setting up the symmetric square L-function*/
 a(n) = {
-    my(an=anf(n));
+    my(an=anf(n), apnorm);
     direuler(p=2,n,
-        if(N%p==0,
-            1/(1-an[p]^2/p^(k-1)*X), \\factor at the bad primes
-            1/(1-chi(p)*an[p]/p^((k-1)/2)*X+chi(p)*X^2)
-        )
+        apnorm = an[p]/p^((k-1)/2);
+        1/(1-'X)/(1 - chi(p)*(apnorm^2-2*chi(p))*'X + chi(p)^2*'X^2)
     )
 };
+
 astar = 1;
 Vga = [1,k-1,k];
 w = 1;
 cond = N^2;
-incLsym2data(cond) ={
-    eps = lfunrootres(lfuncreate([a,astar,Vga,w,cond,0]))[3];
-    [a,astar,Vga,w,cond,eps]
-}
+eps = 1;
+Lsym2data = [a,astar,Vga,w,cond,eps];
 
 printf("Estimated error on symmetric square L-function: %.2f", lfuncheckfeq(lfuncreate(Lsym2data)));
 
