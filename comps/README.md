@@ -1,9 +1,12 @@
 # Computations for PhD Thesis
 The 'comps/' folder contains small scripts that execute various computations, often related to my PhD thesis.
 
-_Disclaimer_: Those scripts are often not commented, badly written, obscure and may not provide accurate results. They are mainly used to save me some time if I wish to redo or improve a relatively elaborate computation in the future.
+_Disclaimer_: Those scripts are often not commented, sometimes obscure and may not provide accurate results. They are mainly used to save me some time if I wish to redo or improve a relatively elaborate computation in the future.
 
 ## List of computations
+### August
+- august-28th-2017: Check that the symmetric square L-function of theta series factors as a product of a Dirichlet L-series and a Hecke L-function. Check also the formula the Petersson norm of theta series in terms of special values of Hecke L-functions.
+
 ### June
 - june-26th-2017: Verify numerically the p-adic interpolation formulas for small discriminant and prime.
 - june-16th-2017-2: Verify numerically the formulas giving the derivatives of the level one Eisenstein series of weight 2, 4 and 6.
