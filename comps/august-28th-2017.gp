@@ -10,4 +10,4 @@ printf("Estimated error on symmetric square L-function: %.2f", lfuncheckfeq(lfun
 
 lfun(lfuncreate(Ldata),2*ell+1)*lfun(lfuncreate(D),1)
 
-4*K.clgp.no/K.tu[1]*sqrt(abs(D))*(2*ell)!/(4*Pi)^(2*ell+1)*lfun(lfuncreate(Ldata),2*ell+1)
+N(ell) = 4*K.clgp.no/K.tu[1]*sqrt(abs(D))*(2*ell)!/(4*Pi)^(2*ell+1)*lfun(lfuncreate(qhcLdata(K,2*[[],[2*ell,0]])),2*ell+1);
