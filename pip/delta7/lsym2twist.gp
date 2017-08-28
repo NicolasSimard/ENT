@@ -27,4 +27,10 @@ Lsym2data = [a,astar,Vga,w,cond,eps];
 
 printf("Estimated error on symmetric square L-function: %.2f", lfuncheckfeq(lfuncreate(Lsym2data)));
 
-(Pi/2*eulerphi(N)*(4*Pi)^k/N^2/(k-1)!)^-1*lfun(L,k)*(3/Pi/8)
+lfun(lfuncreate(Lsym2data),k)
+
+(Pi/2*eulerphi(N)*(4*Pi)^k/N^2/(k-1)!)^-1*(lfun(lfuncreate(Lsym2data),k)*6/7)*(3/Pi/8)
+
+/*The factor 6/7 = (1-1/7) = (1-7^(3-1)*p^-s)|s=3 is the factor at the bad
+primes that is missing, in the defintion of L(Sym^2 f,...) given in the thesis,
+to have a nice functionnal equation.*/
