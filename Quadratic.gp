@@ -51,8 +51,9 @@
     - qhchars(K,T=[0,0]) -> [psi_1,...,psi_h_K]
     - qhceval(qhcdata,psi,ida) -> psi(ida)
 	
-	*L-functions of Hecke characters of imaginary quadratic fields
-	- qhcLdata(K,qhc,{sdom}) -> Ldata = [a,as,Vga,k,N,eps]
+	*L-functions attached to imaginary quadratic fields
+	- qhcLdata(K,qhc,{eps}) -> Ldata = [a,as,Vga,k,N,eps]
+    - lsym2data(K,qhc) -> Lsym2data = [a,as,Vga,k,N,eps]
     ");
 }
 
@@ -466,23 +467,46 @@ qhceval(qhcdata,qhc,ida) =
 
 qhcLdata(K,qhc,eps) =
 {
-	my(a,astar,Vga,k,N,prec,Ldata);
+	my(a,Ldata);
 	
 	a = (n -> Vec(bintheta(K,qhc,1,'q,n)));
-	astar =1;
-	Vga = [0,1];
-	k = qhc[2][1] + qhc[2][2] + 1;
-	N = abs(K.disc);
-	Ldata = [a,astar,Vga,k,N,'X];
+	Ldata = [a,1,[0,1],qhc[2][1] + qhc[2][2] + 1,abs(K.disc),'X];
 	
 	\\ Compute the root number is eps = 0. Otherwise set it to eps
 	if(eps == 0, Ldata[6] = lfunrootres(lfuncreate(Ldata))[3], Ldata[6] = eps);
 	
-	return(lfuncreate(Ldata));
+	return(Ldata);
 }
 {
 	addhelp(qhcLdata,"qhcLdata(K,qhc,{eps=0}): Return the data [a,astar,Vga,k,N,eps] for the L-function of the Hecke character qhc of K. If eps is not given (i.e. is 0), it will be automatically computed. This can be couputationnally costly and a good guess for eps is  1.");
 }
+
+lsym2data(K,qhc) =
+{
+    if(qhc[2][2] != 0, error("Infinity type must be of the form [2*ell,0]"));
+	
+    my(ell, k, N, chi_D, anf, a);
+    ell = qhc[2][1]/2;
+    
+    k = 2*ell+1;
+    N = abs(K.disc);
+    chi_D = (n -> kronecker(K.disc,n));
+    
+    a = (n-> my(an = Vec(bintheta(K,qhc,1,'q,n)),ap2); 
+        direuler(p=2,n,
+            if(N%p == 0,
+                1/(1-p^(k-1)*X)
+            ,
+                ap2 = an[p]^2-chi_D(p)*p^(k-1);
+                1/(1 - chi_D(p)*ap2*X + chi_D(p)*ap2*p^(k-1)*X^2 - p^(3*(k-1))*X^3))));
+
+    return([a,1,[0,1,2-k],2*k-1,N^2,1]);
+
+}
+{
+	addhelp(lsym2data,"lsym2data(K,qhc,{eps=0}): Return the data [a,astar,Vga,k,N,eps] for the symmetric square L-function of the theta series attached to the Hecke character qhc = [comp,T] of the number field K.");
+}
+
 
 
 /*-----------------------------Arithmetic------------------------------------*/
