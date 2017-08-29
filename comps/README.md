@@ -26,8 +26,7 @@ _Disclaimer_: Those scripts are often not commented, sometimes obscure and may n
 - april-27th-2017: Test Starks's remark for all imaginary quadratic fields of class number 3.
 - april-24th-2017: Computations to try to attach a familly of invariants to imaginary quadratic fields. We eventually find the invariant defined in the thesis!
 - april-13th-2017: Experiment with Lang's statements in Chapter 12 of his book 'Elliptic functions'.
-- april-7th-2017: Try to compute with the twisted Symmetric square L-function of theta series. There seems to be a problem with the conductor, so the L-function doesn't satisfy the expected functional equation.
-- april-6th-2017: Try to compute with the Symmetric square L-function of theta series. There is a problem with because this L-function has a pole (and the whole point is to compute the residue at that pole).
+- april-6th-2017: Compute the twisted symmetric square L-function of theta series.
 
 ### March
 - march-24th-2017: Compare our implementation of the algorithm to compute the Petersson norm of theta series with the one using special values of the Hecke L-function. The data attached to the L-function is computed using the qhcLdata function.
