@@ -81,7 +81,7 @@ pip(pipdata,ell,ida,idb) =
     \\ find an ideal c0 st ida*idbbar*c0^2 = lambdac0 O_K
     c0coords = vector(#coords,i,if(coords[i]%2==0,coords[i]/2,(coords[i]-K.clgp.cyc[i])/2));
     c0 = idealinv(K,idealfactorback(K,K.gen,c0coords));
-    lambdac0 = generator(K,idealmul(K,ida,idealmul(K,idbbar,idealpow(K,c0,2))));
+    lambdac0 = complexgen(K,idealmul(K,ida,idealmul(K,idbbar,idealpow(K,c0,2))));
     
     \\ Compute the sum
     4*(abs(K.disc)/4)^ell*sum(i=1,#amb,(lambdac0*amb[i][2])^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
@@ -94,7 +94,7 @@ d2l_1E2(pipdata,ell,ida) =
     my(mu, K=pipdata[1], i0=1, coords = bnfisprincipal(pipdata[1],ida,0));
     \\i0 = select((rep->rep[2] == coords), pipdata[2],1)[1];
     while(pipdata[2][i0][2] != coords, i0 += 1);
-    mu = generator(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida)); \\ ida = mu*pipdata[2][i0][1]
+    mu = complexgen(K,idealmul(K,idealinv(K,pipdata[2][i0][1]),ida)); \\ ida = mu*pipdata[2][i0][1]
     mu^(-4*ell)*substvec(delkformal('E2,2*ell-1),['E2,'E4,'E6],pipdata[4][i0,]);
 }
 
@@ -128,9 +128,3 @@ addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M between th
 
 /*-------------------------Auxilarry functions--------------------------------*/
 pipdatatoqhldata(pipdata) = qhlinit(pipdata[1]);
-
-generator(K,ida) = {
-    my(tmp=bnfisprincipal(K,ida));
-    if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
-    subst(K.zk*tmp[2],variable(K),K.roots[1]);
-}
