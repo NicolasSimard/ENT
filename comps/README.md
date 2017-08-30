@@ -5,6 +5,7 @@ _Disclaimer_: Those scripts are often not commented, sometimes obscure and may n
 
 ## List of computations
 ### August
+- august-30th-2017: Compare our implementation of the algorithm to compute the q-expansion of theta functions to the "naive" one using built-in PARI functions.
 - august-29th-2017: Compare three different algorithms to compute the Petersson inner product of theta series: one using derivatives of Eisenstein series, one using the Hecke L-function of Hecke characters and one using the symmetric square L-function.
 - august-28th-2017: Check that the symmetric square L-function of theta series factors as a product of a Dirichlet L-series and a Hecke L-function. Check also the formula the Petersson norm of theta series in terms of special values of Hecke L-functions.
 
