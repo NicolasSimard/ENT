@@ -70,7 +70,7 @@ E(k,x) =
     ));
 }
 {
-    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k('q) (normalized so that the coefficient of 'q is 1). If x = [w1,w2] is a Z-basis of a lattice in C, elleisqexp(k,x) = w2^-k*E_k(w1/w2). Otherwise, assume x is in C and evaluate E_k(x). If k=2 and xis a lattice or a complex number, includes the 1/(8*Pi*imag(x)) term.");
+    addhelp(E,"E(k,x): If x is a polynomial, returns the q-expansion of the Eisenstein series E_k('q) (normalized so that the coefficient of 'q is 1). If x = [w1,w2] is a Z-basis of a lattice in C, return w2^-k*E_k(w1/w2). Otherwise, assume x is in C and evaluate E_k(x). If k=2 and x is a lattice or a complex number, includes the 1/(8*Pi*imag(x)) term.");
 }
 
 s2(x) = -8*Pi^2*elleisqexp(2,x);
