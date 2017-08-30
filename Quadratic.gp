@@ -45,6 +45,7 @@
     *Imaginary quadratic fields
     - redrepshnf(K) -> [a_1,...,a_h]
     - parirepshnf(K) -> [a_1,...,a_h]
+    - complexgen(K,ida) -> alpha in C s.t. (alpha) = ida
     
     *Hecke characters of imaginary quadratic fields
     - qhcinit(K) -> [K,[r_i]]
@@ -377,6 +378,12 @@ parirepshnf(K) =
         reps=concat(reps,[idealfactorback(K,ClK.gen,e)]);
     );
     reps;
+}
+
+complexgen(K,ida) = {
+    my(tmp=bnfisprincipal(K,ida));
+    if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
+    subst(K.zk*tmp[2],variable(K),K.roots[1]);
 }
 
 quaddata(D) =
