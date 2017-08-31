@@ -51,6 +51,7 @@
     - qhcinit(K) -> [K,[r_i]]
     - qhchars(K,T=[0,0]) -> [psi_1,...,psi_h_K]
     - qhceval(qhcdata,psi,ida) -> psi(ida)
+    - qhcistrivial(K,qhc) -> 0 or 1
 	
 	*L-functions attached to imaginary quadratic fields
 	- qhcLdata(K,qhc,{eps}) -> Ldata = [a,as,Vga,k,N,eps]
@@ -514,7 +515,13 @@ lsym2data(K,qhc) =
 	addhelp(lsym2data,"lsym2data(K,qhc,{eps=0}): Return the data [a,astar,Vga,k,N,eps] for the symmetric square L-function of the theta series attached to the Hecke character qhc = [comp,T] of the number field K.");
 }
 
-
+qhcistrivial(K,qhc) = {
+    if(qhc[2] != [0,0], return(0));
+    vector(#qhc[1],i,qhc[1][i] % K.clgp.cyc[i]) == vector(#qhc[1]);
+}
+{
+    addhelp(qhcistrivial,"qhcistrivial(K,qhc): Return 1 if the Hecke character is trivial and 0 otherwise.");
+}
 
 /*-----------------------------Arithmetic------------------------------------*/
 /*Returns the Chowla-selberg period of discriminant D, as defined in 1-2-3 of
