@@ -21,9 +21,18 @@ invariant(data,ell) =
         );       
     );
     
-    my(reps=redrepshnf(pipdata[1]),pol);
+    my(reps=redrepshnf(pipdata[1]),pol, M);
     
-    pol=algdep(matdet(matrix(#reps,#reps,i,j,normalpip(pipdata,ell,reps[i],reps[j]))),1);
+    M = matrix(#reps,#reps); \\ Hermitian matrix
+    
+    for(i = 1, #reps,
+        for(j = i, #reps,
+            M[i,j] = normalpip(pipdata,ell,reps[i],reps[j])));
+    for(i = 2, #reps,
+        for(j = 1, i - 1,
+            M[i,j] = conj(M[j,i])));
+    
+    pol=algdep(matdet(M),1);
     -polcoeff(pol,0)/polcoeff(pol,1);
 }
 
