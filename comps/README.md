@@ -4,6 +4,9 @@ The 'comps/' folder contains small scripts that execute various computations, of
 _Disclaimer_: Those scripts are often not commented, sometimes obscure and may not provide accurate results. They are mainly used to save me some time if I wish to redo or improve a relatively elaborate computation in the future.
 
 ## List of computations
+### September
+- september-4th-2017: First attempt to compute the derrivatives of E_2 using a different method.
+
 ### August
 - august-30th-2017: Compare our implementation of the algorithm to compute the q-expansion of theta functions to the "naive" one using built-in PARI functions.
 - august-29th-2017: Compare three different algorithms to compute the Petersson inner product of theta series: one using derivatives of Eisenstein series, one using the Hecke L-function of Hecke characters and one using the symmetric square L-function.
