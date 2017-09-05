@@ -22,6 +22,12 @@ f3(n,z) = {
     + suminf(m=1,sum(r=0,n,(-1)^(n-r)*binomial(n,r)*pochhammer(2+r,n-r)/(4*Pi*imag(z))^(n-r)*m^r,0.)*sigma(m)*exp(2*Pi*I*m *z));
 } \\ == F(n,z)
 
+f4(n,z) = {
+    (-1)^n*(1/(8*Pi*imag(z))-(n+1)/24)*n!/(4*Pi*imag(z))^n
+    + suminf(m=1,sum(r=0,n,(-1)^(n-r)*binomial(n,r)*pochhammer(2+r,n-r)/(4*Pi*imag(z))^(n-r)*m^r,0.)*sigma(m)*exp(2*Pi*I*m *z));
+} \\ == F(n,z)
+
+
 F(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f(n,L[2]/L[1]); 
 
 F1(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f1(n,L[2]/L[1]); 
@@ -29,3 +35,5 @@ F1(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f1(n,L[2]/L[1]);
 F2(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f2(n,L[2]/L[1]); 
 
 F3(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f3(n,L[2]/L[1]);
+
+F4(K,n,ida) = my(L=idatolat(K,ida)); L[1]^-(2*n+2)*f4(n,L[2]/L[1]);
