@@ -6,14 +6,24 @@ nhpart(r,z) = r!/(8*Pi*imag(z)^(r+1))/(4*Pi)^r;
 
 pochhammer(a,m) = prod(i = 0, m-1, a + i);
 
-c(n,z) = (-1)^n*sum(r=0,n,n!*binomial(n+1,r+1)/(r+1)/(2*I)^r/(4*Pi)^(n-r));
+c(n,z) = n!*(-1)^n/2/(4*Pi*imag(z))^(n+1);
 
-s(f,n,z) = sum(r=0, n, (-1)^(n-r)*binomial(n,r)*pochhammer(2+r,n-r)/(4*Pi*imag(z))^(n-r)*f(r,z));
+s(f,n,z) = sum(r=0, n, (-1)^(n-r)*binomial(n,r)*pochhammer(2+r,n-r)/(4*Pi*imag(z))^(n-r)*f(r,z),0.);
 
-del(f,n,z,k=2) = c(n,z)/(8*Pi*imag(z)^n+1) +s(f,n,z,k);
+F(n,z) = substvec(delkformal('E2,n),['E2,'E4,'E6],[E(2,z),E(4,z),E(6,z)]);	
 
-F0(n,z) = substvec(delkformal('E2,n),['E2,'E4,'E6],[E(2,z),E(4,z),E(6,z)]);	
+f1(n,z) = c(n,z) +s(Pr,n,z); \\ == F(n,z)
 
-F1(n,ida) = c(n,z)/(8*Pi*imag(z)^(n+1)) +s(Pr,n,z);
+f2(n,z) = s(nhpart,n,z) +s(Pr,n,z); \\ == F(n,z)
 
-F2(n,z) = s(nhpart,n,z) +s(Pr,n,z); \\ == F0(ell,z)
+f3(n,z) = {
+    c(n,z) 
+    - (-1)^n*pochhammer(2,n)/(4*Pi*imag(z))^n/24
+    + suminf(m=1,sum(r=0,n,(-1)^(n-r)*binomial(n,r)*pochhammer(2+r,n-r)/(4*Pi*imag(z))^(n-r)*m^r,0.)*sigma(m)*exp(2*Pi*I*m *z));
+} \\ == F(n,z)
+
+F1(K,n,ida) = my(L=idatolat(K,ida)); L[1]^(2*n+2)*f1(n,L[2]/L[1]); 
+
+F2(K,n,ida) = my(L=idatolat(K,ida)); L[1]^(2*n+2)*f2(n,L[2]/L[1]); 
+
+F3(K,n,ida) = my(L=idatolat(K,ida)); L[1]^(2*n+2)*f3(n,L[2]/L[1]); 
