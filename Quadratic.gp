@@ -46,6 +46,7 @@
     - redrepshnf(K) -> [a_1,...,a_h]
     - parirepshnf(K) -> [a_1,...,a_h]
     - complexgen(K,ida) -> alpha in C s.t. (alpha) = ida
+    - idaindex(K,reps,ida) -> [mu,i] s.t. ida = mu*reps[i]
     
     *Hecke characters of imaginary quadratic fields
     - qhcinit(K) -> [K,[r_i]]
@@ -363,29 +364,31 @@ idatolat(K,ida) =
 minkbound(nf) = my(n=nf.r1+2*nf.r2); n!/(n^n)*(4/Pi)^nf.r2*sqrt(abs(nf.disc));
 addhelp(minkbound,"minkbound(nf): return the Minkowski bound of a number field nf.");
 
-redrepshnf(K) =
-{
-    my(ClK=K.clgp, reps = []);
-    forvec(e=vector(#ClK.cyc,i,[0,ClK.cyc[i]-1]),
-        reps=concat(reps,[idealred(K,idealfactorback(K,ClK.gen,e))]);
-    );
-    reps;
-}
+redrepshnf(K) = apply(ida->idealred(K,ida),parirepshnf(K));
+addhelp(redrepshnf,"redrepshnf(K): return a list of reduced ideals generating the ideal class group.");
 
-parirepshnf(K) =
-{
+parirepshnf(K) = {
     my(ClK=K.clgp, reps = []);
     forvec(e=vector(#ClK.cyc,i,[0,ClK.cyc[i]-1]),
-        reps=concat(reps,[idealfactorback(K,ClK.gen,e)]);
-    );
-    reps;
+        reps=concat(reps,[idealfactorback(K,ClK.gen,e)]));
+    reps
 }
+addhelp(parirepshnf,"parirepshnf(K): return a list of ideals generating the ideal class group.");
 
 complexgen(K,ida) = {
     my(tmp=bnfisprincipal(K,ida));
     if(tmp[1] != vector(#tmp[1])~, error("Non-principal ideal."));
-    subst(K.zk*tmp[2],variable(K),K.roots[1]);
+    subst(K.zk*tmp[2],variable(K),K.roots[1])
 }
+addhelp(complexgen,"complexgen(K,ida): return mu in C such that ida = (mu).");
+
+idarep(K,reps,ida) = {
+    my(i,mu);
+    i = select(rep->bnfisprincipal(K,idealmul(K,ida,idealinv(K,rep)),0) == vector(#K.clgp.cyc)~, reps, 1)[1];
+    mu = complexgen(K,idealmul(K,ida,idealinv(K,reps[i])));
+    [mu,i]
+}
+addhelp(idarep,"idarep(K,reps,ida): return [mu,i] such that ida = mu*reps[i], where mu is a complex number.");
 
 quaddata(D) =
 {
