@@ -340,25 +340,18 @@ idatoqfb(K,ida) =
     field K, return the corresponding binary quadratic form N(ax-by)/N(ida).");
 }
 
-idatouhp(K,ida) =
-{
+idatouhp(K,ida) = {
     my(tmp=subst(K.zk*idealhnf(K,ida),variable(K),K.roots[1]));
     if(imag(tmp[2]/tmp[1])>0,tmp[2]/tmp[1],tmp[1]/tmp[2]);
 }
-{
-    addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic
-    field K, return the corresponding point b/a or a/b in the upper-half plane.");
-}
+addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding point b/a or a/b in the upper-half plane.");
 
-idatolat(K,ida) =
-{
-    my(w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])));
-    subst(K.zk*idealhnf(K,ida),variable(K),w); \\[a,(-b+sqrt(D))/2]
+idatolat(K,ida) = {
+    my(w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])), L);
+    L = subst(K.zk*idealhnf(K,ida),variable(K),w); \\[a,(-b+sqrt(D))/2]
+    return(if(imag(L[2]/L[1])<0,L*[0,1;1,0],L));
 }
-{
-    addhelp(idatolat,"idatolat(K,ida): return [w1,w2] such that ida = Z*w1+Z*w2,
-    with w2/w1 in the upper half plane.");
-}
+addhelp(idatolat,"idatolat(K,ida): return [w1,w2] such that ida = Z*w1+Z*w2, with w2/w1 in the upper half plane.");
 
 /*-------------------------Imaginary quadratic fields------------------------*/
 minkbound(nf) = my(n=nf.r1+2*nf.r2); n!/(n^n)*(4/Pi)^nf.r2*sqrt(abs(nf.disc));
