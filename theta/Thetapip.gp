@@ -56,14 +56,25 @@ pipinit(K,verbose) =
 }
 addhelp(pipinit,"pipinit(K,{verbose=0}): Initialise the data to compute the Petersson inner product of theta series attached to the imaginary quadratic field K. If verbose=1, display information about the quadratic field while the computations are performed.");
 
-pnorm(data,qhc) =
+pnorm(pipdata,qhc,algo) =
 {
+    my(K = pipdata[1], ell = qhc[2][1]/2);
     if(qhc[2][2] != 0, error("Wrong infinity type: ",qhc[2]));
+    if(qhcistrivial(K,2*qhc), error("Genus character given! ",qhc));
     
-    my(qhldata = if(#data == 4,pipdatatoqhldata(data),data));
-    my(K=qhldata[1][1], hK = K.clgp.no, t = qhc[2][1]);
+    my(reps = pipdata[2], qhcdata = qhcinit(K));
+    if(ell == 0,
+        return(-K.clgp.no/3/K.tu[2]*sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])*log(idealnorm(K,reps[i])^6*abs(delta(idatolat(K,reps[i])))))));
     
-    sqrt(abs(K.disc))*2*hK*(t)!/(4*Pi)^(t+1)*qhlfun(qhldata,2*qhc,t+1);
+    \\ ell > 0
+    if(algo == "lpsi2",
+        my(Lpsi2 = lfuncreate(qhcLdata(K,2*qhc)));
+        return(4*K.clgp.no/K.tu[1]*sqrt(abs(K.disc))*(2*ell)!/(4*Pi)^(2*ell+1)*lfun(Lpsi2,2*ell+1)));
+    
+    \\ We use derivatives of E2
+    my(d2l_1E2v);
+    d2l_1E2v = dnE2(pipdata,2*ell-1,reps,algo);
+    4*K.clgp.no/K.tu[1]^2*(abs(K.disc)/4)^ell*sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])*d2l_1E2v[i]);
 }
 addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
 
@@ -87,6 +98,26 @@ pip(pipdata,ell,ida,idb) =
     4*(abs(K.disc)/4)^ell*sum(i=1,#amb,(lambdac0*amb[i][2])^(2*ell)*d2l_1E2(pipdata,ell,idealmul(K,c0,amb[i][1])));
 }
 addhelp(pip,"pip(pipdata,ell,ida,idb,{flag=0}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell. pipdata is the data returned by pipinit. By default, the Petersson inner product is normalized by removing the volume factor. If flag = 1, return the product without the constant C_K.");
+
+dnE2(pipdata,n,idav,algo) = {
+    my(K = pipdata[1]);
+    if(algo == "qexp",
+        my(latv,zv,tmpv);
+        latv = vector(#idav,i,idatolat(K,idav[i]));
+        zv = vector(#latv,i,latv[i][2]/latv[i][1]);
+        tmpv = vector(#zv, i, \\Vectorize... no need to recompute the coeffs...
+            (-1)^n*(1/(8*Pi*imag(zv[i]))-(n+1)/24)*n!/(4*Pi*imag(zv[i]))^n
+            + suminf(m=1,sum(r=0,n,(-1)^(n-r)*binomial(n,r)*prod(i=0,n-r-1,2+r+i)/(4*Pi*imag(zv[i]))^(n-r)*m^r,0.)*sigma(m)*exp(2*Pi*I*m*zv[i])));
+        return(vector(#latv,i,latv[i][1]^-(2*n+2)*tmpv[i])));
+    
+    \\ At this point, we now we will use the polynomials d^nE2 in C[E2,E4,E6]
+    my(pol, mu, i, reps);
+    reps = vector(#pipdata[2],i,pipdata[2][i][1]);
+    pol = if(type(algo) == "t_CLOSURE",algo(n),delkformal('E2,n));
+    vector(#idav,j,
+        [mu,i] = idarep(K,reps,idav[j]);
+        mu^-(2*n+2)*substvec(pol,['E2,'E4,'E6],pipdata[4][i,]));
+}
 
 \\ Evaluates d^(2*ell-1)E_2 at quadratic ideals
 d2l_1E2(pipdata,ell,ida) =
