@@ -64,7 +64,7 @@ pnorm(pipdata,qhc,algo) =
     
     my(reps = pipdata[2], qhcdata = qhcinit(K));
     if(ell == 0,
-        return(-K.clgp.no/3/K.tu[2]*sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])*log(idealnorm(K,reps[i])^6*abs(delta(idatolat(K,reps[i])))))));
+        return(-K.clgp.no/3/K.tu[2]* sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])* log(idealnorm(K,reps[i])^6* abs(delta(idatolat(K,reps[i])))))));
     
     \\ ell > 0
     if(algo == "lpsi2",
@@ -72,11 +72,10 @@ pnorm(pipdata,qhc,algo) =
         return(4*K.clgp.no/K.tu[1]*sqrt(abs(K.disc))*(2*ell)!/(4*Pi)^(2*ell+1)*lfun(Lpsi2,2*ell+1)));
     
     \\ We use derivatives of E2
-    my(d2l_1E2v);
-    d2l_1E2v = dnE2(pipdata,2*ell-1,reps,algo);
-    4*K.clgp.no/K.tu[1]^2*(abs(K.disc)/4)^ell*sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])*d2l_1E2v[i]);
+    my(d2l_1E2v = dnE2(pipdata,2*ell-1,reps,algo));
+    4*K.clgp.no/K.tu[1]^2*(abs(K.disc)/4)^ell * sum(i=1,#reps,qhceval(qhcdata,2*qhc,reps[i])*d2l_1E2v[i]);
 }
-addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data is either the data returned by qhlinit or pipinit.");
+addhelp(pnorm,"pnorm(data,qhc): return the norm of theta_psi, where psi is determined by qhc = [c,[2*ell,0]] and data the data returned by pipinit.");
 
 pip(pipdata,ell,ida,idb) =
 {
@@ -109,23 +108,32 @@ dnE2(pipdata,n,idav,algo) = {
             (-1)^n*(1/(8*Pi*imag(zv[i]))-(n+1)/24)*n!/(4*Pi*imag(zv[i]))^n
             + suminf(m=1,sum(r=0,n,(-1)^(n-r)*binomial(n,r)*prod(i=0,n-r-1,2+r+i)/(4*Pi*imag(zv[i]))^(n-r)*m^r,0.)*sigma(m)*exp(2*Pi*I*m*zv[i])));
         return(vector(#latv,i,latv[i][1]^-(2*n+2)*tmpv[i])));
-    if(algo == "qexp2",
-        my(latv,zv,tmpv);
-        latv = vector(#idav,i,idatolat(K,idav[i]));
-        zv = vector(#latv,i,latv[i][2]/latv[i][1]);
-        v = vector(n+1,r,(-1)^(n-r+1)*binomial(n,r-1)*prod(i=0,n-r,1+r+i)/(4*Pi*imag(zv[i]))^(n-r+1));
-        tmpv = vector(#zv, i, \\Vectorize... no need to recompute the coeffs...
-            (-1)^n*(1/(8*Pi*imag(zv[i]))-(n+1)/24)*n!/(4*Pi*imag(zv[i]))^n
-            + suminf(m=1,v*vector(n+1,r,m^(r-1))~*sigma(m)*exp(2*Pi*I*m*zv[i])));
-        return(vector(#latv,i,latv[i][1]^-(2*n+2)*tmpv[i])));
+        
+    if(algo == "qexpv",
+        my(latv, zv, tmpv, coefv, v);
+        latv = vector(#idav, i, idatolat(K, idav[i]));
+        zv = vector(#latv, i, latv[i][2] / latv[i][1]);
+        coefv = vector(n + 1, r ,(-1)^(n - r + 1) * binomial(n, r - 1) * prod(i = 0, n - r, 1 + r + i)/(4 * Pi)^(n - r + 1));
+        tmpv = vector(#zv, i,
+            v = vector(n + 1, r, coefv[r] / imag(zv[i])^(n - r + 1));
+            (-1)^n*(1 / (8 * Pi * imag(zv[i])) - (n + 1) / 24) * n! / (4 * Pi * imag(zv[i]))^n
+            + suminf(m = 1, v * vector(n + 1, r, m^(r - 1))~ * sigma(m) * exp(2 * Pi * I * m * zv[i])));
+        return(vector(#latv, i, latv[i][1]^-(2 * n + 2) * tmpv[i])));
     
     \\ At this point, we now we will use the polynomials d^nE2 in C[E2,E4,E6]
-    my(pol, mu, i, reps);
-    reps = vector(#pipdata[2],i,pipdata[2][i][1]);
-    pol = if(type(algo) == "t_CLOSURE",algo(n),delkformal('E2,n));
-    vector(#idav,j,
-        [mu,i] = idarep(K,reps,idav[j]);
-        mu^-(2*n+2)*substvec(pol,['E2,'E4,'E6],pipdata[4][i,]));
+    my(pol, mu, idx, reps);
+    reps = vector(#pipdata[2], i, pipdata[2][i][1]);
+    pol = if(type(algo) == "t_CLOSURE", algo(n), delkformal('E2, n));
+    vector(#idav, j, 
+        [mu, idx] = idarep(K, reps, idav[j]);
+        mu^-(2 * n + 2) * substvec(pol, ['E2, 'E4, 'E6], pipdata[4][idx,]));
+}
+{
+addhelp(dnE2, "dnE2(pipdata,n,ida,{algo}): compute d^nE_2(ida) using algorithm algo. There are options are:
+    1) algo = 0 (default): Use diffop to compute d^2E2 exactly as a polynomial in E2,E4 and E6.
+    2) algo = pol(n), type(pol) = \"t_CLOSURE\": call the function pol to obtain the polynomial d^nE2.
+    3) algo = \"qexp\": Use the q-expansion of d^nE2, without vectorizing.
+    4) algo = \"qexpv\": Use the q-expansion of d^nE2 with vectorization.");
 }
 
 \\ Evaluates d^(2*ell-1)E_2 at quadratic ideals
@@ -168,3 +176,4 @@ addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M between th
 
 /*-------------------------Auxilarry functions--------------------------------*/
 pipdatatoqhldata(pipdata) = qhlinit(pipdata[1]);
+
