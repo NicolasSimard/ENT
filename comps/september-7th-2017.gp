@@ -11,14 +11,15 @@ dnE2p(K,n,p,ida) = {
 }
 
 K = bnfinit('x^2+11);
-p = 3;
+p = 5;
+printf("p = %i splits in K = Q(sqrt(%i)): %i", p, K.disc, kronecker(K.disc,p));
 ida = qfbtohnf(Heegner_forms(K.disc,p^2)[1]);
-ell0 = p - 1;
+ell0 = 1;
 ell(n) = ell0 + p^n*(p-1)/2;
 printf("The base point is ell0 = %i", ell0);
 
 [Om_C, M] = canperiod(K,ida,1);
 
-N(ell) = dnE2p(K, 2*ell - 1, p, ida)*(Om_C * 2 * Pi * I)^(4 * ell);
+N(ell) = dnE2p(K, 2 * ell - 1, p, ida)*(Om_C * 2 * Pi * I)^(4 * ell);
 
 \\ at \p 10000, factor(algdep(N(ell(1))-N(ell(0)),18)) with ell0 = 1 gives a polynomial of degree 6...
