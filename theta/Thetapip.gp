@@ -70,7 +70,7 @@ addhelp(pnorm,"pnorm(pipdata,qhc,{algo}): Return the Petersson norm of the theta
 pip(pipdata, ell, ida, idb, algo) = {
     if(ell == 0, error("ell has to be > 0."));
     
-    my(K = pipdata[1], idbbar, coords, c0coords, c0, amb = pipdata[3], lambdac);
+    my(K = pipdata[1], idbbar, coords, c0coords, c0, idcv, amb = pipdata[3], lambdac);
     idbbar = idealmul(K, idealinv(K, idb), idealnorm(K, idb));
     
     \\ Check if ida*idbbar is a square and return 0 if it isn't
@@ -85,8 +85,12 @@ pip(pipdata, ell, ida, idb, algo) = {
     c0 = idealinv(K, idealfactorback(K, K.gen, c0coords));
     lambdac0 = complexgen(K, idealmul(K, ida, idealmul(K, idbbar, idealpow(K, c0, 2))));
     
+    \\ find all ideals c s.t. ida*idbar*idcc^2 is principal
+    idcv = vector(#amb,i,idealmul(K, c0, amb[i][1]));
+    
     \\ Compute the sum
-    4 * (abs(K.disc) / 4)^ell * sum(i = 1, #amb, (lambdac0 * amb[i][2])^(2 * ell) * dnE2(pipdata, 2 * ell - 1, [idealmul(K, c0, amb[i][1])], algo)[1]);
+    my(d2l_1E2v = dnE2(pipdata, 2 * ell - 1, idcv, algo));
+    4 * (abs(K.disc) / 4)^ell * sum(i = 1, #idcv, (lambdac0 * amb[i][2])^(2 * ell) * d2l_1E2v[i]);
 }
 {
 addhelp(pip,"pip(pipdata,ell,ida,idb,{algo}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell, using the algorithm algo. pipdata is the data returned by pipinit. There are 4 options for algo:
