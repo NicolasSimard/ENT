@@ -145,7 +145,7 @@ psigrammat(pipdata, ell, algo) = {
 }
 addhelp(psigrammat,"psigrammat(pipdata, ell, {algo}): Gramm matrix of the Petersson inner product in the basis of theta_psi and pipdata is the data returned by pipinit, using the algorithm algo (see pnorm).");
 
-psigramdet(pipdata, ell) = matdet(psigrammat(pipdata, ell));
+psigramdet(pipdata, ell, algo) = matdet(psigrammat(pipdata, ell, algo));
 
 pipgrammat(pipdata, ell, reps, algo) = {
     my(hK = pipdata[1].clgp.no);
@@ -154,12 +154,12 @@ pipgrammat(pipdata, ell, reps, algo) = {
 }
 addhelp(pipgrammat,"pipgrammat(pipdata,ell,{reps=redreps},{algo}): Gramm matrix of the Petersson inner product in the basis of reps (reduced reps by default), using the algorithm algo (see pip).");
 
-pipgramdet(pipdata, ell, reps) = matdet(pipgrammat(pipdata, ell, reps));
+pipgramdet(pipdata, ell, reps, algo) = matdet(pipgrammat(pipdata, ell, reps, algo));
 
 transmat(K, ell, reps) = {
-    my(qhcdata = qhcinit(K), hK = K.clgp.no, ClK, chars = qhchars(K,[2 * ell,0]));
-    if(reps == 0, ClK = redrepshnf(K), ClK = parirepshnf(K));
-    matrix(hK, hK, i, j, 2 / hK * qhceval(qhcdata, chars[i], ClK[j]));
+    my(qhcdata = qhcinit(K), hK = K.clgp.no, chars = qhchars(K,[2 * ell,0]));
+    if(reps == 0, reps = redrepshnf(K));
+    matrix(hK, hK, i, j, 2 / hK * qhceval(qhcdata, chars[i], reps[j]));
 }
 addhelp(transmat,"transmat(K,ell,{reps=redreps}): Transition matrix M between the basis theta_psi and reps basis. It is such that M~*psigrammat*conj(M) = pipgrammat.");
 
