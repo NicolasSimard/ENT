@@ -86,7 +86,7 @@ pip(pipdata, ell, ida, idb, algo) = {
     lambdac0 = complexgen(K, idealmul(K, ida, idealmul(K, idbbar, idealpow(K, c0, 2))));
     
     \\ Compute the sum
-    4 * (abs(K.disc) / 4)^ell * sum(i = 1, #amb, (lambdac0 * amb[i][2])^(2 * ell) * dnE2(pipdata, ell, [idealmul(K, c0, amb[i][1])], algo)[1]);
+    4 * (abs(K.disc) / 4)^ell * sum(i = 1, #amb, (lambdac0 * amb[i][2])^(2 * ell) * dnE2(pipdata, 2 * ell - 1, [idealmul(K, c0, amb[i][1])], algo)[1]);
 }
 {
 addhelp(pip,"pip(pipdata,ell,ida,idb,{algo}): Return the Petersson inner product of the theta series attached to ida and idb, with parameter ell, using the algorithm algo. pipdata is the data returned by pipinit. There are 4 options for algo:
