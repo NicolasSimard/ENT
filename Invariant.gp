@@ -54,3 +54,13 @@ factorinvdenom(pipdata,ell=1) = factor(denominator(invariant(pipdata,ell)));
 factorinvnum(pipdata,ell=1) = factor(numerator(invariant(pipdata,ell)));
 
 issquareinv(pipdata,ell=1) = issquare(invariant(pipdata,ell));
+
+grammdet(K,ell) = {
+    my(qhcs = qhchars(K,[2*ell,0]),data = pipinit(K));
+    prod(i=1,#qhcs,pnorm(data,qhcs[i]));
+}
+
+normgrammdet(K,ell,Om) = {
+    my(Om_K = if(Om, Om, CSperiod(K.disc)));
+    grammdet(K,ell)/Om_K^(4*ell*K.clgp.no);
+}
