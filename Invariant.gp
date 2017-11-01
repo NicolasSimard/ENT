@@ -55,12 +55,21 @@ factorinvnum(pipdata,ell=1) = factor(numerator(invariant(pipdata,ell)));
 
 issquareinv(pipdata,ell=1) = issquare(invariant(pipdata,ell));
 
-grammdet(K,ell) = {
-    my(qhcs = qhchars(K,[2*ell,0]),data = pipinit(K));
-    prod(i=1,#qhcs,pnorm(data,qhcs[i]));
+grammdet(data,ell) = {
+    my(pipdata);
+    if(type(data) == "t_INT", \\ data is a discriminant
+        pipdata = pipinit(bnfinit('x^2-data)),
+        if(#data == 4, \\ data is a pipdata
+            pipdata = data,
+            pipdata = pipinit(data); \\ data is a number field?
+        );       
+    );
+
+    my(qhcs = qhchars(pipdata[1],[2*ell,0]));
+    prod(i=1,#qhcs,pnorm(pipdata,qhcs[i]));
 }
 
-normgrammdet(K,ell,Om) = {
+normgrammdet(data,ell,Om) = {
     my(Om_K = if(Om, Om, CSperiod(K.disc)));
-    grammdet(K,ell)/Om_K^(4*ell*K.clgp.no);
+    grammdet(data,ell)/Om_K^(4*ell*K.clgp.no);
 }
