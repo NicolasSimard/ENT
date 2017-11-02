@@ -346,6 +346,8 @@ idatouhp(K,ida) = {
 }
 addhelp(idatouhp,"idatouhp(K,ida): Given an ideal ida=[a,b] in a quadratic field K, return the corresponding point b/a or a/b in the upper-half plane.");
 
+\\ TODO : remove the useless double check with imag...
+\\ TODO : imag(w1/w2) > 0 instead? Yes, since PARI does it (see ellperiods)
 idatolat(K,ida) = {
     my(w = if(imag(K.roots[1])>0,K.roots[1],conj(K.roots[1])), L);
     L = subst(K.zk*idealhnf(K,ida),variable(K),w); \\[a,(-b+sqrt(D))/2]
