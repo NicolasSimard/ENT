@@ -1,4 +1,9 @@
-f_A(K, ida, ell, idb) = {
+f1_A(K, ida, ell, idb) = {
     my(qexp = Vec(bintheta(K,ida,ell)), L = idatolat(K,idb));
-    L[1]^-(2*ell+1)*sum(n = 1, #qexp, qexp[n] * exp(2 * Pi * I * n * L[2]/L[1]))*E(2, idatolat(K,ida))^ell;
+    theval(K, ida, ell, idatolat(K,idb))/E(2, idatolat(K,idealinv(K,ida)))^ell;
+}
+
+f2_A(K, ida, ell, idb) = {
+    my(qexp = Vec(bintheta(K,ida,ell)), L = idatolat(K,idb));
+    theval(K, ida, ell, idatolat(K,idb))/theval(K, 1, ell, idatolat(K,ida));
 }
