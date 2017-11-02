@@ -11,6 +11,7 @@ bintheta(K, X, ell, prec) = {
 {addhelp(bintheta,"bintheta(K, X, ell, {prec = auto}): Return the q-expansion of the binary theta series attached to K, X and ell. Here, X can be a Hecke character of K (i.e. X = [[c_1,...,c_d],[2*ell,0]]), in which case ell is ignored and the function returns the q-expansion of the associated newform, or X can be an ideal of K, in which case the corresponding q-expansion is returned.")
 }
 
+\\ IDEA : Use the q-exp of bintheta(K, 1, 0) to know the support of the theta series
 binthetaeval(K, X, ell, L) = {
     my(qexp = bintheta(K, X, ell), v, coeffs);
     v = valuation(qexp, variable(qexp));
@@ -26,7 +27,7 @@ binthetaeval(K, X, ell, L) = {
 
 binthetaida(K, ida, ell, prec) = {
     my(abc, L, M, reps, qexp);
-    prec = if(prec == 0, default(seriesprecision));
+    if(!prec, prec = default(seriesprecision));
     L = idatolat(K,ida);
     abc = Vec(round(('X * L[1] + L[2]) * conj('X * L[1] + L[2]) / idealnorm(K, ida)));
     M = [abc[1],abc[2]/2;abc[2]/2,abc[3]];
