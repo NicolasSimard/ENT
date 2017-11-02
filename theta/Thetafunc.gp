@@ -11,6 +11,14 @@ bintheta(K, X, ell, prec) = {
 {addhelp(bintheta,"bintheta(K, X, ell, {prec = auto}): Return the q-expansion of the binary theta series attached to K, X and ell. Here, X can be a Hecke character of K (i.e. X = [[c_1,...,c_d],[2*ell,0]]), in which case ell is ignored and the function returns the q-expansion of the associated newform, or X can be an ideal of K, in which case the corresponding q-expansion is returned.")
 }
 
+binthetaeval(K, X, ell, L) = {
+    my(qexp = bintheta(K, X, ell), v, coeffs);
+    v = valuation(qexp, variable(qexp));
+    coeffs = Vec(qexp);
+    L[1]^-(2 * ell+1) * sum(n = v, #coeffs, coeffs[n - v + 1] * exp(2 * Pi * I * n * L[2]/L[1]));
+}
+{addhelp(binthetaeval,"binthetaeval(K, X, ell, L): Evaluate the theta function bintheta(K, X, ell) at the lattice L.")}
+
 /*binthetaqhc1(K,qhc,var='q,flag) = {
     my(L=ideallist(K,default(seriesprecision)), data = qhcinit(K));
     Ser(concat([qhcistrivial(K,qhc)*K.clgp.no/K.tu[1]],vector(#L,n,sum(N=1,#L[n],qhceval(data,qhc,L[n][N])))),var);
