@@ -69,7 +69,7 @@ grammdet(data,ell) = {
     prod(i=1,#qhcs,pnorm(pipdata,qhcs[i]));
 }
 
-normgrammdet(data,ell,Om) = {
-    my(Om_K = if(Om, Om, CSperiod(K.disc)));
-    grammdet(data,ell)/Om_K^(4*ell*K.clgp.no);
+normgrammdet(disc,ell,Om) = {
+    my(Om_K = if(Om, Om, CSperiod(disc)));
+    grammdet(disc,ell)/Om_K^(4*ell*qfbclassno(disc));
 }
