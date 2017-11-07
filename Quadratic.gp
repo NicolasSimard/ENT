@@ -61,6 +61,14 @@
 }
 
 /*------------------------------General functions----------------------------*/
+quadsetup(D, flag) = {
+    K = bnfinit('x^2-D);
+    reps = redrepshnf(K);
+    if(flag >= 1, pipdata = pipinit(K));
+    if(flag >= 2, Om_K = CSperiod(K.disc));
+    print("Class group: ",K.clgp);
+}
+addhelp(quadsetup,"quadsetup(D, {flag}): Define K = Q(sqrt(D)) and reps = redrepshnf(K). If flag == 1, define pipdata = pipinit(K) and if flag == 2, define also Om_K = CSperiod(K.disc). This function also print the structure of the class group. ");
 
 isdisc(D) = return(D%4 <= 1);
 
