@@ -1,51 +1,96 @@
-normalpip(pipdata,ell,ida,idb)=
-{
-    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
-
-    my(K=pipdata[1]);
-    pip(pipdata,ell,ida,idb)/E(2,idatolat(K,idealinv(K,ida)))^ell/conj(E(2,idatolat(K,idealinv(K,idb))))^ell;
-}
-
-invariant(data,ell) =
-{
-    if(default(realprecision)<500,warning("Precision is low (<500)..."));
-
-    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
-    
-    my(pipdata);
-    if(type(data) == "t_INT", \\ data is a discriminant
-        pipdata = pipinit(bnfinit('x^2-data)),
-        if(#data == 4, \\ data is a pipdata
-            pipdata = data,
-            pipdata = pipinit(data); \\ data is a number field?
-        );       
-    );
-    
-    my(reps=redrepshnf(pipdata[1]),pol, M);
-    
-    M = matrix(#reps,#reps); \\ Hermitian matrix
-    
-    for(i = 1, #reps,
-        for(j = i, #reps,
-            M[i,j] = normalpip(pipdata,ell,reps[i],reps[j])));
-    for(i = 2, #reps,
+grammmat(dim, f) = {
+    my(M = matrix(dim, dim));
+    for(i = 1, dim,
+        for(j = i, dim,
+            M[i,j] = f(i,j)));
+    for(i = 2, dim,
         for(j = 1, i - 1,
             M[i,j] = conj(M[j,i])));
+    M;
+}
+
+datatopipdata(data) = {
+    if(type(data) == "t_INT", \\ data is a discriminant
+        pipinit(bnfinit('x^2-data)),
+        if(#data == 4, \\ data is a pipdata
+            data,
+            pipinit(data); \\ data is a number field?
+        );       
+    );
+}
+
+normalpipE2ell(pipdata, ell, ida, idb) = {
+    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
+
+    my(K = pipdata[1]);
+    pip(pipdata,ell,ida,idb)\
+    /E(2,idatolat(K,idealinv(K,ida)))^ell\
+    /conj(E(2,idatolat(K,idealinv(K,idb))))^ell;
+}
+
+normalpipdnE2(pipdata, ell, ida, idb) = {
+    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
+
+    my(K = pipdata[1]);
+    pip(pipdata,ell,ida,idb)\
+    /dnE2(pipdata, ell-1, [idatolat(K,idealinv(K,ida))])[1]\
+    /conj(dnE2(pipdata, ell-1, [idatolat(K,idealinv(K,idb))])[1]);
+}
+
+grammdetE2ell(data, ell, flag = 1) = {
+    if(default(realprecision) < 500, localprec(500));
+
+    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
     
-    pol=algdep(matdet(M),1);
+    my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]), pol, M);
+    
+    M = grammmat(#reps, (i,j) - > normalpipE2ell(pipdata, ell, reps[i], reps[j]));
+            
+    if(!flag, return(matdet(M)));
+    
+    pol = algdep(matdet(M),1);
     -polcoeff(pol,0)/polcoeff(pol,1);
 }
 
-squarepartinv(pipdata,ell) = 
-{
-    my(M,inv,sqpart);
-    inv = invariant(pipdata,ell);
-    M=factor(inv);
+grammdetdnE2(data, ell, flag = 1) = {
+    if(default(realprecision) < 500, localprec(500));
+
+    if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
+    
+    my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]), pol, M);
+    
+    M = grammmat(#reps, (i,j) - > normalpipdnE2(pipdata, ell, reps[i], reps[j]));
+            
+    if(!flag, return(matdet(M)));
+    
+    pol = algdep(matdet(M),1);
+    -polcoeff(pol,0)/polcoeff(pol,1);
+}
+
+grammdetpsi(data, ell) = {
+    my(pipdata = datatopipdata(data), qhcs = qhchars(pipdata[1],[2*ell,0]));
+    prod(i = 1, #qhcs, pnorm(pipdata, qhcs[i]));
+}
+
+normgrammdetpsi(data, ell, Om, flag = 1) = {
+    my(pipdata = datatopipdata(data), Om_K, a, pol);
+    Om_K = if(Om, Om, CSperiod(pipdata[1].disc));
+    a = grammdetpsi(pipdata, ell)/Om_K^(4 * ell * qfbclassno(pipdata[1].disc));
+    
+    if(!flag, return(a));
+    
+    pol = algdep(a,1);
+    -polcoeff(pol,0) / polcoeff(pol,1);
+}
+
+squarepart(N, ell) =  {
+    my(M, sqpart);
+    M = factor(inv);
     sqpart = prod(i=1,#M[,1],M[i,1]^(sign(M[i,2])*(abs(M[i,2])\2)));
     [inv/sqpart^2,sqpart];
 }
 
-issquareinvdenom(pipdata,ell=1) = issquare(denominator(invariant(pipdata,ell)));
+/*issquareinvdenom(pipdata,ell=1) = issquare(denominator(invariant(pipdata,ell)));
 
 factorinv(pipdata,ell=1) = factor(invariant(pipdata,ell));
 
@@ -53,23 +98,4 @@ factorinvdenom(pipdata,ell=1) = factor(denominator(invariant(pipdata,ell)));
 
 factorinvnum(pipdata,ell=1) = factor(numerator(invariant(pipdata,ell)));
 
-issquareinv(pipdata,ell=1) = issquare(invariant(pipdata,ell));
-
-grammdet(data,ell) = {
-    my(pipdata);
-    if(type(data) == "t_INT", \\ data is a discriminant
-        pipdata = pipinit(bnfinit('x^2-data)),
-        if(#data == 4, \\ data is a pipdata
-            pipdata = data,
-            pipdata = pipinit(data); \\ data is a number field?
-        );       
-    );
-
-    my(qhcs = qhchars(pipdata[1],[2*ell,0]));
-    prod(i=1,#qhcs,pnorm(pipdata,qhcs[i]));
-}
-
-normgrammdet(disc,ell,Om) = {
-    my(Om_K = if(Om, Om, CSperiod(disc)));
-    grammdet(disc,ell)/Om_K^(4*ell*qfbclassno(disc));
-}
+issquareinv(pipdata,ell=1) = issquare(invariant(pipdata,ell));*/
