@@ -1,4 +1,4 @@
-grammmat(dim, f) = {
+grammat(dim, f) = {
     my(M = matrix(dim, dim));
     for(i = 1, dim,
         for(j = i, dim,
@@ -37,14 +37,12 @@ normalpipdnE2(pipdata, ell, ida, idb) = {
     /conj(dnE2(pipdata, ell-1, [idatolat(K,idealinv(K,idb))])[1]);
 }
 
-grammdetE2ell(data, ell, flag = 1) = {
-    if(default(realprecision) < 500, localprec(500));
-
+gramdetE2ell(data, ell, flag) = {
     if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
     
     my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]), pol, M);
     
-    M = grammmat(#reps, (i,j) - > normalpipE2ell(pipdata, ell, reps[i], reps[j]));
+    M = grammat(#reps, (i,j) - > normalpipE2ell(pipdata, ell, reps[i], reps[j]));
             
     if(!flag, return(matdet(M)));
     
@@ -52,34 +50,44 @@ grammdetE2ell(data, ell, flag = 1) = {
     -polcoeff(pol,0)/polcoeff(pol,1);
 }
 
-grammdetdnE2(data, ell) = {
-    if(default(realprecision) < 500, localprec(500));
-
+gramdetdnE2(data, ell) = {
     if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
     
     my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]), pol, M);
     
-    matdet(grammmat(#reps, (i,j) - > normalpipdnE2(pipdata, ell, reps[i], reps[j])));
+    matdet(grammat(#reps, (i,j) - > normalpipdnE2(pipdata, ell, reps[i], reps[j])));
 }
 
-grammdetpsi(data, ell) = {
+gramdetpsi(data, ell) = {
     my(pipdata = datatopipdata(data), qhcs = qhchars(pipdata[1],[2*ell,0]));
     prod(i = 1, #qhcs, pnorm(pipdata, qhcs[i]));
 }
 
-grammdetNida(data, ell) = {
+normgramdetpsi(data, ell, Om, flag) = {
+    my(pipdata = datatopipdata(data), Om_K, a, pol);
+    Om_K = if(Om, Om, CSperiod(pipdata[1].disc));
+    a = gramdetpsi(pipdata, ell)/Om_K^(4 * ell * pipdata[1].clgp.no);
+    
+    if(!flag, return(a));
+    
+    pol = algdep(a,1);
+    -polcoeff(pol,0) / polcoeff(pol,1);
+}
+
+gramdetNida(data, ell) = {
     if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
     
     my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]));
     
-    matdet(grammmat(#reps, (i,j) - > pip(pipdata, ell, reps[i], reps[j])))\
+    matdet(grammat(#reps, (i,j) - > pip(pipdata, ell, reps[i], reps[j])))\
     /prod(i = 1, #reps, idealnorm(pipdata[1],reps[i]))^(2*ell);
+    /* == matdet(matrix(#reps, #reps, i, j, pip(pipdata, ell, 1, idealmul(K, idealinv(K, reps[i]), reps[j]))));*/
 }
 
-normgrammdetpsi(data, ell, Om, flag = 0) = {
+normgramdetNida(data, ell, Om, flag) = {
     my(pipdata = datatopipdata(data), Om_K, a, pol);
     Om_K = if(Om, Om, CSperiod(pipdata[1].disc));
-    a = grammdetpsi(pipdata, ell)/Om_K^(4 * ell * qfbclassno(pipdata[1].disc));
+    a = gramdetNida(pipdata, ell)/Om_K^(4 * ell * pipdata[1].clgp.no);
     
     if(!flag, return(a));
     
