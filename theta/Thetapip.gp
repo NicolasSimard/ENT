@@ -45,9 +45,9 @@ pnorm(pipdata, qhc, algo) = {
     if(qhc[2][2] != 0, error("Wrong infinity type: ", qhc[2]));
     if(qhcistrivial(K, 2 * qhc), error("Genus character given! ", qhc));
     
-    my(reps = pipdata[2], qhcdata = qhcinit(K));
+    my(reps = vector(K.clgp.no, i, pipdata[2][i][1]), qhcdata = qhcinit(K));
     if(ell == 0,
-        return(-K.clgp.no / 3 / K.tu[2] * sum(i = 1, #reps, qhceval(qhcdata, 2 * qhc, reps[i]) * log(idealnorm(K, reps[i])^6 * abs(delta(idatolat(K, reps[i])))))));
+        return(-K.clgp.no / 3 / K.tu[1]^2 * sum(i = 1, #reps, qhceval(qhcdata, 2 * qhc, reps[i]) * log(idealnorm(K, reps[i])^6 * abs(delta(idatolat(K, reps[i])))))));
     
     \\ ell > 0
     if(algo == "lpsi2",
