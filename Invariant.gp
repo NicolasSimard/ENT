@@ -95,12 +95,18 @@ normgramdetNida(data, ell, Om, flag) = {
     -polcoeff(pol,0) / polcoeff(pol,1);
 }
 
-squarepart(N, ell) =  {
+squarepart(N, ell) = {
     my(M, sqpart);
     M = factor(inv);
     sqpart = prod(i=1,#M[,1],M[i,1]^(sign(M[i,2])*(abs(M[i,2])\2)));
     [inv/sqpart^2,sqpart];
 }
+
+invA(data, ell, flag = 1) = normgramdetpsi(data, ell, , flag);
+
+invB(data, ell, flag = 1) = normgramdetNida(data, ell, , flag);
+
+invC(data, ell, flag = 1) = gramdetE2ell(data, ell, flag);
 
 /* issquareinvdenom(pipdata,ell=1) = issquare(denominator(invariant(pipdata,ell)));
 
