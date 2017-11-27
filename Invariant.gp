@@ -1,3 +1,13 @@
+{addhelp(Invariant, "This package contains functions to compute the invariants
+attached to imaginary quadratic fields as defined in the thesis.
+
+normalpipE2ell(pipdata, ell, ida, idb) -> normalized Petersson inner product
+invA(data, ell, {flag = 1}) -> A invariant attached to IQF
+invB(data, ell, {flag = 1}) -> B invariant attached to IQF
+invC(data, ell, {flag = 1}) -> C invariant attached to IQF
+");
+}
+
 grammat(dim, f) = {
     my(M = matrix(dim, dim));
     for(i = 1, dim,
@@ -14,9 +24,7 @@ datatopipdata(data) = {
         pipinit(bnfinit('x^2-data)),
         if(#data == 4, \\ data is a pipdata
             data,
-            pipinit(data); \\ data is a number field?
-        );       
-    );
+            pipinit(data))) \\ data is a number field?
 }
 
 normalpipE2ell(pipdata, ell, ida, idb) = {
@@ -27,6 +35,7 @@ normalpipE2ell(pipdata, ell, ida, idb) = {
     /E(2,idatolat(K,idealinv(K,ida)))^ell\
     /conj(E(2,idatolat(K,idealinv(K,idb))))^ell;
 }
+addhelp(normalpipE2ell,"normalpipE2ell(pipdata, ell, ida, idb): Return the petersson innner product of ida and idb divided by (E_2(ida^-1)conj(E_2(idb^-1)))^ell. This numeber is in the Hilbert class field.");
 
 normalpipdnE2(pipdata, ell, ida, idb) = {
     if(ell <= 0, error("ell has to be > 0. Recieved ",ell));
@@ -95,19 +104,18 @@ normgramdetNida(data, ell, Om, flag) = {
     -polcoeff(pol,0) / polcoeff(pol,1);
 }
 
-squarepart(N, ell) =  {
+squarepart(N, ell) = {
     my(M, sqpart);
     M = factor(inv);
     sqpart = prod(i=1,#M[,1],M[i,1]^(sign(M[i,2])*(abs(M[i,2])\2)));
     [inv/sqpart^2,sqpart];
 }
 
-/* issquareinvdenom(pipdata,ell=1) = issquare(denominator(invariant(pipdata,ell)));
+invA(data, ell, flag = 1) = normgramdetpsi(data, ell, , flag);
+addhelp(invA,"invA(data, ell, {flag = 1}): Return the A invariant of the quadratic field defined by data. This invariant is the determinant of the Gram matrix of the space spanned by the theta_psi normalized by the appropriate power of the Chowla-Selberg period. data can be a discriminant, a number field or the data returned by pipinit. When flag = 0, the function returns a complex number. When flag != 0, assume that the invariant is rational and return the rational number.");
 
-factorinv(pipdata,ell=1) = factor(invariant(pipdata,ell));
+invB(data, ell, flag = 1) = normgramdetNida(data, ell, , flag);
+addhelp(invB,"invB(data, ell, {flag = 1}): Return the B invariant of the quadratic field defined by data. This invariant is the determinant of the Gram matrix of the space spanned by the theta_ida normalized by a product of norm of ideals and the appropriate power of the Chowla-Selberg period. data can be a discriminant, a number field or the data returned by pipinit. When flag = 0, the function returns a complex number. When flag != 0, assume that the invariant is rational and return the rational number.");
 
-factorinvdenom(pipdata,ell=1) = factor(denominator(invariant(pipdata,ell)));
-
-factorinvnum(pipdata,ell=1) = factor(numerator(invariant(pipdata,ell)));
-
-issquareinv(pipdata,ell=1) = issquare(invariant(pipdata,ell));*/
+invC(data, ell, flag = 1) = gramdetE2ell(data, ell, flag);
+addhelp(invC,"invC(data, ell, {flag = 1}): Return the C invariant of the quadratic field defined by data. This invariant is the determinant of the Gram matrix of the space spanned by the theta_ida normalized by a product of CM values of the weight 2 Eisenstein series. data can be a discriminant, a number field or the data returned by pipinit. When flag = 0, the function returns a complex number. When flag != 0, assume that the invariant is rational and return the rational number.");
