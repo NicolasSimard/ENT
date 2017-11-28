@@ -52,7 +52,9 @@ gramdetE2ell(data, ell, flag) = {
     my(pipdata = datatopipdata(data), reps = redrepshnf(pipdata[1]), pol, M);
     
     M = grammat(#reps, (i,j) - > normalpipE2ell(pipdata, ell, reps[i], reps[j]));
-            
+
+    /*matdet(M) = matdet(grammat(#reps, (i,j) - > pip(pipdata, ell, reps[i], reps[j])))\
+        /prod(i = 1, #reps, abs(E(2,idatolat(pipdata[1],idealinv(pipdata[1],reps[i])))))^(2*ell);*/
     if(!flag, return(matdet(M)));
     
     pol = algdep(matdet(M),1);
