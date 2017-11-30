@@ -5,6 +5,7 @@ _Disclaimer_: Those scripts are often not commented, sometimes obscure and may n
 
 ## List of computations
 ### September
+- september-5th-2017: Compare the different algorithms to compute the Petersson inner product of theta series.
 - september-4th-2017: First attempt to compute the derrivatives of E_2 using a different method.
 
 ### August

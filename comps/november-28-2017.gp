@@ -16,7 +16,7 @@ CSperiod2(D) = prod(j = 1, abs(D), gamma(j/abs(D))^kronecker(D,j))^(1 / 2 / qfbc
 
 CSperiodnorm(D) = prod(j = 1, abs(D), gamma(j/abs(D))^kronecker(D,j))^(1 / 2 / qfbclassno(D))/ sqrt(2 * Pi * abs(D)^2);
 
-alpha(D, f, k) = CMprod(D,f,k)/CSperiod2(D)^(k*qfbclassno(D));
+alpha(D, f, k) = CMprod(D,f,k)/CSperiod2(D)^(k * qfbclassno(D));
 
 alphanorm(D, f, k) = CMprod(D,f,k)/CSperiodnorm(D)^(k*qfbclassno(D));
 
