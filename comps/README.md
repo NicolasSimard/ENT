@@ -4,6 +4,12 @@ The 'comps/' folder contains small scripts that execute various computations, of
 _Disclaimer_: Those scripts are often not commented, sometimes obscure and may not provide accurate results. They are mainly used to save me some time if I wish to redo or improve a relatively elaborate computation in the future.
 
 ## List of computations
+### December:
+- ULcomps1, ULcomps2: Computations related to my presentation at Laval University on December 1st, 2017. See the presentation in the 'Notes/' repo.
+
+### November:
+- november-15-2017: Compute the product of CM values of odular forms over all CM points attached to an imaginary quadratic field. The goal is to see if one can generalize the Chowla-Selberg theorem. 
+
 ### September
 - september-4th-2017: First attempt to compute the derrivatives of E_2 using a different method.
 
