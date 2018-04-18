@@ -23,4 +23,4 @@ Ldata = [a,astar,Vga,w,cond,eps];
 printf("Estimated error on symmetric square L-function: %.2f%%", (1.0-abs(lfuncheckfeq(lfuncreate(Ldata)))/default(realbitprecision))*100);
 
 print("The Petersson norm of delta is (stored as delta_norm): ");
-delta_norm = (Pi/2*(4*Pi)^k/(k-1)!/N)^-1*lfun(lfuncreate(Ldata),k)/gammanot(N)
+delta_norm = (Pi/2*(4*Pi)^k/(k-1)!/N)^-1*lfun(lfuncreate(Ldata),k)
